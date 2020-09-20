@@ -54,6 +54,7 @@ public class MarketProduct {
         StoreProduct storeProduct = KStoreVStoreProduct.get(store);
         Double oldPrice = storeProduct.getPrice();
         totalStorePrice = totalStorePrice - oldPrice + price;
+        KStoreVStoreProduct.remove(store);
     }
 
 

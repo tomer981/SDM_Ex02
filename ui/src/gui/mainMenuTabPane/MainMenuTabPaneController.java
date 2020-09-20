@@ -44,6 +44,83 @@ public class MainMenuTabPaneController {
 
     private Market market;
 
+    private UpdateProductHBoxController updateProductController;
+    private ProductsInMarketTableViewController MarketProductsController;
+    private CustomerInfoTableViewController customerController;
+    private ShowSelectionOfOrderHBoxController OrderSelectionController;
+    private ShowSelectionOfNewOrderHBoxController newOrderSelectionController;
+    private ShopTabLayoutController storeLayoutController;
+
+    private IUpdateProduct updateProductInterface = new IUpdateProduct() {
+
+        @Override
+        public List<StoreDTO> getStoresDTO() {
+            return market.getStoresDTO();
+        }
+
+        @Override
+        public List<ProductDTO> getProductsDTO() {
+            return market.getMarketProductsDTO();
+        }
+
+        @Override
+        public List<ProductDTO> getStoreProductDTO(Integer StoreId) {
+            return market.getStoreProductDTOByStoreId(StoreId);
+        }
+
+        @Override
+        public boolean isProductInDiscountInStoreByStoreId(Integer storeId, Integer productId) {
+            return market.isProductInDiscountInStoreByStoreId(storeId,productId);
+        }
+
+        @Override
+        public void changeProductPrice(Integer storeId,Integer productId,Double Price) {
+            market.changeProductPrice(storeId,productId,Price);
+            reinitializeData();
+        }
+
+        @Override
+        public void addProductToStore(Integer storeId, Integer productId, Double price) {
+            market.addProductToStore(storeId,productId,price);
+            reinitializeData();
+        }
+
+        @Override
+        public void deleteProduct(Integer storeId, Integer productId) {
+            market.deleteProduct(storeId,productId);
+            reinitializeData();
+        }
+    };
+    private Supplier<List<ProductDTO>> products = ()->market.getMarketProductsDTO();
+    private INewOrderInterfaceHBox newOrderInterface = new INewOrderInterfaceHBox() {
+        @Override
+        public List<CustomerDTO> getCustomersDTO() {
+            return market.getCustomersDTO();
+        }
+
+        @Override
+        public List<ProductDTO> getProductsDTO() {
+            return market.getMarketProductsDTO();
+        }
+
+        @Override
+        public List<StoreDTO> getStoresDTO() {
+            return market.getStoresDTO();
+        }
+    };
+    private IStoreInfo StoresInfo = new IStoreInfo() {
+        @Override
+        public List<StoreDTO> getStoresDTO() {
+            return market.getStoresDTO();
+        }
+
+        @Override
+        public List<ProductDTO> getStoreProductsDTO(Integer storeId) {
+            return market.getStoreProductDTOByStoreId(storeId);
+        }
+    };
+    private Supplier<List<CustomerDTO>> customersData = ()->market.getCustomersDTO();
+
     public MainMenuTabPaneController(){
     }
 
@@ -51,9 +128,7 @@ public class MainMenuTabPaneController {
         this.primaryStage = primaryStage;
     }
 
-    private void initializeMapTab() {
-        int x = 5;
-    }
+
     //start
     @FXML
     void BrowseButtonAction(ActionEvent event) throws JAXBException,RuntimeException {
@@ -69,6 +144,8 @@ public class MainMenuTabPaneController {
         XmlSystemFactory factory = new XmlSystemFactory();
         market = factory.createMarket(Url);
         initializeMarketTab();
+        initializeStoreInfoTab();
+        initializeCustomersTab();
     }
 
 
@@ -88,57 +165,10 @@ public class MainMenuTabPaneController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (MarketTabGrid.getChildren().size() == MarketTabGrid.getRowConstraints().size() ){
-            MarketTabGrid.getChildren().remove(1);
-        }
-        else {
-            MarketTabGrid.add(updateProductHBox,0,1);
+        MarketTabGrid.add(updateProductHBox,0,1);
+        updateProductController = loader.getController();
 
-        }
-
-        UpdateProductHBoxController controller = loader.getController();
-        IUpdateProduct updateProductInterface = new IUpdateProduct() {
-
-            @Override
-            public List<StoreDTO> getStoresDTO() {
-                return market.getStoresDTO();
-            }
-
-            @Override
-            public List<ProductDTO> getProductsDTO() {
-                return market.getMarketProductsDTO();
-            }
-
-            @Override
-            public List<ProductDTO> getStoreProductDTO(Integer StoreId) {
-                return market.getStoreProductDTOByStoreId(StoreId);
-            }
-
-            @Override
-            public boolean isProductInDiscountInStoreByStoreId(Integer storeId, Integer productId) {
-                return market.isProductInDiscountInStoreByStoreId(storeId,productId);
-            }
-
-            @Override
-            public void changeProductPrice(Integer storeId,Integer productId,Double Price) {
-                market.changeProductPrice(storeId,productId,Price);
-                initializeMarketTab();
-            }
-
-            @Override
-            public void addProductToStore(Integer storeId, Integer productId, Double price) {
-                market.addProductToStore(storeId,productId,price);
-                initializeMarketTab();
-            }
-
-            @Override
-            public void deleteProduct(Integer storeId, Integer productId) {
-                market.deleteProduct(storeId,productId);
-                initializeMarketTab();
-            }
-        };
-
-        controller.setEngine(updateProductInterface);
+        updateProductController.setEngine(updateProductInterface);
     }
     private void initializeShowProductsInMarketTableView() {
         ScrollPane productsInMarketTableView = null;
@@ -150,9 +180,9 @@ public class MainMenuTabPaneController {
             e.printStackTrace();
         }
         MarketTabGrid.add(productsInMarketTableView,0,4);
-        ProductsInMarketTableViewController controller = loader.getController();
-        Supplier<List<ProductDTO>> products = ()->market.getMarketProductsDTO();
-        controller.setMarketProductData(products);
+        MarketProductsController = loader.getController();
+
+        MarketProductsController.setMarketProductData(products);
     }
     private void initializeShowSelectionOfOrderHBox() {
         HBox showSelectionOfOrderHBox = null;
@@ -164,7 +194,7 @@ public class MainMenuTabPaneController {
             e.printStackTrace();
         }
         MarketTabGrid.add(showSelectionOfOrderHBox,0,3);
-        ShowSelectionOfOrderHBoxController controller = loader.getController();
+        OrderSelectionController = loader.getController();
 
     }
     private void initializeShowNewOrderHBox() {
@@ -178,24 +208,9 @@ public class MainMenuTabPaneController {
         }
 
         MarketTabGrid.add(showNewOrderHBox,0,2);
-        ShowSelectionOfNewOrderHBoxController controller = loader.getController();
-        INewOrderInterfaceHBox newOrderInterface = new INewOrderInterfaceHBox() {
-            @Override
-            public List<CustomerDTO> getCustomersDTO() {
-                return market.getCustomersDTO();
-            }
+        newOrderSelectionController = loader.getController();
 
-            @Override
-            public List<ProductDTO> getProductsDTO() {
-                return market.getMarketProductsDTO();
-            }
-
-            @Override
-            public List<StoreDTO> getStoresDTO() {
-                return market.getStoresDTO();
-            }
-        };
-        controller.setEngine(newOrderInterface);
+        newOrderSelectionController.setEngine(newOrderInterface);
     }
 
     //store
@@ -210,19 +225,8 @@ public class MainMenuTabPaneController {
         }
 
         StoreInfoTab.setContent(storeInfo);
-        IStoreInfo StoresInfo = new IStoreInfo() {
-            @Override
-            public List<StoreDTO> getStoresDTO() {
-                return market.getStoresDTO();
-            }
-
-            @Override
-            public List<ProductDTO> getStoreProductsDTO(Integer storeId) {
-                return market.getStoreProductDTOByStoreId(storeId);
-            }
-        };
-        ShopTabLayoutController controller = loader.getController();
-        controller.setEngine(StoresInfo);
+        storeLayoutController = loader.getController();
+        storeLayoutController.setEngine(StoresInfo);
     }
 
 
@@ -240,22 +244,35 @@ public class MainMenuTabPaneController {
         CustomersTab.setContent(null);
         CustomersTab.setContent(customerTableView);
         //controller
-        CustomerInfoTableViewController controller = loader.getController();
+        customerController = loader.getController();
         //set Data
-        Supplier<List<CustomerDTO>> customersData = ()->market.getCustomersDTO();
-        controller.setCustomersData(customersData);
+        customerController.setCustomersData(customersData);
+    }
+
+    //map
+    private void initializeMapTab() {
+        int x = 5;
+    }
+
+    private void reinitializeData(){
+        customerController.setCustomersData(customersData);
+        storeLayoutController.setEngine(StoresInfo);
+        MarketProductsController.setMarketProductData(products);
+        updateProductController.setEngine(updateProductInterface);
+        newOrderSelectionController.setEngine(newOrderInterface);
+
     }
 
 
     @FXML
     private void initialize(){
-        CustomersTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
-        StoreInfoTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
-        MapTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
-        MarketTab.selectedProperty().addListener((observable, oldValue, newValue) ->{ if(MarketTab.isSelected()) {initializeMarketTab();} });
-        StoreInfoTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(StoreInfoTab.isSelected()) {initializeStoreInfoTab();} });
-        CustomersTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(CustomersTab.isSelected()) {initializeCustomersTab();} });
-        MapTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(MapTab.isSelected()) {initializeMapTab();} });
+//        CustomersTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
+//        StoreInfoTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
+//        MapTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
+//        MarketTab.selectedProperty().addListener((observable, oldValue, newValue) ->{ if(MarketTab.isSelected()) {initializeMarketTab();} });
+//        StoreInfoTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(StoreInfoTab.isSelected()) {initializeStoreInfoTab();} });
+//        CustomersTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(CustomersTab.isSelected()) {initializeCustomersTab();} });
+//        MapTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(MapTab.isSelected()) {initializeMapTab();} });
     }
 
 
