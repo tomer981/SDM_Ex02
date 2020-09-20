@@ -38,29 +38,18 @@ import java.util.function.Supplier;
 
 public class MainMenuTabPaneController {
 
-    @FXML
-    private TextField DirDirectoryTextField;
-    @FXML
-    private ProgressBar AdvanceLoadProgressBar;
-    @FXML
-    private Button BrowseButton;
-    @FXML
-    private Tab MarketTab;
-    @FXML
-    private Tab CustomersTab;
-    @FXML
-    private Tab StoreInfoTab;
-    @FXML
-    private Tab MapTab;
-    @FXML
-    private GridPane MarketTabGrid;
-    @FXML
-    private Task<Market> MarketLoader;
+    @FXML private TextField DirDirectoryTextField;
+    @FXML private ProgressBar AdvanceLoadProgressBar;
+    @FXML private Button BrowseButton;
+    @FXML private Tab MarketTab;
+    @FXML private Tab CustomersTab;
+    @FXML private Tab StoreInfoTab;
+    @FXML private Tab MapTab;
+    @FXML private GridPane MarketTabGrid;
+    @FXML private Task<Market> MarketLoader;
 
     private final XmlSystemFactory factory;
-
     private Stage primaryStage;
-
     private Market market;
 
     private UpdateProductHBoxController updateProductController;
@@ -140,7 +129,6 @@ public class MainMenuTabPaneController {
     };
     private Supplier<List<CustomerDTO>> customersData = ()->market.getCustomersDTO();
 
-    public MainMenuTabPaneController(){
     public MainMenuTabPaneController() {
         factory = new XmlSystemFactory();
     }
@@ -149,9 +137,6 @@ public class MainMenuTabPaneController {
         this.primaryStage = primaryStage;
     }
 
-    private void initializeMapTab() {
-        int x = 5;
-    }
     //start
     @FXML
     void BrowseButtonAction(ActionEvent event) {
@@ -161,11 +146,6 @@ public class MainMenuTabPaneController {
         File chosenFile = fileChooser.showOpenDialog(primaryStage);
 
         //TODO : Check end .xml and path exist
-        XmlSystemFactory factory = new XmlSystemFactory();
-        market = factory.createMarket(Url);
-        initializeMarketTab();
-        initializeStoreInfoTab();
-        initializeCustomersTab();
         if (chosenFile == null) {
             return;
         }
