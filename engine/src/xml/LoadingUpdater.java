@@ -1,5 +1,5 @@
 package xml;
 
 public interface LoadingUpdater {
-//    loadedPhase();
+    void loadedPercentage(double percentage, String stageText);
 }

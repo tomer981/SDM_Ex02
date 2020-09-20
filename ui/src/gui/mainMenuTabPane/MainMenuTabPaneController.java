@@ -10,6 +10,13 @@ import gui.shopTabLayout.ShopTabLayoutController;
 import gui.showSelectionOfNewOrderHBox.ShowSelectionOfNewOrderHBoxController;
 import gui.showSelectionOfOrderHBox.ShowSelectionOfOrderHBoxController;
 import gui.updateProductHBox.UpdateProductHBoxController;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.WeakChangeListener;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,24 +28,36 @@ import javafx.stage.Stage;
 import market.Market;
 import xml.XmlSystemFactory;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 
 public class MainMenuTabPaneController {
 
-    @FXML private TextField DirDirectoryTextField;
-    @FXML private ProgressBar AdvanceLoadProgressBar;
-    @FXML private Button BrowseButton;
-    @FXML private Tab MarketTab;
-    @FXML private Tab CustomersTab;
-    @FXML private Tab StoreInfoTab;
-    @FXML private Tab MapTab;
-    @FXML private GridPane MarketTabGrid;
+    @FXML
+    private TextField DirDirectoryTextField;
+    @FXML
+    private ProgressBar AdvanceLoadProgressBar;
+    @FXML
+    private Button BrowseButton;
+    @FXML
+    private Tab MarketTab;
+    @FXML
+    private Tab CustomersTab;
+    @FXML
+    private Tab StoreInfoTab;
+    @FXML
+    private Tab MapTab;
+    @FXML
+    private GridPane MarketTabGrid;
+    @FXML
+    private Task<Market> MarketLoader;
 
+    private final XmlSystemFactory factory;
 
     private Stage primaryStage;
 
@@ -122,30 +141,51 @@ public class MainMenuTabPaneController {
     private Supplier<List<CustomerDTO>> customersData = ()->market.getCustomersDTO();
 
     public MainMenuTabPaneController(){
+    public MainMenuTabPaneController() {
+        factory = new XmlSystemFactory();
     }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
-
+    private void initializeMapTab() {
+        int x = 5;
+    }
     //start
     @FXML
-    void BrowseButtonAction(ActionEvent event) throws JAXBException,RuntimeException {
+    void BrowseButtonAction(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML file","*.xml"));
-        File Url = fileChooser.showOpenDialog(primaryStage);
-        if (Url == null){
-            return;
-        }
-        DirDirectoryTextField.setText(Url.getAbsolutePath());
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML file", "*.xml"));
+        File chosenFile = fileChooser.showOpenDialog(primaryStage);
+
         //TODO : Check end .xml and path exist
         XmlSystemFactory factory = new XmlSystemFactory();
         market = factory.createMarket(Url);
         initializeMarketTab();
         initializeStoreInfoTab();
         initializeCustomersTab();
+        if (chosenFile == null) {
+            return;
+        }
+
+        DirDirectoryTextField.setText(chosenFile.getAbsolutePath());
+
+        Task<Market> loadTask = new MarketLoaderTask(factory, chosenFile);
+        AdvanceLoadProgressBar.progressProperty().bind(loadTask.progressProperty());
+        loadTask.valueProperty().addListener((task, oldValue, newValue) -> {
+            this.market = newValue;
+            initializeMarketTab();
+        });
+
+        loadTask.exceptionProperty().addListener((task, oldValue, newValue) -> {
+            newValue.printStackTrace();
+        });
+
+        Thread t = new Thread(loadTask);
+        t.setDaemon(true);
+        t.start();
     }
 
 
@@ -260,7 +300,6 @@ public class MainMenuTabPaneController {
         MarketProductsController.setMarketProductData(products);
         updateProductController.setEngine(updateProductInterface);
         newOrderSelectionController.setEngine(newOrderInterface);
-
     }
 
 

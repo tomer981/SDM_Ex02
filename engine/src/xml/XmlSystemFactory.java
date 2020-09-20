@@ -14,24 +14,38 @@ public class XmlSystemFactory {
     public XmlSystemFactory() {
     }
 
-    public Market createMarket(File file) throws IllegalArgumentException {
+    public Market createMarket(File file, LoadingUpdater loadingUpdater)  {
+        loadingUpdater.loadedPercentage(0.0, "Starting!");
+
         SchemaBaseJaxbObjects schema;
         Market market;
 
         try {
             schema = new SchemaBaseJaxbObjects(file);
         } catch (JAXBException e) {
+            loadingUpdater.loadedPercentage(1.0, "Failed");
             throw new IllegalArgumentException("Couldn't parse XML file");
         }
 
         market = new Market();
 
         createStores(schema, market);
+        loadingUpdater.loadedPercentage(0.1, "Loaded Stores");
+
         createMarketProducts(schema, market);
+        loadingUpdater.loadedPercentage(0.3, "Loaded Products");
+
         createCustomers(schema, market);
+        loadingUpdater.loadedPercentage(0.4, "Loaded Customers");
+
         addProductsToStores(schema, market);
+        loadingUpdater.loadedPercentage(0.6, "Loaded Stores' Products");
+
         addDiscountToStores(schema, market);
+        loadingUpdater.loadedPercentage(0.8, "Loaded Stores' Discounts");
+
         addOrder();
+        loadingUpdater.loadedPercentage(1.0, "Done!");
 
         return market;
 
@@ -63,7 +77,6 @@ public class XmlSystemFactory {
         for (SDMItem item : schema.getXmlProducts()) {
             createMarketProduct(market, item);
         }
-        ;
     }
 
     public void createCustomers(SchemaBaseJaxbObjects schema, Market market) {
