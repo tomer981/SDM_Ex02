@@ -56,7 +56,7 @@ public class MainMenuTabPaneController {
     }
     //start
     @FXML
-    void BrowseButtonAction(ActionEvent event) throws JAXBException,RuntimeException {
+    void BrowseButtonAction(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML file","*.xml"));
