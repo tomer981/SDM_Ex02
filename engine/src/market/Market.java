@@ -36,12 +36,6 @@ public class Market {
         orders = new HashSet<>();
     }
 
-    public static Market initializeMarket(File file) throws RuntimeException, JAXBException {
-        //TODO : Check end .xml and path exist
-        XmlSystemFactory factory = new XmlSystemFactory(file);
-        return factory.getMarket();
-    }
-
     private Store getStoreById(Integer storeId) {
         return stores.stream().filter(store -> storeId.equals(store.getStoreId())).findFirst().orElse(null);
     }
