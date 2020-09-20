@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import market.Market;
+import xml.LoadingUpdater;
 import xml.XmlSystemFactory;
 
 import javax.xml.bind.JAXBException;
@@ -39,12 +40,14 @@ public class MainMenuTabPaneController {
     @FXML private Tab MapTab;
     @FXML private GridPane MarketTabGrid;
 
+    private final XmlSystemFactory factory;
 
     private Stage primaryStage;
 
     private Market market;
 
     public MainMenuTabPaneController(){
+        factory = new XmlSystemFactory();
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -60,14 +63,15 @@ public class MainMenuTabPaneController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML file","*.xml"));
-        File Url = fileChooser.showOpenDialog(primaryStage);
-        if (Url == null){
+        File chosenFile = fileChooser.showOpenDialog(primaryStage);
+        if (chosenFile == null){
             return;
         }
-        DirDirectoryTextField.setText(Url.getAbsolutePath());
+        DirDirectoryTextField.setText(chosenFile.getAbsolutePath());
         //TODO : Check end .xml and path exist
-        XmlSystemFactory factory = new XmlSystemFactory();
-        market = factory.createMarket(Url);
+        market = factory.createMarket(chosenFile, (percentage, text) -> {
+
+        });
         initializeMarketTab();
     }
 
