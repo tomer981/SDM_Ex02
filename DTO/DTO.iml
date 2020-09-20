@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jaxb-api" level="project" />
+    <orderEntry type="library" name="javax.activation:javax.activation-api:1.2.0" level="project" />
   </component>
 </module>

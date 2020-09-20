@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="DTO" />
     <orderEntry type="library" name="jaxb-api" level="project" />
+    <orderEntry type="library" name="javax.activation:javax.activation-api:1.2.0" level="project" />
   </component>
 </module>
