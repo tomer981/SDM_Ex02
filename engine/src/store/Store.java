@@ -4,12 +4,10 @@ import discount.Discount;
 import discount.OfferDiscount;
 import dto.ProductDTO;
 import dto.StoreDTO;
-import javafx.beans.property.*;
 import location.Location;
 import order.SubOrder;
 import product.Product;
 import product.StoreProduct;
-
 
 import java.util.*;
 

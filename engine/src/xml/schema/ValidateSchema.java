@@ -5,7 +5,6 @@ import xml.schema.generated.SDMCustomer;
 import xml.schema.generated.SDMItem;
 import xml.schema.generated.SDMStore;
 
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

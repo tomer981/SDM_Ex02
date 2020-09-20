@@ -5,7 +5,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import store.Store;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MarketProduct {

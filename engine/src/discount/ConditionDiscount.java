@@ -1,7 +1,5 @@
 package discount;
 
-import product.PurchaseCategory;
-
 public enum ConditionDiscount {
     ONE_OF,
     ALL_OR_NOTHING,

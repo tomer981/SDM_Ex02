@@ -1,8 +1,8 @@
 package customer;
+
 import dto.CustomerDTO;
 import javafx.beans.property.SimpleDoubleProperty;
 import location.Location;
-
 import order.Order;
 
 import java.util.ArrayList;

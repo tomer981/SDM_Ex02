@@ -1,18 +1,13 @@
 package gui.customerInfoTableView;
 
 import dto.CustomerDTO;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
-import java.util.Observable;
 import java.util.function.Supplier;
 
 public class CustomerInfoTableViewController {
