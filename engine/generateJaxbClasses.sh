@@ -1,0 +1,1 @@
+xjc -p ex01.xml.schema.generated ..\resources\SDM-V1.xsd

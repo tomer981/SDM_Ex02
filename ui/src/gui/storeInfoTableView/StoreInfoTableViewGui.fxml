@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+
+
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.storeInfoTableView.StoreInfoTableViewController">
+   <content>
+      <TableView minHeight="180.0" minWidth="270.0">
+         <columns>
+            <TableColumn prefWidth="88.0" text="Store">
+               <columns>
+                  <TableColumn prefWidth="60.0" text="ID" />
+                  <TableColumn minWidth="0.0" prefWidth="77.0" text="Name" />
+                  <TableColumn prefWidth="75.0" text="PPK" />
+                  <TableColumn prefWidth="75.0" text="Delivery&#10;Earned" />
+               </columns>
+            </TableColumn>
+         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+   </content>
+</ScrollPane>
