@@ -1,27 +1,16 @@
 package market;
 
 import customer.Customer;
-import discount.ConditionDiscount;
-import discount.Discount;
-import discount.OfferDiscount;
-import dto.CustomerDTO;
-import dto.ProductDTO;
-import dto.StoreDTO;
+
 import location.Location;
 import order.Order;
-import product.MarketProduct;
-import product.Product;
-import product.PurchaseCategory;
-import product.StoreProduct;
 import store.Store;
-import xml.XmlSystemFactory;
 
-import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import dto.*;
+import discount.*;
+import product.*;
+
 
 public class Market {
     private List<Store> stores;

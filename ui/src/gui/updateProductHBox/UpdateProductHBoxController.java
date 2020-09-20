@@ -43,6 +43,7 @@ public class UpdateProductHBoxController {
 
     public void setEngine(IUpdateProduct engine){
         this.engine = engine;
+        storeComboBox.setItems(null);
         storeComboBox.setItems(FXCollections.observableArrayList(engine.getStoresDTO()));
     }
 

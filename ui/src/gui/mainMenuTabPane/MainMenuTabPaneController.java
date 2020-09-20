@@ -41,25 +41,16 @@ import java.util.function.Supplier;
 
 public class MainMenuTabPaneController {
 
-    @FXML
-    private TextField DirDirectoryTextField;
-    @FXML
-    private ProgressBar AdvanceLoadProgressBar;
-    @FXML
-    private Button BrowseButton;
-    @FXML
-    private Tab MarketTab;
-    @FXML
-    private Tab CustomersTab;
-    @FXML
-    private Tab StoreInfoTab;
-    @FXML
-    private Tab MapTab;
-    @FXML
-    private GridPane MarketTabGrid;
+    @FXML private TextField DirDirectoryTextField;
+    @FXML private ProgressBar AdvanceLoadProgressBar;
+    @FXML private Button BrowseButton;
+    @FXML private Tab MarketTab;
+    @FXML private Tab CustomersTab;
+    @FXML private Tab StoreInfoTab;
+    @FXML private Tab MapTab;
+    @FXML private GridPane MarketTabGrid;
 
-    @FXML
-    private Text loadingStatus;
+    @FXML private Text loadingStatus;
 
 
     private final XmlSystemFactory factory;
@@ -296,8 +287,20 @@ public class MainMenuTabPaneController {
 
     //map
     private void initializeMapTab() {
-        int x = 5;
+        IMap mapEngine = new IMap() {
+            @Override
+            public List<CustomerDTO> getCustomersDTO() {
+                return market.getCustomersDTO();
+            }
+
+            @Override
+            public List<StoreDTO> getStoresDTO() {
+                return market.getStoresDTO();
+            }
+        };
+        //TODO: Aviad in here
     }
+
 
     private void reinitializeData() {
         updateProductController.setEngine(updateProductInterface);
@@ -349,5 +352,12 @@ public class MainMenuTabPaneController {
 
         List<ProductDTO> getStoreProductsDTO(Integer storeId);
     }
+
+    public interface IMap{
+        public List<CustomerDTO> getCustomersDTO();
+        public List<StoreDTO> getStoresDTO();
+        //TODO: Aviad - tell me if you need additional method
+    }
+
 
 }

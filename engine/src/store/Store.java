@@ -134,7 +134,7 @@ public class Store {
         storeProduct.setPrice(price);
     }
 
-    public void deleteProduct(Store store, Product product) {
+    public void deleteProduct(Store store, Product product) throws RuntimeException {
         if (!isStoreProductExist(product)){
             throw new RuntimeException("Product does not exist in store");
         }
