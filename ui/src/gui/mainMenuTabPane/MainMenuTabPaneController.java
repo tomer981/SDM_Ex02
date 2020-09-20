@@ -19,14 +19,13 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import market.Market;
+import xml.XmlSystemFactory;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
-
-import static market.Market.initializeMarket;
 
 
 public class MainMenuTabPaneController {
@@ -66,7 +65,9 @@ public class MainMenuTabPaneController {
             return;
         }
         DirDirectoryTextField.setText(Url.getAbsolutePath());
-        market = initializeMarket(Url);
+        //TODO : Check end .xml and path exist
+        XmlSystemFactory factory = new XmlSystemFactory();
+        market = factory.createMarket(Url);
         initializeMarketTab();
     }
 

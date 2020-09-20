@@ -2,19 +2,16 @@ package order;
 
 
 import location.Location;
-import product.Product;
-import store.Store;
 
 import java.util.List;
-import java.util.Map;
 
 public class Order {
     private Integer orderId;
     private List<SubOrder> subOrders;
     private Location customerLocation;
-    private Double TotalProductOrdersCost;
-    private Double TotalDeliverOrderCost;
-    private Double TotalOrderCost;
+    private Double totalProductOrdersCost;
+    private Double totalDeliverOrderCost;
+    private Double totalOrderCost;
 
 
 //    public class SubOrder {

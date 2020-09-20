@@ -10,96 +10,108 @@ import java.io.File;
 import java.util.List;
 
 public class XmlSystemFactory {
-    SchemaBaseJaxbObjects schema;
-    Market market;
-    List<Product> productList;
 
-    public XmlSystemFactory(File file) throws RuntimeException, JAXBException {
-        schema = new SchemaBaseJaxbObjects(file);
-        market = new Market();
+    public XmlSystemFactory() {
     }
 
-    public Market getMarket() {
-        CreateStores();
-        CreateMarketProducts();
-        CreateCustomers();
-        addProductsToStores();
-        addDiscountToStores();
+    public Market createMarket(File file) throws IllegalArgumentException {
+        SchemaBaseJaxbObjects schema;
+        Market market;
+
+        try {
+            schema = new SchemaBaseJaxbObjects(file);
+        } catch (JAXBException e) {
+            throw new IllegalArgumentException("Couldn't parse XML file");
+        }
+
+        market = new Market();
+
+        createStores(schema, market);
+        createMarketProducts(schema, market);
+        createCustomers(schema, market);
+        addProductsToStores(schema, market);
+        addDiscountToStores(schema, market);
         addOrder();
+
         return market;
 
     }
 
-    private void CreateStore(SDMStore xmlStore){
+    private void createStore(Market market, SDMStore xmlStore) {
         Integer id = xmlStore.getId();
         String name = xmlStore.getName();
         Integer ppk = xmlStore.getDeliveryPpk();
         Integer cordX = xmlStore.getLocation().getX();
         Integer cordY = xmlStore.getLocation().getY();
-        market.addStore(id,name,ppk,cordX,cordY);
-    }
-    public void CreateStores(){
-        for (SDMStore sdmStore : schema.getXmlStores()) CreateStore(sdmStore);
+        market.addStore(id, name, ppk, cordX, cordY);
     }
 
-    private void CreateMarketProduct(SDMItem xmlProduct) {
+    public void createStores(SchemaBaseJaxbObjects schema, Market market) {
+        for (SDMStore sdmStore : schema.getXmlStores()) {
+            createStore(market, sdmStore);
+        }
+    }
+
+    private void createMarketProduct(Market market, SDMItem xmlProduct) {
         Integer id = xmlProduct.getId();
         String name = xmlProduct.getName();
         String purchaseCategory = xmlProduct.getPurchaseCategory();
-        market.addMarketProduct(id,name,purchaseCategory);
-    }
-    public void CreateMarketProducts(){
-        for (SDMItem item : schema.getXmlProducts()) {CreateMarketProduct(item);};
+        market.addMarketProduct(id, name, purchaseCategory);
     }
 
-    public void CreateCustomers() {
-        schema.getXmlCustomers().forEach(customer-> CreateCustomer(customer));
+    public void createMarketProducts(SchemaBaseJaxbObjects schema, Market market) {
+        for (SDMItem item : schema.getXmlProducts()) {
+            createMarketProduct(market, item);
+        }
+        ;
     }
-    private void CreateCustomer(SDMCustomer customer) {
-        Integer id= customer.getId();
+
+    public void createCustomers(SchemaBaseJaxbObjects schema, Market market) {
+        schema.getXmlCustomers().forEach(customer -> createCustomer(market, customer));
+    }
+
+    private void createCustomer(Market market, SDMCustomer customer) {
+        Integer id = customer.getId();
         String name = customer.getName();
         Integer cordX = customer.getLocation().getX();
         Integer cordY = customer.getLocation().getY();
-        market.addCustomer(id,name,cordX,cordY);
+        market.addCustomer(id, name, cordX, cordY);
     }
 
-    public void addProductsToStores(){
-        for (SDMStore sdmStore : schema.getXmlStores()){
+    public void addProductsToStores(SchemaBaseJaxbObjects schema, Market market) {
+        for (SDMStore sdmStore : schema.getXmlStores()) {
             Integer storeId = sdmStore.getId();
-            for (SDMSell storeProduct : sdmStore.getSDMPrices().getSDMSell()){
+            for (SDMSell storeProduct : sdmStore.getSDMPrices().getSDMSell()) {
                 Integer productId = storeProduct.getItemId();
                 Double productIdPrice = (double) storeProduct.getPrice();
-                market.addProductToStore(storeId,productId,productIdPrice);
+                market.addProductToStore(storeId, productId, productIdPrice);
             }
         }
     }
 
-    public void addDiscountToStores(){
-        for (SDMStore sdmStore : schema.getXmlStores()){
+    public void addDiscountToStores(SchemaBaseJaxbObjects schema, Market market) {
+        for (SDMStore sdmStore : schema.getXmlStores()) {
             Integer storeId = sdmStore.getId();
-            if(sdmStore.getSDMDiscounts() != null){
+            if (sdmStore.getSDMDiscounts() != null) {
                 for (SDMDiscount storeDiscount : sdmStore.getSDMDiscounts().getSDMDiscount()) {
                     String nameDiscount = storeDiscount.getName();
                     Integer buyProductId = storeDiscount.getIfYouBuy().getItemId();
                     Double quantityToBuy = (double) storeDiscount.getIfYouBuy().getQuantity();
                     String op = storeDiscount.getThenYouGet().getOperator();
-                    for (SDMOffer youGet : storeDiscount.getThenYouGet().getSDMOffer()){
+                    for (SDMOffer youGet : storeDiscount.getThenYouGet().getSDMOffer()) {
                         Integer getProductId = youGet.getItemId();
                         Double quantityYouGet = (double) youGet.getQuantity();
                         Double forThePrice = (double) youGet.getForAdditional();
-                        market.addDiscount(storeId,nameDiscount,buyProductId,quantityToBuy,op,getProductId,quantityYouGet,forThePrice);
+                        market.addDiscount(storeId, nameDiscount, buyProductId, quantityToBuy, op, getProductId, quantityYouGet, forThePrice);
                     }
                 }
             }
         }
     }
 
-    public void addOrder(){
+    public void addOrder() {
 
     }
-
-
-
 
 
 //    private MarketProduct CreateMarketProduct(List<Store> stores, Product product) {
@@ -111,7 +123,6 @@ public class XmlSystemFactory {
 //        });
 //        return marketProduct;
 //    }
-
 
 
 }
