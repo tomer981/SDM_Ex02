@@ -193,7 +193,7 @@ public class MainMenuTabPaneController {
         HBox updateProductHBox = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\updateProductHBox\\UpdateProductHBoxGui.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../../gui/updateProductHBox/UpdateProductHBoxGui.fxml"));
             updateProductHBox = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -208,7 +208,7 @@ public class MainMenuTabPaneController {
         ScrollPane productsInMarketTableView = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\productsInMarketTableView\\ProductsInMarketTableViewGui.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../../gui/productsInMarketTableView/ProductsInMarketTableViewGui.fxml"));
             productsInMarketTableView = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -223,7 +223,7 @@ public class MainMenuTabPaneController {
         HBox showSelectionOfOrderHBox = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\showSelectionOfOrderHBox\\ShowSelectionOfOrderHBoxGui.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../../gui/showSelectionOfOrderHBox/ShowSelectionOfOrderHBoxGui.fxml"));
             showSelectionOfOrderHBox = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -237,7 +237,7 @@ public class MainMenuTabPaneController {
         HBox showNewOrderHBox = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\showSelectionOfNewOrderHBox\\ShowSelectionOfNewOrderHBoxGui.fxml"));//TODO load Static class for name
+            loader = new FXMLLoader(getClass().getResource("../../gui/showSelectionOfNewOrderHBox/ShowSelectionOfNewOrderHBoxGui.fxml"));//TODO load Static class for name
             showNewOrderHBox = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -254,7 +254,7 @@ public class MainMenuTabPaneController {
         SplitPane storeInfo = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\shopTabLayout\\ShopTabLayoutGui.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../../gui/shopTabLayout/ShopTabLayoutGui.fxml"));
             storeInfo = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -271,7 +271,7 @@ public class MainMenuTabPaneController {
         ScrollPane customerTableView = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\customerInfoTableView\\CustomerInfoTableViewGui.fxml"));
+            loader = new FXMLLoader(getClass().getResource("../../gui/customerInfoTableView/CustomerInfoTableViewGui.fxml"));
             customerTableView = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
