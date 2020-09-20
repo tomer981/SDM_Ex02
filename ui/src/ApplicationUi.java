@@ -16,7 +16,7 @@ public class ApplicationUi extends Application {
         primaryStage.setTitle("SDM - Super Duper Store - By Tomer Avivi, Aviad Ben Dov");
 
         FXMLLoader loader = new FXMLLoader();
-        URL mainFXML = getClass().getResource("gui\\mainMenuTabPane\\MainMenuTabPaneGui.fxml");
+        URL mainFXML = getClass().getResource("gui/mainMenuTabPane/MainMenuTabPaneGui.fxml");
         loader.setLocation(mainFXML);
 
         // TODO: setMinHeightAndWeight
