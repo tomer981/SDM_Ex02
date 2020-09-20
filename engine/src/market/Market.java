@@ -88,7 +88,8 @@ public class Market {
     public void addProductToStore(Store store, MarketProduct marketProduct, Double price)throws RuntimeException{
         Product product = marketProduct.getProduct();
         StoreProduct storeProduct = store.addProductToStore(product,price);
-        marketProduct.registerStoreToMarketProduct(store,storeProduct);
+//        marketProduct.registerStoreToMarketProduct(store,storeProduct);
+        marketProduct.registerStoreToMarketProduct(store,storeProduct);//TODO: instead of property
     }
     public void addProductToStore(Integer storeId, Integer productId, Double price){
         Store store = getStoreById(storeId);
@@ -156,7 +157,11 @@ public class Market {
     public void changeProductPrice(Integer storeId,Integer productId, Double price) throws RuntimeException {
         Store store = getStoreById(storeId);
         Product product = getProductById(productId);
+        MarketProduct marketProduct = getMarketProductById(productId);
+        marketProduct.updateTotalPrice(store,price);
         store.changeProductPrice(product, price);
+
+
     }
 
     public void deleteProduct(Integer storeId,Integer productId) throws RuntimeException{

@@ -1,7 +1,6 @@
 package order;
 
 
-import javafx.beans.property.DoubleProperty;
 import location.Location;
 import product.Product;
 import store.Store;
@@ -13,9 +12,9 @@ public class Order {
     private Integer orderId;
     private List<SubOrder> subOrders;
     private Location customerLocation;
-    private DoubleProperty TotalProductOrdersCost;
-    private DoubleProperty TotalDeliverOrderCost;
-    private DoubleProperty TotalOrderCost;
+    private Double TotalProductOrdersCost;
+    private Double TotalDeliverOrderCost;
+    private Double TotalOrderCost;
 
 
 //    public class SubOrder {

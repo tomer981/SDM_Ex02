@@ -1,7 +1,6 @@
 package customer;
 
 import dto.CustomerDTO;
-import javafx.beans.property.SimpleDoubleProperty;
 import location.Location;
 import order.Order;
 
@@ -14,8 +13,10 @@ public class Customer {
     private String name;
     private Location location;
     private List<Order> orders = new ArrayList<>();
-    private SimpleDoubleProperty avgPricePerProductsOrder = new SimpleDoubleProperty();
-    private SimpleDoubleProperty avgPricePerDeliveryOrder = new SimpleDoubleProperty();
+//    private SimpleDoubleProperty avgPricePerProductsOrder = new SimpleDoubleProperty();
+//    private SimpleDoubleProperty avgPricePerDeliveryOrder = new SimpleDoubleProperty();
+    private Double avgPricePerProductsOrder;
+    private Double avgPricePerDeliveryOrder;
 
     public Customer(Integer id, String name, Location location) {
         this.id = id;
@@ -24,14 +25,22 @@ public class Customer {
     }
 
     public CustomerDTO getCustomerData(){
+//        return new CustomerDTO(
+//                id,
+//                name,
+//                location.getCordX(),
+//                location.getCordY(),
+//                orders.size(),
+//                avgPricePerDeliveryOrder.getValue(),
+//                avgPricePerProductsOrder.getValue());
         return new CustomerDTO(
                 id,
                 name,
                 location.getCordX(),
                 location.getCordY(),
                 orders.size(),
-                avgPricePerDeliveryOrder.getValue(),
-                avgPricePerProductsOrder.getValue());
+                avgPricePerDeliveryOrder,
+                avgPricePerProductsOrder);
     }
 
     @Override

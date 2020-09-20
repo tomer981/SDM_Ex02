@@ -1,8 +1,7 @@
 package product;
 
 import dto.ProductDTO;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+
 import store.Store;
 
 import java.util.HashMap;
@@ -11,38 +10,24 @@ import java.util.Map;
 
 public class MarketProduct {
     private final Map<Store,StoreProduct> KStoreVStoreProduct = new HashMap();
-    private final DoubleProperty totalStorePrice = new SimpleDoubleProperty();
+    private Double totalStorePrice;
     private final Product product;
     private Integer timeSold;
 
     public MarketProduct(Product product) {
         this.product = product;
         timeSold = 0;
-        totalStorePrice.set(0);
+        totalStorePrice = 0.0;
     }
 
 
     public Double getAvgPrice(){
-        return totalStorePrice.getValue() / KStoreVStoreProduct.size();
+        return totalStorePrice / KStoreVStoreProduct.size();
     }
 
-
-    public void registerStoreToMarketProduct(Store store, StoreProduct storeProduct){
+    public void registerStoreToMarketProduct(Store store, StoreProduct storeProduct) {
         KStoreVStoreProduct.put(store,storeProduct);
-        SimpleDoubleProperty productPrice = storeProduct.getPropertyPrice();
-
-        totalStorePrice.setValue(totalStorePrice.getValue()+productPrice.getValue());
-        productPrice.addListener((observable, oldValue, newValue)->{
-            totalStorePrice.setValue(totalStorePrice.getValue()-(double)oldValue+(double) newValue);
-        });
-        //TODO: register to storeProduct price
-    }
-
-    public void removeRegisterStoreFromMarketProduct(Store store, StoreProduct storeProduct){
-        SimpleDoubleProperty productPrice = storeProduct.getPropertyPrice();
-        totalStorePrice.setValue(totalStorePrice.getValue()-productPrice.getValue());
-
-        //TODO: remember to delete and see what happened
+        totalStorePrice = totalStorePrice + storeProduct.getPrice();
     }
 
 
@@ -65,6 +50,32 @@ public class MarketProduct {
                 getAvgPrice(),
                 timeSold);
     }
+
+    public void updateTotalPrice(Store store, Double price) {
+        StoreProduct storeProduct = KStoreVStoreProduct.get(store);
+        Double oldPrice = storeProduct.getPrice();
+        totalStorePrice = totalStorePrice - oldPrice + price;
+    }
+
+
+//
+//    public void registerStoreToMarketProduct(Store store, StoreProduct storeProduct){
+//        KStoreVStoreProduct.put(store,storeProduct);
+//        SimpleDoubleProperty productPrice = storeProduct.getPropertyPrice();
+//
+//        totalStorePrice.setValue(totalStorePrice.getValue() + productPrice.getValue());
+//        productPrice.addListener((observable, oldValue, newValue)->{
+//            totalStorePrice.setValue(totalStorePrice.getValue()-(double)oldValue+(double) newValue);
+//        });
+//        //TODO: register to storeProduct price
+//    }
+//
+//    public void removeRegisterStoreFromMarketProduct(Store store, StoreProduct storeProduct){
+//        SimpleDoubleProperty productPrice = storeProduct.getPropertyPrice();
+//        totalStorePrice.setValue(totalStorePrice.getValue()-productPrice.getValue());
+//
+//        //TODO: remember to delete and see what happened
+//    }
 
 
 //

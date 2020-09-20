@@ -18,7 +18,8 @@ public class Store {
     private final Integer ppk;
     private final Location location;
 
-    private SimpleDoubleProperty deliveryEarn;
+//    private SimpleDoubleProperty deliveryEarn;
+    private Double deliveryEarn;
 
     private List<StoreProduct> storeProducts;
     private Map<Integer, SubOrder>  KOrderIdVStoreOrder = new HashMap<>();
@@ -31,7 +32,8 @@ public class Store {
         this.ppk = ppk;
         this.location = location;
         storeProducts = new ArrayList<>();
-        deliveryEarn = new SimpleDoubleProperty(0);
+//        deliveryEarn = new SimpleDoubleProperty(0);
+        this.deliveryEarn = 0.0;
         discounts = new ArrayList<>();
     }
 
@@ -63,10 +65,17 @@ public class Store {
 
 
     public StoreDTO getStoreData() {
+//        return new StoreDTO(id,
+//                name,
+//                ppk,
+//                deliveryEarn.getValue(),
+//                location.getCordX(),
+//                location.getCordY(),
+//                storeProducts.size());
         return new StoreDTO(id,
                 name,
                 ppk,
-                deliveryEarn.getValue(),
+                deliveryEarn,
                 location.getCordX(),
                 location.getCordY(),
                 storeProducts.size());

@@ -1,25 +1,23 @@
 package product;
 
-import javafx.beans.property.SimpleDoubleProperty;
 
 import java.util.Objects;
 
 public class StoreProduct {
-    private SimpleDoubleProperty price;
+//    private SimpleDoubleProperty price;
+    private Double price;
     private Integer timeSold;
     private Double amountSold;
     private Product product;
 
 
     public StoreProduct(Product product, Double price) {
-        this.price = new SimpleDoubleProperty(price);
+//        this.price = new SimpleDoubleProperty(price);
+        this.price = price;
         this.timeSold = 0;
         this.amountSold = 0.0;
         this.product = product;
     }
-
-
-
 
 
 
@@ -36,17 +34,18 @@ public class StoreProduct {
         return Objects.hash(product);
     }
 
+//    public Double getPrice() {
+//        return price.getValue();
+//    }
     public Double getPrice() {
-        return price.getValue();
-    }
-
-    public SimpleDoubleProperty getPropertyPrice(){
         return price;
     }
 
-    public SimpleDoubleProperty priceProperty() {
-        return price;
-    }
+//    public SimpleDoubleProperty getPropertyPrice(){
+//        return price;
+//    }
+//
+
 
     public Integer getTimeSold() {
         return timeSold;
@@ -60,7 +59,11 @@ public class StoreProduct {
         return product;
     }
 
+//    public void setPrice(double price) {
+//        this.price.set(price);
+//    }
+
     public void setPrice(double price) {
-        this.price.set(price);
+        this.price = price;
     }
 }
