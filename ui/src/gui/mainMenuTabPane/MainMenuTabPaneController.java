@@ -169,11 +169,13 @@ public class MainMenuTabPaneController {
         Task<Market> loadTask = new MarketLoaderTask(factory, chosenFile);
         AdvanceLoadProgressBar.progressProperty().bind(loadTask.progressProperty());
         loadTask.valueProperty().addListener((task, oldValue, newValue) -> {
+            // After file loaded successfully
             this.market = newValue;
             initializeMarketTab();
         });
 
         loadTask.exceptionProperty().addListener((task, oldValue, newValue) -> {
+            // When file failed to load
             newValue.printStackTrace();
         });
 
