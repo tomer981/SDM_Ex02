@@ -139,7 +139,7 @@ public class Store {
             throw new RuntimeException("Product does not exist in store");
         }
 
-        StoreProduct storeProduct = getStoreProductByProduct(product);
+        storeProducts.remove(getStoreProductByProduct(product));
 
     }
 

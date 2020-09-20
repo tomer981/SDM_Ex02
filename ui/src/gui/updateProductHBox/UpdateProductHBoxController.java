@@ -107,7 +107,7 @@ public class UpdateProductHBoxController {
             Double price = Double.parseDouble(updatePriceTextField.textProperty().getValue());
             engine.addProductToStore(storeId,productId,price);
         } else {
-
+            engine.deleteProduct(storeId,productId);
             if (engine.isProductInDiscountInStoreByStoreId(storeId, productId)) {
                 showAlert("the Product was part of Discount");
             }

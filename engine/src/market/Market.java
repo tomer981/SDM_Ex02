@@ -160,13 +160,13 @@ public class Market {
         MarketProduct marketProduct = getMarketProductById(productId);
         marketProduct.updateTotalPrice(store,price);
         store.changeProductPrice(product, price);
-
-
     }
 
     public void deleteProduct(Integer storeId,Integer productId) throws RuntimeException{
         Store store = getStoreById(storeId);
         Product product = getProductById(productId);
+        MarketProduct marketProduct = getMarketProductById(productId);
+        marketProduct.updateTotalPrice(store,0.0);
         store.deleteProduct(store,product);
     }
 
