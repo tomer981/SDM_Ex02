@@ -57,8 +57,6 @@ public class MainMenuTabPaneController {
     private Tab MapTab;
     @FXML
     private GridPane MarketTabGrid;
-    @FXML
-    private Task<Market> MarketLoader;
 
     @FXML
     private Text loadingStatus;
@@ -173,6 +171,7 @@ public class MainMenuTabPaneController {
 
         Task<Market> loadTask = new MarketLoaderTask(factory, chosenFile);
         AdvanceLoadProgressBar.progressProperty().bind(loadTask.progressProperty());
+        loadingStatus.textProperty().bind(loadTask.messageProperty());
         loadTask.valueProperty().addListener((task, oldValue, newValue) -> {
             // After file loaded successfully
             this.market = newValue;
