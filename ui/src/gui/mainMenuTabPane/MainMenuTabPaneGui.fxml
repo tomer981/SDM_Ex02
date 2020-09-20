@@ -8,8 +8,6 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -39,7 +37,7 @@
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Destination File:" />
                         <TextField fx:id="DirDirectoryTextField" HBox.hgrow="ALWAYS" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                        <Text fx:id="loadingStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
                         <ProgressBar fx:id="AdvanceLoadProgressBar" minWidth="100.0" prefWidth="100.0" progress="0.0" />
                         <Button fx:id="BrowseButton" minWidth="65.0" mnemonicParsing="false" onAction="#BrowseButtonAction" prefWidth="65.0" text="Browse..." />
                      </children>
@@ -64,32 +62,7 @@
          </content></Tab>
       <Tab fx:id="CustomersTab" disable="true" text="Customers">
          <content>
-            <ScrollPane fitToHeight="true" fitToWidth="true">
-               <content>
-                  <TableView fx:id="CustomerTableView" minHeight="240.0" minWidth="510.0">
-                     <columns>
-                        <TableColumn fx:id="CustomersIdTableColumn" prefWidth="75.0" text="ID" />
-                        <TableColumn fx:id="CustomersNameTableColumn" prefWidth="75.0" text="Name" />
-                        <TableColumn prefWidth="117.0" text="Location">
-                           <columns>
-                              <TableColumn fx:id="CustomersLocationsXTableColumn" prefWidth="55.0" text="X" />
-                              <TableColumn fx:id="CustomersLocationsYTableColumn" prefWidth="60.0" text="Y" />
-                           </columns>
-                        </TableColumn>
-                        <TableColumn fx:id="CustomersTotalOrdersTableColumn" prefWidth="75.0" text="Total&#10;Orders" />
-                        <TableColumn prefWidth="75.0" text="Avg Price">
-                           <columns>
-                              <TableColumn fx:id="CustomersAvgPricePerDeliveryTableColumn" prefWidth="75.0" text="Of Deliveries" />
-                              <TableColumn fx:id="CustomersAvgPricePerOrderTableColumn" prefWidth="75.0" text="Of Products" />
-                           </columns>
-                        </TableColumn>
-                     </columns>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </TableView>
-               </content>
-            </ScrollPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true" />
          </content></Tab>
       <Tab fx:id="MapTab" disable="true" text="Map">
          <content>
