@@ -14,7 +14,7 @@ public class XmlSystemFactory {
     public XmlSystemFactory() {
     }
 
-    public Market createMarket(File file, LoadingUpdater loadingUpdater) throws IllegalArgumentException {
+    public Market createMarket(File file, LoadingUpdater loadingUpdater)  {
         loadingUpdater.loadedPercentage(0.0, "Starting!");
 
         SchemaBaseJaxbObjects schema;

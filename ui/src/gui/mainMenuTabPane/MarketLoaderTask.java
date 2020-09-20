@@ -20,6 +20,15 @@ public class MarketLoaderTask extends Task<Market> {
         return factory.createMarket(chosenFile, (percentage, text) -> {
             updateMessage(text);
             updateProgress(percentage, 1.0);
+
+            try {
+                Thread.sleep(200); // Give the feeling of loading
+            } catch (InterruptedException e) {
+                if (isCancelled()) {
+                    updateMessage("Cancelled");
+                    updateProgress(1.0, 1.0);
+                }
+            }
         });
     }
 }
