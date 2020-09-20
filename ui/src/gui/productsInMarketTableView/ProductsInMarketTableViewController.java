@@ -27,6 +27,7 @@ public class ProductsInMarketTableViewController {
         marketProducts = marketProductsDTO.get();
         marketProducts.forEach(marketProduct->marketProduct.setAvgPrice(RoundDouble(marketProduct.getAvgPrice())));
         MarketProductsTableView.setItems(FXCollections.observableArrayList(marketProducts));
+        MarketProductsTableView.refresh();
     }
 
     public static Double RoundDouble(Double number) {
