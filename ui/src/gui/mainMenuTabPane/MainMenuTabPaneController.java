@@ -118,6 +118,17 @@ public class MainMenuTabPaneController {
                 market.changeProductPrice(storeId,productId,Price);
                 initializeMarketTab();
             }
+
+            @Override
+            public void addProductToStore(Integer storeId, Integer productId, Double price) {
+                market.addProductToStore(storeId,productId,price);
+                initializeMarketTab();
+            }
+
+            @Override
+            public void deleteProduct(Integer storeId, Integer productId, Double price) {
+                market.deleteProduct(storeId,productId);
+            }
         };
 
         controller.setEngine(updateProductInterface);
@@ -246,6 +257,8 @@ public class MainMenuTabPaneController {
         List<ProductDTO> getStoreProductDTO(Integer storeId);
         boolean isProductInDiscountInStoreByStoreId(Integer storeId,Integer productId);
         void changeProductPrice(Integer storeId,Integer productId,Double Price);
+        void addProductToStore(Integer storeId, Integer productId, Double price);
+        public void deleteProduct(Integer storeId,Integer productId, Double price);
     }
 
     public interface INewOrderInterfaceHBox {

@@ -87,14 +87,14 @@ public class Store {
         storeProducts.forEach(storeProduct -> storeProductsDTO.add(getStoreProductDTO(storeProduct)));
         return storeProductsDTO;
     }
-
+    public StoreProduct getStoreProductByProduct(Product product){
+        return storeProducts.stream().filter(storeProduct -> storeProduct.getProduct().equals(product)).findFirst().orElse(null);
+    }
 
 
     public Integer getStoreId() {
         return id;
     }
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -115,20 +115,25 @@ public class Store {
     public boolean isStoreProductExist(Product product){
         return storeProducts.stream().anyMatch(storeProduct -> storeProduct.getProduct().equals(product));
     }
-    public StoreProduct getStoreProductByProduct(Product product){
-        return storeProducts.stream().filter(storeProduct -> storeProduct.getProduct().equals(product)).findFirst().orElse(null);
-
-    }
 
     public void changeProductPrice(Product product, Double price) throws RuntimeException{
         if (!isStoreProductExist(product)){
-            throw new RuntimeException("Product dont exist in store");
+            throw new RuntimeException("Product does not exist in store");
         }
         if (price<=0){
             throw new RuntimeException("Product value is not positive");
         }
         StoreProduct storeProduct = getStoreProductByProduct(product);
         storeProduct.setPrice(price);
+    }
+
+    public void deleteProduct(Store store, Product product) {
+        if (!isStoreProductExist(product)){
+            throw new RuntimeException("Product does not exist in store");
+        }
+
+        StoreProduct storeProduct = getStoreProductByProduct(product);
+
     }
 
 

@@ -93,14 +93,6 @@ public class UpdateProductHBoxController {
     }
 
 
-//    private void deleteSelection(UpdateOpStoreDTO storeDTO, List<UpdateOpProductDTO> showProducts) {
-//        updatePriceTextField.textProperty().setValue(null);
-//        updatePriceTextField.disableProperty().set(true);
-//        showProducts.removeIf(product-> product.getNumberOfStoreSell().equals(1) ||
-//                storeDTO.getProductsStore().size() == 1);
-//    }
-
-
     @FXML
     void onActivateButton(ActionEvent event) {
         Integer storeId = storeComboBox.getSelectionModel().getSelectedItem().getId();
@@ -113,8 +105,9 @@ public class UpdateProductHBoxController {
 
         } else if (op.equals("Add Product")) {
             Double price = Double.parseDouble(updatePriceTextField.textProperty().getValue());
-
+            engine.addProductToStore(storeId,productId,price);
         } else {
+
             if (engine.isProductInDiscountInStoreByStoreId(storeId, productId)) {
                 showAlert("the Product was part of Discount");
             }
@@ -132,9 +125,6 @@ public class UpdateProductHBoxController {
                 showAlert("the Product is part of Discount");
             }
         }
-
-
-
     }
 
     public static boolean isNumeric(String strNum) {

@@ -28,7 +28,7 @@ public class Market {
     private List<Store> stores;
     private List<MarketProduct> marketProducts;
     private List<Customer> customers;
-    private Set<Order> orders;// = new ArrayList<>();
+    private Set<Order> orders;
 
     public Market(){
         stores = new ArrayList<>();
@@ -86,7 +86,7 @@ public class Market {
         addMarketProduct(productId,name,PurchaseCategory.getPurchaseCategory(purchaseCategory));
     }
 
-    public void addProductToStore(Store store, MarketProduct marketProduct, Double price){
+    public void addProductToStore(Store store, MarketProduct marketProduct, Double price)throws RuntimeException{
         Product product = marketProduct.getProduct();
         StoreProduct storeProduct = store.addProductToStore(product,price);
         marketProduct.registerStoreToMarketProduct(store,storeProduct);
@@ -160,64 +160,10 @@ public class Market {
         store.changeProductPrice(product, price);
     }
 
+    public void deleteProduct(Integer storeId,Integer productId) throws RuntimeException{
+        Store store = getStoreById(storeId);
+        Product product = getProductById(productId);
+        store.deleteProduct(store,product);
+    }
 
-
-
-//
-//    private List<UpdateOpProductDTO> getUpdateOpProductDTO(){
-//        List<UpdateOpProductDTO> opProducts = new ArrayList<>();
-//        marketProducts.forEach(marketProduct ->
-//                opProducts.add(marketProduct.getUpdateOpProductDTO()));
-//        return opProducts;
-//    }
-//
-//    private List<UpdateOpStoreDTO> getUpdateOpStoreDTO( List<UpdateOpProductDTO> opProducts){
-//        List<UpdateOpStoreDTO> updateOpStoreDTO = new ArrayList<>();
-//        stores.forEach(store -> updateOpStoreDTO.add(store.getUpdateOpStoreDTO(opProducts)));
-//        return updateOpStoreDTO;
-//    }
-//
-//    public UpdateOpDTO getUpdateOpDTO(){
-//        List<UpdateOpProductDTO> opProducts = getUpdateOpProductDTO();
-//        List<UpdateOpStoreDTO> updateOpStoreDTO = getUpdateOpStoreDTO(opProducts);
-//        return new UpdateOpDTO(updateOpStoreDTO,opProducts);
-//    }
-//
-//    public NewOrderDTO getNewOrderDTO(){
-//        List<CustomerNewOrderDTO> CustomersDTO = new ArrayList<>();
-//        List<StoreNewOrderDTO> storesDTO = new ArrayList<>();
-//        customers.forEach(customer -> CustomersDTO.add(customer.getCustomerNewOrderDTO()));
-//        stores.forEach(store -> storesDTO.add(store.getStoreNewOrderDTO()));
-//        return new NewOrderDTO(CustomersDTO,storesDTO);
-//    }
-//
-
-//
-//
-//
-//
-//    public void changeCostProduct(UpdateProductDataDTO productInfo) {
-//        Store store = getStoreById(productInfo.getStoreId());
-//        store.changeCostProduct(productInfo.getProductId(),productInfo.getPrice());
-//    }
-//
-//    public void deleteProductFromStore(UpdateProductDataDTO productInfo) {
-//        Store store = getStoreById(productInfo.getStoreId());
-//        MarketProduct marketProduct = getMarketProductById(productInfo.getProductId());
-//        marketProduct.unRegisterStoreToMarketProduct(store);
-//
-//
-//    }
-//
-//    public void addProductToStore(UpdateProductDataDTO productInfo) {
-//        Store store = getStoreById(productInfo.getStoreId());
-//        MarketProduct marketProduct = getMarketProductById(productInfo.getProductId());
-//        store.addProductToStore(marketProduct.getProduct(),productInfo.getPrice());
-//        marketProduct.registerStoreToMarketProduct(store);
-//    }
-//
-//    public List<UpdateOpProductDTO> getDiscountsProductInStoreByStoreId(Integer storeId){
-//        Store store = getStoreById(storeId);
-//        return store.getDiscountsProduct();
-//    }
 }
