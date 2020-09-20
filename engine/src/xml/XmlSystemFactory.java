@@ -1,29 +1,13 @@
 package xml;
 
-import customer.Customer;
-import discount.ConditionDiscount;
-import discount.Discount;
-import discount.OfferDiscount;
-import javafx.beans.property.IntegerProperty;
-import javafx.fxml.FXML;
-import location.Location;
 import market.Market;
-import product.MarketProduct;
 import product.Product;
-import product.PurchaseCategory;
-import store.Store;
 import xml.schema.SchemaBaseJaxbObjects;
 import xml.schema.generated.*;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static java.lang.Double.valueOf;
 
 public class XmlSystemFactory {
     SchemaBaseJaxbObjects schema;

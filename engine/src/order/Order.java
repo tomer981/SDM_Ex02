@@ -3,10 +3,11 @@ package order;
 
 import javafx.beans.property.DoubleProperty;
 import location.Location;
-
+import product.Product;
+import store.Store;
 
 import java.util.List;
-
+import java.util.Map;
 
 public class Order {
     private Integer orderId;

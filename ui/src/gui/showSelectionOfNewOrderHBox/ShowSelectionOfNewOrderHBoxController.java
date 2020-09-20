@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
-import static gui.mainMenuTabPane.MainMenuTabPaneController.*;
+import static gui.mainMenuTabPane.MainMenuTabPaneController.INewOrderInterfaceHBox;
 
 public class ShowSelectionOfNewOrderHBoxController {
 

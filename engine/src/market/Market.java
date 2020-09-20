@@ -5,7 +5,6 @@ import discount.ConditionDiscount;
 import discount.Discount;
 import discount.OfferDiscount;
 import dto.CustomerDTO;
-
 import dto.ProductDTO;
 import dto.StoreDTO;
 import location.Location;

@@ -1,6 +1,5 @@
 package gui.shopTabLayout;
 
-import gui.mainMenuTabPane.MainMenuTabPaneController;
 import gui.productsInStoreTableView.ProductsInStoreTableViewController;
 import gui.storeInfoTableView.StoreInfoTableViewController;
 import javafx.fxml.FXML;
@@ -11,7 +10,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 
-import static gui.mainMenuTabPane.MainMenuTabPaneController.*;
+import static gui.mainMenuTabPane.MainMenuTabPaneController.IStoreInfo;
 
 public class ShopTabLayoutController {
 
