@@ -15,18 +15,19 @@ public class XmlSystemFactory {
     }
 
     public Market createMarket(File file, LoadingUpdater loadingUpdater) throws IllegalArgumentException {
+        loadingUpdater.loadedPercentage(0.0, "Starting!");
+
         SchemaBaseJaxbObjects schema;
         Market market;
 
         try {
             schema = new SchemaBaseJaxbObjects(file);
         } catch (JAXBException e) {
+            loadingUpdater.loadedPercentage(1.0, "Failed");
             throw new IllegalArgumentException("Couldn't parse XML file");
         }
 
         market = new Market();
-
-        loadingUpdater.loadedPercentage(0.0, "Starting!");
 
         createStores(schema, market);
         loadingUpdater.loadedPercentage(0.1, "Loaded Stores");
