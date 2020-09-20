@@ -166,6 +166,10 @@ public class MainMenuTabPaneController {
         Thread t = new Thread(loadTask);
         t.setDaemon(true);
         t.start();
+//        initializeMarketTab();
+//        initializeStoreInfoTab();
+//        initializeCustomersTab();
+//        initializeMapTab();
     }
 
 
@@ -285,13 +289,6 @@ public class MainMenuTabPaneController {
 
     @FXML
     private void initialize(){
-//        CustomersTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
-//        StoreInfoTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
-//        MapTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
-//        MarketTab.selectedProperty().addListener((observable, oldValue, newValue) ->{ if(MarketTab.isSelected()) {initializeMarketTab();} });
-//        StoreInfoTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(StoreInfoTab.isSelected()) {initializeStoreInfoTab();} });
-//        CustomersTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(CustomersTab.isSelected()) {initializeCustomersTab();} });
-//        MapTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(MapTab.isSelected()) {initializeMapTab();} });
     }
 
 
