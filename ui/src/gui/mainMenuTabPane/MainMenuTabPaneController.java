@@ -90,7 +90,11 @@ public class MainMenuTabPaneController {
         if (MarketTabGrid.getChildren().size() == MarketTabGrid.getRowConstraints().size() ){
             MarketTabGrid.getChildren().remove(1);
         }
-        MarketTabGrid.add(updateProductHBox,0,1);
+        else {
+            MarketTabGrid.add(updateProductHBox,0,1);
+
+        }
+
         UpdateProductHBoxController controller = loader.getController();
         IUpdateProduct updateProductInterface = new IUpdateProduct() {
 
@@ -129,6 +133,7 @@ public class MainMenuTabPaneController {
             @Override
             public void deleteProduct(Integer storeId, Integer productId) {
                 market.deleteProduct(storeId,productId);
+                initializeMarketTab();
             }
         };
 
@@ -170,6 +175,7 @@ public class MainMenuTabPaneController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         MarketTabGrid.add(showNewOrderHBox,0,2);
         ShowSelectionOfNewOrderHBoxController controller = loader.getController();
         INewOrderInterfaceHBox newOrderInterface = new INewOrderInterfaceHBox() {
