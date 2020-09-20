@@ -23,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import market.Market;
@@ -58,6 +59,10 @@ public class MainMenuTabPaneController {
     private GridPane MarketTabGrid;
     @FXML
     private Task<Market> MarketLoader;
+
+    @FXML
+    private Text loadingStatus;
+
 
     private final XmlSystemFactory factory;
     private Stage primaryStage;
@@ -171,13 +176,16 @@ public class MainMenuTabPaneController {
         loadTask.valueProperty().addListener((task, oldValue, newValue) -> {
             this.market = newValue;
             initializeMarketTab();
+            initializeStoreInfoTab();
+            initializeMapTab();
+            initializeCustomersTab();
         });
 
         loadTask.exceptionProperty().addListener((task, oldValue, newValue) -> {
             newValue.printStackTrace();
         });
-
         executor.execute(loadTask);
+
     }
 
 
@@ -291,10 +299,10 @@ public class MainMenuTabPaneController {
     }
 
     private void reinitializeData() {
+        updateProductController.setEngine(updateProductInterface);
         customerController.setCustomersData(customersData);
         storeLayoutController.setEngine(StoresInfo);
         MarketProductsController.setMarketProductData(products);
-        updateProductController.setEngine(updateProductInterface);
         newOrderSelectionController.setEngine(newOrderInterface);
     }
 
