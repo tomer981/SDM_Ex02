@@ -50,7 +50,7 @@
 			<SDM-prices>
 				<SDM-sell item-id="1" price="10"/>
 				<SDM-sell item-id="2" price="15"/>
-				<SDM-sell item-id="5" price="3"/>
+				<SDM-sell item-id="5" price="25"/>
 				<SDM-sell item-id="3" price="5"/>
 				<SDM-sell item-id="9" price="6"/>
 				<SDM-sell item-id="7" price="73"/>
@@ -78,6 +78,16 @@
 				<SDM-sell item-id="6" price="1"/>
 				<SDM-sell item-id="8" price="1"/>
 			</SDM-prices>
+			<SDM-discounts>
+				<SDM-discount>
+					<name>YallA BaLaGaN</name>
+					<if-you-buy item-id="2" quantity="1"/>
+					<then-you-get operator="ONE-OF">
+						<SDM-offer item-id="2" quantity="1" for-additional="0"/>
+						<SDM-offer item-id="8" quantity="2" for-additional="20"/>
+					</then-you-get>
+				</SDM-discount>			
+			</SDM-discounts>
 		</SDM-store>
 		<SDM-store id="3">
 			<name>Benny Bannana</name>
@@ -87,6 +97,7 @@
 				<SDM-sell item-id="10" price="12"/>
 				<SDM-sell item-id="5" price="14"/>				
 				<SDM-sell item-id="1" price="51"/>
+				<SDM-sell item-id="7" price="73"/>
 			</SDM-prices>
 			<SDM-discounts>
 				<SDM-discount>
@@ -96,7 +107,23 @@
 						<SDM-offer item-id="10" quantity="3" for-additional="5"/>
 						<SDM-offer item-id="1" quantity="2" for-additional="5"/>
 					</then-you-get>
-				</SDM-discount>			
+				</SDM-discount>
+				<SDM-discount>
+					<name>tomer</name>
+					<if-you-buy item-id="5" quantity="3"/>
+					<then-you-get operator="ONE-OF">
+						<SDM-offer item-id="1" quantity="1" for-additional="0"/>
+						<SDM-offer item-id="7" quantity="2" for-additional="20"/>
+					</then-you-get>
+				</SDM-discount>		
+				<SDM-discount>
+					<name>tomer2!</name>
+					<if-you-buy item-id="7" quantity="2"/>
+					<then-you-get operator="ALL-OR-NOTHING">
+						<SDM-offer item-id="5" quantity="3" for-additional="5"/>
+						<SDM-offer item-id="1" quantity="2" for-additional="5"/>
+					</then-you-get>
+				</SDM-discount>				
 			</SDM-discounts>				
 		</SDM-store>
 		<SDM-store id="4">

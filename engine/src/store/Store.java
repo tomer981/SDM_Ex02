@@ -1,9 +1,13 @@
 package store;
 
+import discount.ConditionDiscount;
 import discount.Discount;
 import discount.OfferDiscount;
 import dto.ProductDTO;
 import dto.StoreDTO;
+import dto.orderDTO.DiscountProductsDTO;
+import dto.orderDTO.OffersDiscountDTO;
+import dto.orderDTO.ProductOrderDTO;
 import location.Location;
 import order.SubOrder;
 import product.Product;
@@ -18,12 +22,11 @@ public class Store {
     private final Integer ppk;
     private final Location location;
 
-//    private SimpleDoubleProperty deliveryEarn;
     private Double deliveryEarn;
 
     private List<StoreProduct> storeProducts;
     private Map<Integer, SubOrder>  KOrderIdVStoreOrder = new HashMap<>();
-    private List<Discount> discounts;
+    private Set<Discount> discounts;
 
 
     public Store(Integer id, String name, Integer ppk, Location location) {
@@ -32,9 +35,15 @@ public class Store {
         this.ppk = ppk;
         this.location = location;
         storeProducts = new ArrayList<>();
-//        deliveryEarn = new SimpleDoubleProperty(0);
         this.deliveryEarn = 0.0;
-        discounts = new ArrayList<>();
+        discounts = new HashSet();
+    }
+
+    public OffersDiscountDTO getOffersDiscount(DiscountProductsDTO discountDTO, Product productById) {
+        Discount discount = new Discount(discountDTO.getNameDiscount(),productById, discountDTO.getQuantityNeeded(),
+                ConditionDiscount.getConditionDiscount(discountDTO.getCondition()));
+
+        return getDiscountFromStore(discount).getOffersDiscountDTO();
     }
 
     private void addProductToStore(StoreProduct storeProduct) throws RuntimeException {
@@ -65,13 +74,6 @@ public class Store {
 
 
     public StoreDTO getStoreData() {
-//        return new StoreDTO(id,
-//                name,
-//                ppk,
-//                deliveryEarn.getValue(),
-//                location.getCordX(),
-//                location.getCordY(),
-//                storeProducts.size());
         return new StoreDTO(id,
                 name,
                 ppk,
@@ -97,31 +99,33 @@ public class Store {
     public StoreProduct getStoreProductByProduct(Product product){
         return storeProducts.stream().filter(storeProduct -> storeProduct.getProduct().equals(product)).findFirst().orElse(null);
     }
+    public List<DiscountProductsDTO> getDiscounts() {
+        List<DiscountProductsDTO> discountsDTO = new ArrayList<>();
+        discounts.forEach(discount -> discountsDTO.add(discount.getDiscountDTO()));
+        return discountsDTO;
+    }
 
 
     public Integer getStoreId() {
         return id;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Store)) return false;
-        Store store = (Store) o;
-        return Objects.equals(id, store.id);
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+
+    public boolean isProductInDiscountByProduct(Product product) {
+        return discounts.stream().anyMatch(discount -> discount.getBuyProduct().equals(product));
+    }
+    public boolean isProductIsFoundInOfferDiscount(Product product){
+        return discounts.stream().anyMatch(discount ->
+                discount.isProductIsFoundInOfferDiscount(product));
     }
 
-    public boolean isProductInDiscountByProductId(Integer productId) {
-        return discounts.stream().anyMatch(discount -> discount.getBuyProduct().getId().equals(productId));
-    }
     public boolean isStoreProductExist(Product product){
         return storeProducts.stream().anyMatch(storeProduct -> storeProduct.getProduct().equals(product));
     }
+
 
     public void changeProductPrice(Product product, Double price) throws RuntimeException{
         if (!isStoreProductExist(product)){
@@ -139,62 +143,24 @@ public class Store {
             throw new RuntimeException("Product does not exist in store");
         }
 
+        discounts.removeIf(discount -> discount.isProductIsConditionProduct(product));
+        discounts.forEach(discount -> discount.removeOfferDiscountContainedProduct(product));
+        discounts.removeIf(discount -> discount.getReceiveOfferDiscount().size() == 0);
         storeProducts.remove(getStoreProductByProduct(product));
-
     }
 
 
-//    public Integer getId() {
-//        return id;
-//    }
-//
-//    public boolean IsProductInStore(Product product){
-//        return KProductVCost.containsKey(product);
-//    }
-//
-//    public void bindCostProduct(DoubleProperty registerProperty, Product product){
-//        SimpleDoubleProperty costProduct = KProductVCost.get(product);
-//        registerProperty.setValue(registerProperty.getValue() + costProduct.getValue());
-//
-//        costProduct.addListener((observable, oldValue, newValue)-> {
-//            registerProperty.setValue(registerProperty.getValue() - (double)oldValue + (double)newValue);
-//        });
-//    }
-//
-//    public UpdateOpStoreDTO getUpdateOpStoreDTO(List<UpdateOpProductDTO> opProducts){
-//        List<Product> storeProducts = new ArrayList<>(KProductVCost.keySet());
-//        List<UpdateOpProductDTO> OpProductsInStore = opProducts.stream().
-//                filter(opProduct-> Product.getProductFromList(storeProducts,opProduct.getId()) != null)
-//                .collect(Collectors.toList());
-//
-//        return new UpdateOpStoreDTO(id,name,OpProductsInStore);
-//    }
-//
-//    public StoreNewOrderDTO getStoreNewOrderDTO() {
-//        return new StoreNewOrderDTO(id,name);
-//    }
-//
 
-//
-//    public List<UpdateOpProductDTO> getDiscountsProduct() {
-//        List<UpdateOpProductDTO> products = new ArrayList<>();
-//        discounts.forEach(product-> products.add(new UpdateOpProductDTO(
-//                product.getBuyProduct().getId(),
-//                product.getBuyProduct().getName(),
-//                product.getBuyProduct().getPurchaseCategory().name().toUpperCase(),
-//                0)
-//        ));
-//        return products;
-//    }
-//
-//    public void changeCostProduct(Integer productId, Double price){
-//        Product product = Product.getProductFromList(new ArrayList(KProductVCost.keySet()),productId);
-//        KProductVCost.get(product).set(price);
-//    }
-//
-//
-//    public void unBindCostProduct(DoubleProperty totalStoresPrice, Product product) {
-//        SimpleDoubleProperty costProduct = KProductVCost.get(product);
-//        totalStoresPrice.unbindBidirectional(costProduct);
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Store)) return false;
+        Store store = (Store) o;
+        return Objects.equals(id, store.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

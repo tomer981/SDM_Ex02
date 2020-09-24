@@ -30,8 +30,6 @@ public class MarketProduct {
     }
 
 
-
-
     public Integer getProductId() {
         return product.getId();
     }
@@ -57,8 +55,27 @@ public class MarketProduct {
         KStoreVStoreProduct.remove(store);
     }
 
+    public Store getMinCostStoreForProduct(){
+        Store minPriceStore = null;
+        for (Store store : KStoreVStoreProduct.keySet()){
+            if(store.isStoreProductExist(product)){
+                if (minPriceStore == null){
+                    minPriceStore= store;
+                }
+                if (store.getStoreProductByProduct(product).getPrice() < KStoreVStoreProduct.get(minPriceStore).getPrice()){
+                    minPriceStore = store;
+                }
+            }
+        }
 
-//
+        return minPriceStore;
+    }
+
+    public StoreProduct getStoreProductByStore(Store cheapestStore) {
+        return KStoreVStoreProduct.get(cheapestStore);
+    }
+
+
 //    public void registerStoreToMarketProduct(Store store, StoreProduct storeProduct){
 //        KStoreVStoreProduct.put(store,storeProduct);
 //        SimpleDoubleProperty productPrice = storeProduct.getPropertyPrice();

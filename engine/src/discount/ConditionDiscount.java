@@ -8,4 +8,8 @@ public enum ConditionDiscount {
     public static ConditionDiscount getConditionDiscount(String conditionDiscount) {
         return ConditionDiscount.valueOf(conditionDiscount.toUpperCase().replaceAll("-", "_"));
     }
+
+    public String getName(){
+        return this.name().toLowerCase().replaceAll("_"," ");
+    }
 }

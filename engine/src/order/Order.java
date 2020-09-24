@@ -3,16 +3,16 @@ package order;
 
 import location.Location;
 
+import java.util.Date;
 import java.util.List;
 
 public class Order {
-    private Integer orderId;
     private List<SubOrder> subOrders;
     private Location customerLocation;
     private Double totalProductOrdersCost;
     private Double totalDeliverOrderCost;
     private Double totalOrderCost;
-
+    private Date date;
 
 //    public class SubOrder {
 //        Store store;//G.A 1,2,3

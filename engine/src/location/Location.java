@@ -16,4 +16,10 @@ public class Location {
     public Integer getCordY() {
         return cordY;
     }
+
+    public Double getDistance(Location location){
+        Double X =  Math.pow(cordX - location.getCordX(),2);
+        Double Y = Math.pow(cordY - location.getCordY(),2);
+        return Math.pow(X+Y,0.5);
+    }
 }

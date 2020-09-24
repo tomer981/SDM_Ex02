@@ -9,6 +9,7 @@ public class ProductDTO {
     private Integer numberOfStoreSell;
     private Double avgPrice;
     private Integer timeSold;
+    private Double amount;
 
 
     @Override
@@ -27,6 +28,7 @@ public class ProductDTO {
         this.numberOfStoreSell = numberOfStoreSell;
         this.avgPrice = avgPrice;
         this.timeSold = timeSold;
+        this.amount = 0.0;
     }
 
     public Integer getId() {
@@ -64,5 +66,13 @@ public class ProductDTO {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 }

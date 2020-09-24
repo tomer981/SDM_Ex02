@@ -14,13 +14,18 @@ import static gui.mainMenuTabPane.MainMenuTabPaneController.IStoreInfo;
 
 public class ShopTabLayoutController {
 
-    @FXML private SplitPane LStoreRDiscountSplitPane;
-    @FXML private AnchorPane storeInfoLocationAnchorPane;
-    @FXML private AnchorPane DiscountLocationAnchorPane;
-    @FXML private SplitPane LProductROrder;
-    @FXML private AnchorPane productLocationAnchorPane;
-    @FXML private AnchorPane orderLocationAnchorPane;
-
+    @FXML
+    private SplitPane LStoreRDiscountSplitPane;
+    @FXML
+    private AnchorPane storeInfoLocationAnchorPane;
+    @FXML
+    private AnchorPane DiscountLocationAnchorPane;
+    @FXML
+    private SplitPane LProductROrder;
+    @FXML
+    private AnchorPane productLocationAnchorPane;
+    @FXML
+    private AnchorPane orderLocationAnchorPane;
 
     IStoreInfo engine;
 
@@ -28,19 +33,18 @@ public class ShopTabLayoutController {
         engine = storesInfo;
     }
 
-    public ShopTabLayoutController(){
+    public ShopTabLayoutController() {
 
     }
 
     @FXML
-    private void initialize(){
+    private void initialize() {
         initializeStoreInfoTabView();
         initializeStoreProductTableView();
         initializeOrderInfoTableView();
 
 //        initializeDiscount();//Todo: complete name and structure
     }
-
 
 
     private void initializeStoreInfoTabView() {
@@ -53,7 +57,7 @@ public class ShopTabLayoutController {
             e.printStackTrace();
         }
         StoreInfoTableViewController controller = loader.getController();
-        LStoreRDiscountSplitPane.getItems().set(0,storeInfoTableView);
+        LStoreRDiscountSplitPane.getItems().set(0, storeInfoTableView);
     }
 
     private void initializeStoreProductTableView() {
@@ -66,20 +70,11 @@ public class ShopTabLayoutController {
             e.printStackTrace();
         }
         ProductsInStoreTableViewController controller = loader.getController();
-        LProductROrder.getItems().set(0,storeProductTableView);
+        LProductROrder.getItems().set(0, storeProductTableView);
     }
-
-
 
 
     private void initializeOrderInfoTableView() {
 
     }
-
-
-
-
-
-
-
 }

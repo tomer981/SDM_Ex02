@@ -125,17 +125,4 @@ public class XmlSystemFactory {
     public void addOrder() {
 
     }
-
-
-//    private MarketProduct CreateMarketProduct(List<Store> stores, Product product) {
-//        MarketProduct marketProduct = new MarketProduct(product);
-//        stores.forEach(store -> {
-//            if (store.IsProductInStore(product)) {
-//                marketProduct.registerStoreToMarketProduct(store);
-//            }
-//        });
-//        return marketProduct;
-//    }
-
-
 }

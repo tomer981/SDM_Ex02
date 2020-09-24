@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
-import static gui.mainMenuTabPane.MainMenuTabPaneController.INewOrderInterfaceHBox;
+import static gui.mainMenuTabPane.MainMenuTabPaneController.INewOrder;
 
 public class ShowSelectionOfNewOrderHBoxController {
 
@@ -30,13 +30,13 @@ public class ShowSelectionOfNewOrderHBoxController {
     @FXML private ComboBox<StoreDTO> storeSelectionComboBox;
     @FXML private Button newOrderButton;
 
-    private INewOrderInterfaceHBox engine;
+    private INewOrder engine;
 
     private final SimpleBooleanProperty isShowNewOrderButton;
     private final SimpleBooleanProperty isNeededSelected;
 
 
-    public void setEngine(INewOrderInterfaceHBox engine){
+    public void setEngine(INewOrder engine){
         this.engine = engine;
         customerComboBox.setItems(FXCollections.observableArrayList(engine.getCustomersDTO()));
         storeSelectionComboBox.setItems(FXCollections.observableArrayList(engine.getStoresDTO()));
@@ -49,9 +49,10 @@ public class ShowSelectionOfNewOrderHBoxController {
 
     @FXML
     private void initialize(){
+        dateDatePicker.disableProperty().bind(customerComboBox.valueProperty().isNull());
         dynOrStaticOrderComboBox.getItems().setAll("Static","Dynamic");
         isNeededSelected.bind(customerComboBox.valueProperty().isNotNull().and(//choice customer T
-                dateDatePicker.promptTextProperty().isNotEmpty().and(//choice date T
+                dateDatePicker.valueProperty().isNotNull().and(//choice date T
                         dynOrStaticOrderComboBox.valueProperty().isNotNull()//choice static/dynamic T
                 )));
 
@@ -68,10 +69,16 @@ public class ShowSelectionOfNewOrderHBoxController {
     }
 
     @FXML
+    void onSelectionCustomer(ActionEvent event) {
+        dateDatePicker.setValue(null);
+    }
+
+    @FXML
     void newOrderButtonAction(ActionEvent event) throws IOException {
 
         Stage orderStage = new Stage();
         orderStage.setTitle("New Order - Static Order");
+
 
         FXMLLoader loader = new FXMLLoader();
         URL newOrderFXML = getClass().getResource("..\\..\\gui\\newOrder\\newOrderLayoutGrid\\NewOrderLayoutGridGui.fxml");
@@ -81,7 +88,10 @@ public class ShowSelectionOfNewOrderHBoxController {
 
         if (dynOrStaticOrderComboBox.getSelectionModel().getSelectedItem().equals("Dynamic")){
             orderStage.setTitle("New Order - Dynamic Order");
-            controller.setDynamicTableView();
+            controller.setEngine(engine,customerComboBox.getValue(),orderStage,dateDatePicker.valueProperty().getValue());
+        }
+        else {
+            controller.setEngine(engine, storeSelectionComboBox.getValue().getId(),customerComboBox.getValue(),orderStage,dateDatePicker.valueProperty().getValue());
         }
 
         Scene scene = new Scene(load, 600, 400);

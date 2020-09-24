@@ -1,6 +1,8 @@
 package gui.customerInfoTableView;
 
 import dto.CustomerDTO;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -19,7 +21,7 @@ public class CustomerInfoTableViewController {
     @FXML private TableColumn<CustomerDTO, Integer> CustomersLocationsYTableColumn;
     @FXML private TableColumn<CustomerDTO, Integer> CustomersTotalOrdersTableColumn;
     @FXML private TableColumn<CustomerDTO, Double> CustomersAvgPricePerDeliveryTableColumn;
-    @FXML private TableColumn<CustomerDTO, Double> CustomersAvgPricePerOrderTableColumn;
+    @FXML private TableColumn<?, ?> CustomersAvgPricePerOrderTableColumn;
 
     List<CustomerDTO> customers;
 

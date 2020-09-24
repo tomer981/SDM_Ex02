@@ -2,11 +2,16 @@ package market;
 
 import customer.Customer;
 
+import dto.orderDTO.DiscountProductsDTO;
+import dto.orderDTO.OffersDiscountDTO;
+import dto.orderDTO.ProductOrderDTO;
+import dto.orderDTO.StoreOrderDTO;
 import location.Location;
 import order.Order;
 import store.Store;
 
 import java.util.*;
+
 import dto.*;
 import discount.*;
 import product.*;
@@ -18,7 +23,7 @@ public class Market {
     private List<Customer> customers;
     private Set<Order> orders;
 
-    public Market(){
+    public Market() {
         stores = new ArrayList<>();
         marketProducts = new ArrayList<>();
         customers = new ArrayList<>();
@@ -28,129 +33,249 @@ public class Market {
     private Store getStoreById(Integer storeId) {
         return stores.stream().filter(store -> storeId.equals(store.getStoreId())).findFirst().orElse(null);
     }
+
     public MarketProduct getMarketProductById(Integer productId) {
         return marketProducts.stream().filter(marketProduct -> productId.equals(marketProduct.getProductId())).findFirst().orElse(null);
     }
-    private Product getProductById(Integer ProductId){
+
+    private Product getProductById(Integer ProductId) {
         MarketProduct marketProduct = getMarketProductById(ProductId);
         return marketProduct.getProduct();
     }
 
 
-    public void addStore(Store store){
+    public void addStore(Store store) {
         stores.add(store);
     }
-    public void addStore(Integer id, String name,Integer ppk,Location location){
+
+    public void addStore(Integer id, String name, Integer ppk, Location location) {
         addStore(new Store(id,
                 name,
                 ppk,
                 location));
     }
-    public void addStore(Integer id, String name,Integer ppk,Integer cordX,Integer cordY){
+
+    public void addStore(Integer id, String name, Integer ppk, Integer cordX, Integer cordY) {
         addStore(id,
                 name,
                 ppk,
-                new Location(cordX,cordY));
+                new Location(cordX, cordY));
     }
 
-    public void addMarketProduct(MarketProduct marketProduct){
+
+    public void addMarketProduct(MarketProduct marketProduct) {
         marketProducts.add(marketProduct);
     }
-    public void addMarketProduct(Product product){
+
+    public void addMarketProduct(Product product) {
         MarketProduct marketProduct = new MarketProduct(product);
         addMarketProduct(marketProduct);
     }
-    public void addMarketProduct(Integer productId, String name, PurchaseCategory purchaseCategory){
-        Product product = new Product(productId, name,purchaseCategory);
+
+    public void addMarketProduct(Integer productId, String name, PurchaseCategory purchaseCategory) {
+        Product product = new Product(productId, name, purchaseCategory);
         addMarketProduct(product);
     }
-    public void addMarketProduct(Integer productId,String name,String purchaseCategory){
-        addMarketProduct(productId,name,PurchaseCategory.getPurchaseCategory(purchaseCategory));
+
+    public void addMarketProduct(Integer productId, String name, String purchaseCategory) {
+        addMarketProduct(productId, name, PurchaseCategory.getPurchaseCategory(purchaseCategory));
+    }    //updateAction
+
+
+    public void addProductToStore(Store store, MarketProduct marketProduct, Double price) throws RuntimeException {
+        Product product = marketProduct.getProduct();
+        StoreProduct storeProduct = store.addProductToStore(product, price);
+//        marketProduct.registerStoreToMarketProduct(store,storeProduct);
+        marketProduct.registerStoreToMarketProduct(store, storeProduct);//TODO: instead of property
     }
 
-    public void addProductToStore(Store store, MarketProduct marketProduct, Double price)throws RuntimeException{
-        Product product = marketProduct.getProduct();
-        StoreProduct storeProduct = store.addProductToStore(product,price);
-//        marketProduct.registerStoreToMarketProduct(store,storeProduct);
-        marketProduct.registerStoreToMarketProduct(store,storeProduct);//TODO: instead of property
-    }
-    public void addProductToStore(Integer storeId, Integer productId, Double price){
+    public void addProductToStore(Integer storeId, Integer productId, Double price) {
         Store store = getStoreById(storeId);
         MarketProduct marketProduct = getMarketProductById(productId);
-        addProductToStore(store,marketProduct,price);
+        addProductToStore(store, marketProduct, price);
     }
 
-    public void addCustomer(Customer customer){
+
+    public void addCustomer(Customer customer) {
         customers.add(customer);
     }
-    public void addCustomer(Integer id, String name, Location location){
-        Customer customer = new Customer(id,name, location);
+
+    public void addCustomer(Integer id, String name, Location location) {
+        Customer customer = new Customer(id, name, location);
         addCustomer(customer);
     }
-    public void addCustomer(Integer id, String name, Integer cordX,Integer cordY){
-        addCustomer(id, name, new Location(cordX,cordY));
+
+    public void addCustomer(Integer id, String name, Integer cordX, Integer cordY) {
+        addCustomer(id, name, new Location(cordX, cordY));
     }
 
-    public void addDiscount(Store store, Discount discount, OfferDiscount offerDiscount){
-        store.addDiscountToStore(discount,offerDiscount);
+
+    public void addDiscount(Store store, Discount discount, OfferDiscount offerDiscount) {
+        store.addDiscountToStore(discount, offerDiscount);
     }
-    public void addDiscount(Integer storeId,String nameDiscount, Integer buyProductId, Double AmountToBuy,String conditionName,Integer getProductId,Double quantityYouGet,Double forThePrice){
+
+    public void addDiscount(Integer storeId, String nameDiscount, Integer buyProductId, Double AmountToBuy, String conditionName, Integer getProductId, Double quantityYouGet, Double forThePrice) {
         Store store = getStoreById(storeId);
         Product buyProduct = getProductById(buyProductId);
         ConditionDiscount condition = ConditionDiscount.getConditionDiscount(conditionName.toUpperCase());
         Product getProduct = getProductById(getProductId);
-        Discount discount = new Discount(nameDiscount,buyProduct,AmountToBuy,condition);
-        OfferDiscount offerDiscount = new OfferDiscount(getProduct,quantityYouGet,forThePrice);
-        addDiscount(store,discount,offerDiscount);
+        Discount discount = new Discount(nameDiscount, buyProduct, AmountToBuy, condition);
+        OfferDiscount offerDiscount = new OfferDiscount(getProduct, quantityYouGet, forThePrice);
+        addDiscount(store, discount, offerDiscount);
     }
 
-    public void addOrder(){
+
+    public void addOrder() {
 
     }
 
-    public List<CustomerDTO> getCustomersDTO(){
+
+    public List<CustomerDTO> getCustomersDTO() {
         List<CustomerDTO> customersData = new ArrayList();
         customers.forEach(customer -> customersData.add(customer.getCustomerData()));
         return customersData;
     }
 
-    public List<StoreDTO> getStoresDTO(){
+    public List<StoreDTO> getStoresDTO() {
         List<StoreDTO> StoresData = new ArrayList();
         stores.forEach(store -> StoresData.add(store.getStoreData()));
         return StoresData;
     }
 
-    public List<ProductDTO> getMarketProductsDTO(){
+    public List<ProductDTO> getMarketProductsDTO() {
         List<ProductDTO> marketProductsDTO = new ArrayList<>();
         marketProducts.forEach(marketProduct -> marketProductsDTO.add(marketProduct.getMarketProductDTO()));
         return marketProductsDTO;
     }
 
-    public List<ProductDTO> getStoreProductDTOByStoreId(Integer storeId){
+    public List<ProductDTO> getStoreProductDTOByStoreId(Integer storeId) {
         Store store = getStoreById(storeId);
         return store.getStoreProductsDTO();
-
     }
 
-    public boolean isProductInDiscountInStoreByStoreId(Integer storeId,Integer productId){
+
+    //updateAction
+    public boolean isProductInDiscountInStoreByStoreId(Integer storeId, Integer productId) {
         Store store = getStoreById(storeId);
-        return store.isProductInDiscountByProductId(productId);
+        Product product = getProductById(productId);
+        return store.isProductInDiscountByProduct(product) || store.isProductIsFoundInOfferDiscount(product);
     }
 
-    public void changeProductPrice(Integer storeId,Integer productId, Double price) throws RuntimeException {
+    public void changeProductPrice(Integer storeId, Integer productId, Double price) throws RuntimeException {
         Store store = getStoreById(storeId);
         Product product = getProductById(productId);
         MarketProduct marketProduct = getMarketProductById(productId);
-        marketProduct.updateTotalPrice(store,price);
+        marketProduct.updateTotalPrice(store, price);
         store.changeProductPrice(product, price);
     }
 
-    public void deleteProduct(Integer storeId,Integer productId) throws RuntimeException{
+    public void deleteProduct(Integer storeId, Integer productId) throws RuntimeException {
         Store store = getStoreById(storeId);
         Product product = getProductById(productId);
         MarketProduct marketProduct = getMarketProductById(productId);
-        marketProduct.updateTotalPrice(store,0.0);
-        store.deleteProduct(store,product);
+        marketProduct.updateTotalPrice(store, 0.0);
+        store.deleteProduct(store, product);
     }
 
+
+    //new Order
+    public List<StoreOrderDTO> findMinCostOrder(List<ProductOrderDTO> orderProductsDTO) {
+
+        //TODO: shit code fix if have the time
+        Map<ProductOrderDTO, Store> KStoreProductVCheapestStore = new HashMap<>();
+
+        for (ProductOrderDTO product : orderProductsDTO) {
+            MarketProduct marketProduct = getMarketProductById(product.getId());
+            Store cheapestStore = marketProduct.getMinCostStoreForProduct();
+            StoreProduct storeProduct = marketProduct.getStoreProductByStore(cheapestStore);
+            product.setPrice(storeProduct.getPrice());
+            KStoreProductVCheapestStore.put(product, cheapestStore);
+        }
+
+        Set<StoreOrderDTO> storesOrder = new HashSet();
+        KStoreProductVCheapestStore.values().forEach(store -> storesOrder.add(createStoreOrderDTO(store)));
+
+        for (StoreOrderDTO storeOrder : storesOrder) {
+            List<ProductOrderDTO> orderStoreProductsDTO = new ArrayList<>();
+            for (ProductOrderDTO product : orderProductsDTO) {
+                if (KStoreProductVCheapestStore.get(product).getStoreId().equals(storeOrder.getId())) {
+                    orderStoreProductsDTO.add(product);
+                }
+            }
+            storeOrder.setProducts(orderStoreProductsDTO);
+        }
+
+        return new ArrayList<>(storesOrder);
+    }
+
+    private StoreOrderDTO createStoreOrderDTO(Store store) {//TODO: put in store
+        StoreDTO storeDTO = store.getStoreData();
+        return new StoreOrderDTO(
+                storeDTO.getId(),
+                storeDTO.getName(),
+                storeDTO.getPpk(),
+                0.0,
+                storeDTO.getCordX(),
+                storeDTO.getCordY());
+    }
+
+
+    public Double getDistance(Location location1, Location location2) {
+        return location1.getDistance(location2);
+    }
+
+    public Double getDistance(Integer x1, Integer y1, Integer x2, Integer y2) {
+        Location location1 = new Location(x1, y1);
+        Location location2 = new Location(x2, y2);
+        return getDistance(location1, location2);
+    }
+
+
+    private List<StoreOrderDTO> getStoreOrderByStore(Store store, List<ProductOrderDTO> orderProducts) {
+        for (ProductOrderDTO product : orderProducts) {
+            MarketProduct marketProduct = getMarketProductById(product.getId());
+            product.setPrice(marketProduct.getStoreProductByStore(store).getPrice());
+        }
+        StoreOrderDTO storeOrderDTO = createStoreOrderDTO(store);
+        storeOrderDTO.setProducts(orderProducts);
+        List<StoreOrderDTO> storeOrderDataList = new ArrayList();
+        storeOrderDataList.add(storeOrderDTO);
+        return storeOrderDataList;
+    }
+
+    public List<StoreOrderDTO> getStoreOrderByStoreId(Integer storeId, List<ProductOrderDTO> OrderProducts) {
+        Store store = getStoreById(storeId);
+        return getStoreOrderByStore(store, OrderProducts);
+    }
+
+
+
+
+    private List<DiscountProductsDTO> getDiscountsByStore(Store store) {
+        return store.getDiscounts();
+    }
+
+    public List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId) {
+        Store store = getStoreById(storeId);
+        return getDiscountsByStore(store);
+    }
+
+
+    private OffersDiscountDTO getOffersDiscount(Store store, DiscountProductsDTO discount) {
+        return store.getOffersDiscount(discount,getProductById(discount.getProductId()));
+    }
+    public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discount) {
+        Store store = getStoreById(id);
+        return getOffersDiscount(store,discount);
+    }
+
+
+//    private List<DiscountProductsDTO> getDiscountsByProducts(Store store, List<ProductOrderDTO> products) {
+//        return store.getDiscountsByProducts(products);
+//    }
+//
+//    public List<DiscountProductsDTO> getDiscountsByProducts(Integer storeId, List<ProductOrderDTO> products) {
+//        Store store = getStoreById(storeId);
+//        return getDiscountsByProducts(store, products);
+//    }
 }

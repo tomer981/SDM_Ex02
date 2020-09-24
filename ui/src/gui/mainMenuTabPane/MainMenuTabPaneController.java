@@ -4,18 +4,16 @@ package gui.mainMenuTabPane;
 import dto.CustomerDTO;
 import dto.ProductDTO;
 import dto.StoreDTO;
+import dto.orderDTO.DiscountProductsDTO;
+import dto.orderDTO.OffersDiscountDTO;
+import dto.orderDTO.ProductOrderDTO;
+import dto.orderDTO.StoreOrderDTO;
 import gui.customerInfoTableView.CustomerInfoTableViewController;
 import gui.productsInMarketTableView.ProductsInMarketTableViewController;
 import gui.shopTabLayout.ShopTabLayoutController;
 import gui.showSelectionOfNewOrderHBox.ShowSelectionOfNewOrderHBoxController;
 import gui.showSelectionOfOrderHBox.ShowSelectionOfOrderHBoxController;
 import gui.updateProductHBox.UpdateProductHBoxController;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.WeakChangeListener;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,24 +31,31 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 
 public class MainMenuTabPaneController {
 
-    @FXML private TextField DirDirectoryTextField;
-    @FXML private ProgressBar AdvanceLoadProgressBar;
-    @FXML private Button BrowseButton;
-    @FXML private Tab MarketTab;
-    @FXML private Tab CustomersTab;
-    @FXML private Tab StoreInfoTab;
-    @FXML private Tab MapTab;
-    @FXML private GridPane MarketTabGrid;
+    @FXML
+    private TextField DirDirectoryTextField;
+    @FXML
+    private ProgressBar AdvanceLoadProgressBar;
+    @FXML
+    private Button BrowseButton;
+    @FXML
+    private Tab MarketTab;
+    @FXML
+    private Tab CustomersTab;
+    @FXML
+    private Tab StoreInfoTab;
+    @FXML
+    private Tab MapTab;
+    @FXML
+    private GridPane MarketTabGrid;
 
-    @FXML private Text loadingStatus;
+    @FXML
+    private Text loadingStatus;
 
 
     private final XmlSystemFactory factory;
@@ -105,7 +110,7 @@ public class MainMenuTabPaneController {
         }
     };
     private final Supplier<List<ProductDTO>> products = () -> market.getMarketProductsDTO();
-    private final INewOrderInterfaceHBox newOrderInterface = new INewOrderInterfaceHBox() {
+    private final INewOrder newOrderInterface = new INewOrder() {
         @Override
         public List<CustomerDTO> getCustomersDTO() {
             return market.getCustomersDTO();
@@ -119,6 +124,36 @@ public class MainMenuTabPaneController {
         @Override
         public List<StoreDTO> getStoresDTO() {
             return market.getStoresDTO();
+        }
+
+        @Override
+        public List<ProductDTO> getStoreProductsDTO(Integer storeId) {
+            return market.getStoreProductDTOByStoreId(storeId);
+        }
+
+        @Override
+        public List<StoreOrderDTO> findMinCostOrder(List<ProductOrderDTO> OrderProductsDTO) {
+            return market.findMinCostOrder(OrderProductsDTO);
+        }
+
+        @Override
+        public Double getDistance(Integer x1, Integer y1, Integer x2, Integer y2) {
+            return market.getDistance(x1, y1, x2, y2);
+        }
+
+        @Override
+        public List<StoreOrderDTO> getStoreOrderByStoreId(Integer storeId, List<ProductOrderDTO> OrderProducts) {
+            return market.getStoreOrderByStoreId(storeId, OrderProducts);
+        }
+
+        @Override
+        public List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId) {
+            return market.getDiscountsByStoreId(storeId);
+        }
+
+        @Override
+        public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected) {
+            return market.getOffersDiscount(id,discountSelected);
         }
     };
     private IStoreInfo StoresInfo = new IStoreInfo() {
@@ -134,6 +169,9 @@ public class MainMenuTabPaneController {
     };
     private final Supplier<List<CustomerDTO>> customersData = () -> market.getCustomersDTO();
 
+    private final Executor executor = Executors.newCachedThreadPool();
+
+
     public MainMenuTabPaneController() {
         factory = new XmlSystemFactory();
     }
@@ -142,8 +180,6 @@ public class MainMenuTabPaneController {
         this.primaryStage = primaryStage;
     }
 
-    private final Executor executor
-            = Executors.newCachedThreadPool();
 
     //start
     @FXML
@@ -170,6 +206,7 @@ public class MainMenuTabPaneController {
             initializeStoreInfoTab();
             initializeMapTab();
             initializeCustomersTab();
+
         });
 
         loadTask.exceptionProperty().addListener((task, oldValue, newValue) -> {
@@ -245,7 +282,6 @@ public class MainMenuTabPaneController {
 
         MarketTabGrid.add(showNewOrderHBox, 0, 2);
         newOrderSelectionController = loader.getController();
-
         newOrderSelectionController.setEngine(newOrderInterface);
     }
 
@@ -301,7 +337,7 @@ public class MainMenuTabPaneController {
         //TODO: Aviad in here
     }
 
-
+    //data
     private void reinitializeData() {
         updateProductController.setEngine(updateProductInterface);
         customerController.setCustomersData(customersData);
@@ -313,13 +349,9 @@ public class MainMenuTabPaneController {
 
     @FXML
     private void initialize() {
-//        CustomersTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
-//        StoreInfoTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
-//        MapTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
-//        MarketTab.selectedProperty().addListener((observable, oldValue, newValue) ->{ if(MarketTab.isSelected()) {initializeMarketTab();} });
-//        StoreInfoTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(StoreInfoTab.isSelected()) {initializeStoreInfoTab();} });
-//        CustomersTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(CustomersTab.isSelected()) {initializeCustomersTab();} });
-//        MapTab.selectedProperty().addListener((observable, oldValue, newValue) -> { if(MapTab.isSelected()) {initializeMapTab();} });
+        CustomersTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
+        StoreInfoTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
+        MapTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
     }
 
 
@@ -339,12 +371,24 @@ public class MainMenuTabPaneController {
         void deleteProduct(Integer storeId, Integer productId);
     }
 
-    public interface INewOrderInterfaceHBox {
+    public interface INewOrder {
         List<CustomerDTO> getCustomersDTO();
 
         List<ProductDTO> getProductsDTO();
 
         List<StoreDTO> getStoresDTO();
+
+        List<ProductDTO> getStoreProductsDTO(Integer storeId);
+
+        List<StoreOrderDTO> findMinCostOrder(List<ProductOrderDTO> OrderProductsDTO);
+
+        Double getDistance(Integer x1, Integer y1, Integer x2, Integer y2);
+
+        List<StoreOrderDTO> getStoreOrderByStoreId(Integer storeId, List<ProductOrderDTO> OrderProducts);
+
+        List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId);
+
+        OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected);
     }
 
     public interface IStoreInfo {
@@ -353,8 +397,9 @@ public class MainMenuTabPaneController {
         List<ProductDTO> getStoreProductsDTO(Integer storeId);
     }
 
-    public interface IMap{
+    public interface IMap {
         public List<CustomerDTO> getCustomersDTO();
+
         public List<StoreDTO> getStoresDTO();
         //TODO: Aviad - tell me if you need additional method
     }

@@ -25,14 +25,6 @@ public class Customer {
     }
 
     public CustomerDTO getCustomerData(){
-//        return new CustomerDTO(
-//                id,
-//                name,
-//                location.getCordX(),
-//                location.getCordY(),
-//                orders.size(),
-//                avgPricePerDeliveryOrder.getValue(),
-//                avgPricePerProductsOrder.getValue());
         return new CustomerDTO(
                 id,
                 name,

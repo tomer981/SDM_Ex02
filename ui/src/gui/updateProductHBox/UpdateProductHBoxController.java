@@ -30,14 +30,11 @@ public class UpdateProductHBoxController {
 
 
     private final SimpleBooleanProperty isDeleteSelected;
-    private final SimpleBooleanProperty isValidPrice;
-
 
 
     private IUpdateProduct engine;
 
     public UpdateProductHBoxController(){
-        isValidPrice = new SimpleBooleanProperty(true);
         isDeleteSelected= new SimpleBooleanProperty(false);
     }
 
@@ -60,10 +57,13 @@ public class UpdateProductHBoxController {
         operationComboBox.disableProperty().bind(storeComboBox.valueProperty().isNull());
         productsComboBox.disableProperty().bind(operationComboBox.valueProperty().isNull());
         updatePriceTextField.disableProperty().bind(Bindings.or(isDeleteSelected,productsComboBox.valueProperty().isNull()));
+
+
         activateButton.disableProperty().bind(productsComboBox.valueProperty().isNotNull().and(
                 Bindings.or(updatePriceTextField.disabledProperty(),
                         Bindings.and(updatePriceTextField.textProperty().isNotEmpty(),isDeleteSelected.not()))
         ).not());
+
 
         updatePriceTextField.focusedProperty().addListener(this::changed);
     }
@@ -94,6 +94,7 @@ public class UpdateProductHBoxController {
     }
 
 
+
     @FXML
     void onActivateButton(ActionEvent event) {
         Integer storeId = storeComboBox.getSelectionModel().getSelectedItem().getId();
@@ -117,15 +118,19 @@ public class UpdateProductHBoxController {
 
     @FXML
     void onProductSelection(ActionEvent event) {
+        if (productsComboBox.valueProperty().isNull().get()){return;}
         updatePriceTextField.textProperty().setValue("");
         String op = operationComboBox.getSelectionModel().getSelectedItem();
-        if(op.equals("Delete")){
-            Integer storeId = storeComboBox.getSelectionModel().getSelectedItem().getId();
-            Integer productId = productsComboBox.getSelectionModel().getSelectedItem().getId();
-            if(engine.isProductInDiscountInStoreByStoreId(storeId,productId)){
-                showAlert("the Product is part of Discount");
+        if(op != null){
+            if(op.equals("Delete") ){
+                Integer storeId = storeComboBox.getSelectionModel().getSelectedItem().getId();
+                Integer productId = productsComboBox.getSelectionModel().getSelectedItem().getId();//TODO: fix error Caused by: java.lang.NullPointerException
+                if(engine.isProductInDiscountInStoreByStoreId(storeId,productId)){
+                    showAlert("the Product is part of Discount");
+                }
             }
         }
+
     }
 
     public static boolean isNumeric(String strNum) {
@@ -142,8 +147,6 @@ public class UpdateProductHBoxController {
 
     private void changed(ObservableValue<? extends Boolean> arg0, Boolean oldValue, Boolean newValue) {
         if (!newValue) { // when focus lost
-            String productCategory = productsComboBox.getSelectionModel().getSelectedItem().getCategory().toLowerCase();
-
             if (!isNumeric(updatePriceTextField.getText())) {
                 updatePriceTextField.setText("");
             }

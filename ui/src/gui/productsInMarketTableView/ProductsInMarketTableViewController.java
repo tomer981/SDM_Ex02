@@ -42,6 +42,5 @@ public class ProductsInMarketTableViewController {
         storeSellTableColumn.setCellValueFactory(new PropertyValueFactory("numberOfStoreSell"));
         avgPriceTableColumn.setCellValueFactory(new PropertyValueFactory("avgPrice"));
         timeSoldTableColumn.setCellValueFactory(new PropertyValueFactory("timeSold"));
-
     }
 }
