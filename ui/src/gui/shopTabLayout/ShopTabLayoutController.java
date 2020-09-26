@@ -102,7 +102,7 @@ public class ShopTabLayoutController {
     }
 
     private void initializeOrderInfo() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\showStoreOrder\\ShowStoreOrderBorderPaneGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(ShowStoreOrderBorderPaneController.class.getResource("ShowStoreOrderBorderPaneGui.fxml"));
         BorderPane discountTable = loader.load();
         orderInfoController = loader.getController();
         LProductROrder.getItems().set(1, discountTable);
