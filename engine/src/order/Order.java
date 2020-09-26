@@ -1,6 +1,7 @@
 package order;
 
 import customer.Customer;
+import dto.orderDTO.OrderDTO;
 import dto.orderDTO.StoreProductOrderDTO;
 import dto.orderDTO.StoreOrderDTO;
 import store.Store;
@@ -79,82 +80,7 @@ public class Order {
         KStoreVSubStore.put(subOrder.getStore(),subOrder);
     }
 
-    //    public Integer getId() {
-//        return id;
-//    }
-//    public LocalDate getDate() {
-//        return date;
-//    }
-//
-//    public Integer getNumberOfDifferentProductsInOrder(){
-//        numberOfDifferentProducts = 0;
-//        for(Store store : KStoreVSubStore.keySet()){
-//            numberOfDifferentProducts += getNumberOfDifferentProductsInStoreOrder(store);
-//        }
-//
-//        return numberOfDifferentProducts;
-//    }
-//    public Integer getNumberOfDifferentProductsInStoreOrder(Store store){
-//        return KStoreVSubStore.get(store).getNumberOfDifferentProducts();
-//    }
-//
-//    public Double getTotalProductsCost(){
-//        totalCostProducts = 0.0;
-//        for(Store store : KStoreVSubStore.keySet()){
-//            totalCostProducts += getTotalProductsCostOfStore(store);
-//        }
-//
-//        return totalCostProducts;
-//    }
-//    public Double getTotalProductsCostOfStore(Store store){
-//        return KStoreVSubStore.get(store).getTotalProductsCost();
-//    }
-//
-//    public Double getAmountOfProductsInOrder(){
-//        amountsOfProducts = 0.0;
-//        for(Store store : KStoreVSubStore.keySet()){
-//            amountsOfProducts += getAmountOfProductsOfStoreOrder(store);
-//        }
-//
-//        return amountsOfProducts;
-//    }
-//    public Double getAmountOfProductsOfStoreOrder(Store store){
-//        return KStoreVSubStore.get(store).getAmountOfProducts();
-//    }
-//
-//    public Double getTotalDeliveryOrderCost(){
-//        totalDeliverOrderCost = 0.0;
-//        for (Store store : KStoreVSubStore.keySet()){
-//            totalDeliverOrderCost += getOrderDeliveryCostOfStore(store);
-//        }
-//
-//        return totalDeliverOrderCost;
-//    }
-//    public Double getOrderDeliveryCostOfStore(Store store){
-//        return KStoreVSubStore.get(store).getDeliverCost();
-//    }
-//
-//    public Double getTotalOrderCost(){
-//        totalOrderCost = 0.0;
-//        for (Store store : KStoreVSubStore.keySet()){
-//            totalOrderCost += getOrderDeliveryCostOfStore(store);
-//        }
-//
-//        return totalOrderCost;
-//    }
-//    public Double getTotalOrderCostOfStore(Store store){
-//        return KStoreVSubStore.get(store).getTotalOrderOfStoreCost();
-//
-//    }
-//
-//    public Customer getCustomer() {
-//        return customer;
-//    }
-//
-//
-//    public void addSubOrder(Store storesSystem, StoreOrderDTO storesOrder) {
-//        SubOrder subOrder = new SubOrder(id,storesSystem,customer,date);
-//        List<StoreProductOrderDTO> ProductsOrder  = storesOrder.getProducts();
-//        ProductsOrder.forEach(subOrder::addProduct);
-//    }
+    public OrderDTO getOrderDTO(){
+        return new OrderDTO(id,date,customer.getCustomerData(),numberOfDifferentProducts,amountsOfProducts,totalCostProducts,totalDeliverOrderCost,totalOrderCost);
+    }
 }

@@ -12,6 +12,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static gui.newOrder.finalOrderLayout.FinalOrderLayoutBoarderPaneController.RoundDouble;
+
 public class CustomerInfoTableViewController {
 
     @FXML private TableView<CustomerDTO> CustomerTableView;
@@ -27,6 +29,9 @@ public class CustomerInfoTableViewController {
 
     public void setCustomersData(Supplier<List<CustomerDTO>> CustomersData){
         customers = CustomersData.get();
+        customers.forEach(customerDTO -> customerDTO.setAvgPricePerDelivery(RoundDouble(customerDTO.getAvgPricePerDelivery())));
+        customers.forEach(customerDTO -> customerDTO.setAvgPricePerOrder(RoundDouble(customerDTO.getAvgPricePerOrder())));
+
         CustomerTableView.setItems(FXCollections.observableArrayList(customers));
 
     }

@@ -128,6 +128,18 @@ public class Market {
         addDiscount(store, discount, offerDiscount);
     }
 
+//    public Set<OrderDTO> getOrders() {
+//        Set<OrderDTO> orderDTOS = new HashSet<>();
+//        for (Order order : orders){
+//            orderDTOS.add(order.getOrderDTO());
+//            Map<StoreDTO,SubOrderDTO> KStoresVSubOrders = new HashMap();
+//            for ()
+//        }
+//    }
+//
+//    public <OrderDTO> getOrdersDTO(){
+//
+//    }
 
     public void addOrder(OrderDTO orderDTO) {
         LocalDate localDate = orderDTO.getDate();
@@ -181,7 +193,7 @@ public class Market {
             orders.add(order);
             customer.addOrder(order);
             customer.setTotalPriceOfDeliveryOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalDeliverOrderCost());
-            customer.setTotalPriceOfProductsOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalCostProducts());//TODO: fix
+            customer.setTotalPriceOfProductsOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalCostProducts());
         }
     }
 

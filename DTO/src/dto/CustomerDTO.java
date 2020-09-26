@@ -6,7 +6,7 @@ public class CustomerDTO {
     private Integer cordX;
     private Integer cordY;
     private Integer totalOrders;
-    private Double avgPricePerDelivery;
+    private Double avgDelivery;
     private Double avgPricePerOrder;
 
     public Integer getId() {
@@ -30,13 +30,40 @@ public class CustomerDTO {
     }
 
     public Double getAvgPricePerDelivery() {
-        return avgPricePerDelivery;
+        return avgDelivery;
     }
 
     public Double getAvgPricePerOrder() {
         return avgPricePerOrder;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCordX(Integer cordX) {
+        this.cordX = cordX;
+    }
+
+    public void setCordY(Integer cordY) {
+        this.cordY = cordY;
+    }
+
+    public void setTotalOrders(Integer totalOrders) {
+        this.totalOrders = totalOrders;
+    }
+
+    public void setAvgPricePerDelivery(Double avgPricePerDelivery) {
+        this.avgDelivery = avgPricePerDelivery;
+    }
+
+    public void setAvgPricePerOrder(Double avgPricePerOrder) {
+        this.avgPricePerOrder = avgPricePerOrder;
+    }
 
     public CustomerDTO(Integer id, String name, Integer cordX, Integer cordY, Integer totalOrders, Double avgPricePerDelivery, Double avgPricePerOrder) {
         this.id = id;
@@ -44,7 +71,7 @@ public class CustomerDTO {
         this.cordX = cordX;
         this.cordY = cordY;
         this.totalOrders = totalOrders;
-        this.avgPricePerDelivery = avgPricePerDelivery;
+        this.avgDelivery = avgPricePerDelivery;
         this.avgPricePerOrder = avgPricePerOrder;
     }
 

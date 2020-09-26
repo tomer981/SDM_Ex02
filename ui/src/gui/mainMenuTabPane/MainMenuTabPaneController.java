@@ -262,6 +262,7 @@ public class MainMenuTabPaneController {
         MarketTabGrid.add(showSelectionOfOrderHBox, 0, 3);
         OrderSelectionController = loader.getController();
 
+
     }
 
     private void initializeShowNewOrderHBox() {
@@ -338,6 +339,7 @@ public class MainMenuTabPaneController {
         storeLayoutController.setEngine(StoresInfo);
         MarketProductsController.setMarketProductData(products);
         newOrderSelectionController.setEngine(newOrderInterface);
+//        OrderSelectionController.setData();
     }
 
 

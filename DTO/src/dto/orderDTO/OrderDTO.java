@@ -36,6 +36,17 @@ public class OrderDTO {
         this.KStoresVSubOrders = KStoresVSubOrders;
     }
 
+    public OrderDTO(Integer id, LocalDate date, CustomerDTO customer, Integer numberOfDifferentProducts, Double amountsOfProducts, Double totalCostProducts, Double totalDeliverOrderCost, Double totalOrderCost) {
+        this.id = id;
+        this.date = date;
+        this.customer = customer;
+        this.numberOfDifferentProducts = numberOfDifferentProducts;
+        this.amountsOfProducts = amountsOfProducts;
+        this.totalCostProducts = totalCostProducts;
+        this.totalDeliverOrderCost = totalDeliverOrderCost;
+        this.totalOrderCost = totalOrderCost;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -106,5 +117,10 @@ public class OrderDTO {
 
     public Map<StoreDTO, SubOrderDTO> getKStoresVSubOrders() {
         return KStoresVSubOrders;
+    }
+
+    @Override
+    public String toString() {
+        return id + " - "+ date + " - " + customer;
     }
 }
