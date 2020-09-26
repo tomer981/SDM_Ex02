@@ -75,6 +75,13 @@ public class MarketProduct {
         return KStoreVStoreProduct.get(cheapestStore);
     }
 
+    public Integer getTimeSold() {
+        return timeSold;
+    }
+
+    public void setTimeSold(Integer timeSold) {
+        this.timeSold = timeSold;
+    }
 
 //    public void registerStoreToMarketProduct(Store store, StoreProduct storeProduct){
 //        KStoreVStoreProduct.put(store,storeProduct);

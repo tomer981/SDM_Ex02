@@ -1,53 +1,42 @@
-package gui.newOrder.finalOrderLayout;
+package gui.showOrderInfo;
 
 import dto.CustomerDTO;
 import dto.StoreDTO;
-import dto.orderDTO.*;
-import gui.mainMenuTabPane.MainMenuTabPaneController.INewOrder;
+import dto.orderDTO.OrderDTO;
 import gui.newOrder.productsSummery.ProductsSummeryTableViewController;
 import gui.newOrder.storeSummery.StoreSummeryTableViewController;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public class FinalOrderLayoutBoarderPaneController {
+import static gui.newOrder.finalOrderLayout.FinalOrderLayoutBoarderPaneController.RoundDouble;
 
+public class ShowOrderInfoBorderPaneController {
+
+    @FXML private SplitPane split;
     @FXML private Text totalProductsCost;
     @FXML private Text totalDeliveryCost;
     @FXML private Text totalCost;
-    @FXML private SplitPane splitPane;
 
 
-    private INewOrder engine;
-    private Stage orderStage;
-    private OrderDTO orderDTO;
+    private ReadOnlyObjectProperty<StoreDTO> selectionStoreProperty;
 
     private StoreSummeryTableViewController storeController;
     private ProductsSummeryTableViewController productController;
 
-    private ReadOnlyObjectProperty<StoreDTO> selectionStoreProperty;
+    private OrderDTO orderDTO;
 
-    public void setData(INewOrder engine, Stage orderStage, OrderDTO orderDTO) {
-        this.engine = engine;
-        this.orderStage = orderStage;
+    public void setData(OrderDTO orderDTO) {
         this.orderDTO = orderDTO;
         List<StoreDTO> storesDTO = new ArrayList(orderDTO.getKStoresVSubOrders().keySet());
-        CustomerDTO customer = orderDTO.getCustomer();
-        storeController.setData(storesDTO,customer);
+        storeController.setData(storesDTO, orderDTO.getCustomer());
         setTotalValues();
     }
 
@@ -62,52 +51,37 @@ public class FinalOrderLayoutBoarderPaneController {
             }
         }));
     }
-
-    private void initializeStoreLayout() {
-        FXMLLoader loader = null;
-        ScrollPane load = null;
-        try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\newOrder\\storeSummery\\StoreSummeryTableViewGui.fxml"));
-            load = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        storeController = loader.getController();
-        splitPane.getItems().set(0, load);
-    }
-
-    private void initializeProductsLayout() {
-        FXMLLoader loader = null;
-        ScrollPane load = null;
-        try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\newOrder\\productsSummery\\ProductsSummeryTableViewGui.fxml"));
-            load = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        productController = loader.getController();
-        splitPane.getItems().set(1, load);
-
-    }
-
     private void setTotalValues() {
 
         totalProductsCost.setText("Total Products Cost: " + RoundDouble(orderDTO.getTotalCostProducts()));
         totalDeliveryCost.setText("Total Delivery Cost: " + RoundDouble(orderDTO.getTotalDeliverOrderCost()));
         totalCost.setText("Total Cost: " + RoundDouble(orderDTO.getTotalOrderCost()));
     }
-    public static Double RoundDouble(Double number) {
-        return Double.parseDouble(new DecimalFormat(".##").format(number));
+
+    private void initializeStoreLayout() {
+        FXMLLoader loader = null;
+        ScrollPane load = null;
+        try {
+            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\newOrder\\storeSummery\\StoreSummeryTableViewGui.fxml"));
+            load = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        storeController = loader.getController();
+        split.getItems().set(0, load);
     }
 
-    @FXML
-    void onCancelButton(ActionEvent event) {
-        orderStage.close();
-    }
+    private void initializeProductsLayout() {
+        FXMLLoader loader = null;
+        ScrollPane load = null;
+        try {
+            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\newOrder\\productsSummery\\ProductsSummeryTableViewGui.fxml"));
+            load = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        productController = loader.getController();
+        split.getItems().set(1, load);
 
-    @FXML
-    void onConfirmButton(ActionEvent event) {
-        engine.addOrder(orderDTO);
-        orderStage.close();
     }
 }

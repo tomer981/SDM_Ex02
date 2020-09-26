@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Text?>
+
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.showOrderInfo.ShowOrderInfoBorderPaneController">
+   <center>
+      <SplitPane fx:id="split" dividerPositions="0.45819397993311034">
+        <items>
+          <AnchorPane />
+          <AnchorPane />
+        </items>
+      </SplitPane>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" fillHeight="false" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fx:id="totalProductsCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Products Cost:" />
+            <Text fx:id="totalDeliveryCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Delivery Cost:" />
+            <Text fx:id="totalCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Cost:" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>

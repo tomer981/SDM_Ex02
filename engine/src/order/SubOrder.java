@@ -2,6 +2,10 @@ package order;
 
 import customer.Customer;
 import discount.OfferDiscount;
+import dto.StoreDTO;
+import dto.orderDTO.OfferDiscountDTO;
+import dto.orderDTO.StoreProductOrderDTO;
+import dto.orderDTO.SubOrderDTO;
 import product.StoreProduct;
 import store.Store;
 
@@ -41,6 +45,18 @@ public class SubOrder {
         this.totalOrderCost = totalOrderCost;
         this.storeProducts = storeProducts;
         this.KOfferDiscountVTimeUse = KOfferDiscountVTimeUse;
+    }
+
+    public SubOrderDTO getSubOrderData(StoreDTO storeDTO) {
+        SubOrderDTO subOrderDTO = new SubOrderDTO(orderId,date,storeDTO,customer.getCustomerData(),distance,deliverCost,numberOfDifferentProducts,amountsOfProducts,totalCostProducts,totalOrderCost);
+        List<StoreProductOrderDTO> storeProductOrderDTOS = new ArrayList<>();
+        storeProducts.forEach(storeProduct -> storeProductOrderDTOS.add(storeProduct.getStoreProductOrderDTO(false)));
+        for (OfferDiscount offerDiscount : KOfferDiscountVTimeUse.keySet()){
+            OfferDiscountDTO offerDiscountDTO = offerDiscount.getOfferDiscountDTO();
+            storeProductOrderDTOS.add(new StoreProductOrderDTO(offerDiscountDTO.getId(),offerDiscountDTO.getName(),offerDiscountDTO.getCategory(),offerDiscountDTO.getPrice() /offerDiscountDTO.getAmount(),offerDiscountDTO.getAmount(),-1.0));
+        }
+        subOrderDTO.setTotalProductsToDisplay(storeProductOrderDTOS);
+        return subOrderDTO;
     }
 
 
@@ -91,4 +107,6 @@ public class SubOrder {
     public Map<OfferDiscount, Integer> getKOfferDiscountVTimeUse() {
         return KOfferDiscountVTimeUse;
     }
+
+
 }

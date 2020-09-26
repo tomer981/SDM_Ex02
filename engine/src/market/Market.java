@@ -128,18 +128,22 @@ public class Market {
         addDiscount(store, discount, offerDiscount);
     }
 
-//    public Set<OrderDTO> getOrders() {
-//        Set<OrderDTO> orderDTOS = new HashSet<>();
-//        for (Order order : orders){
-//            orderDTOS.add(order.getOrderDTO());
-//            Map<StoreDTO,SubOrderDTO> KStoresVSubOrders = new HashMap();
-//            for ()
-//        }
-//    }
-//
-//    public <OrderDTO> getOrdersDTO(){
-//
-//    }
+    public Set<OrderDTO> getOrdersDTO() {
+        Set<OrderDTO> orderDTOS = new HashSet<>();
+        for (Order order : orders){
+            OrderDTO orderDTO = order.getOrderDTO();
+            orderDTOS.add(orderDTO);
+            Map<StoreDTO,SubOrderDTO> KStoresVSubOrdersDTO = orderDTO.getKStoresVSubOrders();
+            Map<Store,SubOrder> KStoresVSubOrders = order.getKStoreVSubStore();
+            for (Store store : KStoresVSubOrders.keySet()){
+                StoreDTO storeDTO = store.getStoreData();
+                SubOrderDTO subOrderDTO =  KStoresVSubOrders.get(store).getSubOrderData(storeDTO);
+                KStoresVSubOrdersDTO.put(storeDTO,subOrderDTO);
+            }
+            orderDTO.setKStoresVSubOrders(KStoresVSubOrdersDTO);
+        }
+        return orderDTOS;
+    }
 
     public void addOrder(OrderDTO orderDTO) {
         LocalDate localDate = orderDTO.getDate();
@@ -148,7 +152,7 @@ public class Market {
         Double amountsOfProducts = orderDTO.getAmountsOfProducts();
         Double totalCostProducts = orderDTO.getTotalCostProducts();
         Double totalDeliverOrderCost = orderDTO.getTotalDeliverOrderCost();
-        Double totalOrderCost = orderDTO.getTotalDeliverOrderCost();
+        Double totalOrderCost = orderDTO.getTotalOrderCost();
 
         Order order = new Order(localDate,customer,numberOfDifferentProducts,amountsOfProducts,totalCostProducts,totalDeliverOrderCost,totalOrderCost);
 
@@ -170,18 +174,22 @@ public class Market {
                 Double amountSold = storeProductOrderDTO.getAmountBought();
                 StoreProduct storeProduct = new StoreProduct(price,amountSold,product);
                 storeProducts.add(storeProduct);
-                StoreProduct StoreProductInStore = getMarketProductById(product.getId()).getStoreProductByStore(store);
+                MarketProduct marketProduct = getMarketProductById(product.getId());
+                StoreProduct StoreProductInStore = marketProduct.getStoreProductByStore(store);
+                marketProduct.setTimeSold(marketProduct.getTimeSold() + 1);
                 StoreProductInStore.setTimeSold(StoreProductInStore.getTimeSold() + 1);
 
             }
             Map<OfferDiscount,Integer> KOfferDiscountVTimeUse = new HashMap<>();
             Map<OffersDiscountDTO,Integer> KOfferDiscountVTimeUseDTO = orderDTO.getKStoresVSubOrders().get(storeDTO).getKOffersDiscountVTimeUse();
+
             for (OffersDiscountDTO offerDiscountsDTO : KOfferDiscountVTimeUseDTO.keySet()){
+                Integer timerUse = KOfferDiscountVTimeUseDTO.get(offerDiscountsDTO);
                 for (OfferDiscountDTO singleOfferDiscountDTO : offerDiscountsDTO.getOffersDiscount()){
                     Product offerDiscountProduct =  getProductById(singleOfferDiscountDTO.getId());
                     Double receiveQuantity = singleOfferDiscountDTO.getAmount();
                     Double forPrice = singleOfferDiscountDTO.getPrice();
-                    OfferDiscount offerDiscount = new OfferDiscount(offerDiscountProduct,receiveQuantity,forPrice);
+                    OfferDiscount offerDiscount = new OfferDiscount(offerDiscountProduct,receiveQuantity * timerUse,forPrice * timerUse);
                     KOfferDiscountVTimeUse.put(offerDiscount,KOfferDiscountVTimeUseDTO.get(offerDiscountsDTO));
                     StoreProduct StoreProductInStore = getMarketProductById(offerDiscountProduct.getId()).getStoreProductByStore(store);
                     StoreProductInStore.setTimeSold(StoreProductInStore.getTimeSold() + 1);
@@ -190,11 +198,14 @@ public class Market {
             SubOrder subOrder = new SubOrder(orderId,localDate,store,customer,distance,deliverCost,numberOfDifferentProducts,amountsOfProducts,totalCostProducts,totalOrderCost,storeProducts,KOfferDiscountVTimeUse);
             order.addSubOrder(subOrder);
             store.getOrders().put(subOrder.getOrderId(),subOrder);
+
             orders.add(order);
-            customer.addOrder(order);
-            customer.setTotalPriceOfDeliveryOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalDeliverOrderCost());
-            customer.setTotalPriceOfProductsOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalCostProducts());
         }
+        customer.addOrder(order);
+        customer.setTotalPriceOfDeliveryOrders(customer.getTotalPriceOfDeliveryOrders() + order.getTotalDeliverOrderCost());
+        customer.setTotalPriceOfProductsOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalCostProducts());
+
+
     }
 
     public List<CustomerDTO> getCustomersDTO() {
@@ -328,8 +339,8 @@ public class Market {
     }
 
     private void setSubOrderDTOData(SubOrderDTO subOrder) {
-        Double distance = Location.getDistance(subOrder.getCustomer().getCordX(),subOrder.getStore().getCordX(),
-                subOrder.getCustomer().getCordY(),subOrder.getStore().getCordY());
+        Double distance = Location.getDistance(subOrder.getCustomer().getCordX(),subOrder.getCustomer().getCordY(),
+                subOrder.getStore().getCordX(),subOrder.getStore().getCordY());
         Double deliverCost = subOrder.getStore().getPpk() * distance;
         Double amountsOfProducts = 0.0;
         Double totalCostProducts = 0.0;

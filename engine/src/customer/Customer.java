@@ -13,6 +13,8 @@ public class Customer {
     private String name;
     private Location location;
     private List<Order> orders = new ArrayList<>();
+    private Double TotalPriceOfProductsOrders;
+    private Double TotalPriceOfDeliveryOrders;
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
@@ -35,8 +37,7 @@ public class Customer {
     }
 
 
-    private Double TotalPriceOfProductsOrders;
-    private Double TotalPriceOfDeliveryOrders;
+
 
     public Customer(Integer id, String name, Location location) {
         this.id = id;

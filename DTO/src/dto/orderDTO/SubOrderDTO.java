@@ -30,7 +30,18 @@ public class SubOrderDTO {
         return totalProductsToDisplay;
     }
 
-
+    public SubOrderDTO(Integer id, LocalDate date, StoreDTO store, CustomerDTO customer, Double distance, Double deliverCost, Integer numberOfDifferentProducts, Double amountsOfProducts, Double totalCostProducts, Double totalOrderCost) {
+        this.id = id;
+        this.date = date;
+        this.store = store;
+        this.customer = customer;
+        this.distance = distance;
+        this.deliverCost = deliverCost;
+        this.numberOfDifferentProducts = numberOfDifferentProducts;
+        this.amountsOfProducts = amountsOfProducts;
+        this.totalCostProducts = totalCostProducts;
+        this.totalOrderCost = totalOrderCost;
+    }
 
     public void setTotalProductsToDisplay(List<StoreProductOrderDTO> totalProductsToDisplay) {
         this.totalProductsToDisplay = totalProductsToDisplay;
