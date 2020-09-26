@@ -4,13 +4,11 @@ import dto.CustomerDTO;
 import dto.StoreDTO;
 import gui.mainMenuTabPane.MainMenuTabPaneController;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 
-import java.util.Comparator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;

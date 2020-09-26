@@ -164,6 +164,11 @@ public class MainMenuTabPaneController {
         public List<MarketProductDTO> getStoreProductsDTO(Integer storeId) {
             return market.getStoreProductDTOByStoreId(storeId);
         }
+
+        @Override
+        public List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId) {
+            return market.getDiscountsByStoreId(storeId);
+        }
     };
 
     private final IMap mapEngine = new IMap() {
@@ -391,6 +396,9 @@ public class MainMenuTabPaneController {
         List<StoreDTO> getStoresDTO();
 
         List<MarketProductDTO> getStoreProductsDTO(Integer storeId);
+
+        List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId);
+
     }
 
     public interface IMap {

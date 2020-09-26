@@ -38,7 +38,7 @@ public class ShopTabLayoutController {
 
     public void setEngine(IStoreInfo engine) {
         this.engine = engine;
-        Supplier<List<StoreDTO>> storesDTO = ()->engine.getStoresDTO();
+        Supplier<List<StoreDTO>> storesDTO = engine::getStoresDTO;
         storeInfoController.setData(storesDTO);
     }
 
@@ -57,6 +57,7 @@ public class ShopTabLayoutController {
         selectionStoreProperty.addListener(((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 storeProductsController.setData(engine.getStoreProductsDTO(selectionStoreProperty.get().getId()));
+                discountLayoutController.setEngine(engine,selectionStoreProperty);
             }
         }));
     }
