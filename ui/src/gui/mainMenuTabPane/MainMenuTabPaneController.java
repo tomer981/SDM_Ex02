@@ -36,6 +36,8 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class MainMenuTabPaneController {
@@ -217,7 +219,10 @@ public class MainMenuTabPaneController {
                 FXMLLoader loader = new FXMLLoader(StoreInfoTableViewController.class.getResource("StoreInfoTableViewGui.fxml"));
                 Node storeInfoShow = loader.load();
                 StoreInfoTableViewController controller = loader.getController();
-                controller.setData(this::getStoresDTO);
+                List<StoreDTO> storesList = getStoresDTO().stream()
+                        .filter(storeDTO -> storeDTO.getId().equals(store.getId()))
+                        .collect(Collectors.toList());
+                controller.setData(storesList);
 
                 Alert dialog = new Alert(Alert.AlertType.INFORMATION);
                 dialog.setHeaderText(title);
@@ -235,7 +240,10 @@ public class MainMenuTabPaneController {
                 FXMLLoader loader = new FXMLLoader(CustomerInfoTableViewController.class.getResource("CustomerInfoTableViewGui.fxml"));
                 Node storeInfoShow = loader.load();
                 CustomerInfoTableViewController controller = loader.getController();
-                controller.setCustomersData(this::getCustomersDTO);
+                List<CustomerDTO> customersList = getCustomersDTO().stream()
+                        .filter(customerDTO -> customerDTO.getId().equals(customer.getId()))
+                        .collect(Collectors.toList());
+                controller.setCustomersData(customersList);
 
                 Alert dialog = new Alert(Alert.AlertType.INFORMATION);
                 dialog.setHeaderText(title);
@@ -382,7 +390,7 @@ public class MainMenuTabPaneController {
         //controller
         customerController = loader.getController();
         //set Data
-        customerController.setCustomersData(customersData);
+        customerController.setCustomersData(customersData.get());
     }
 
     //map
@@ -402,7 +410,7 @@ public class MainMenuTabPaneController {
     //data
     private void reinitializeData() {
         updateProductController.setEngine(updateProductInterface);
-        customerController.setCustomersData(customersData);
+        customerController.setCustomersData(customersData.get());
         storeLayoutController.setEngine(StoresInfo);
         MarketProductsController.setMarketProductData(products);
         newOrderSelectionController.setEngine(newOrderInterface);

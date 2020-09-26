@@ -37,7 +37,7 @@ public class ShopTabLayoutController {
     public void setEngine(IStoreInfo engine) {
         this.engine = engine;
         Supplier<List<StoreDTO>> storesDTO = engine::getStoresDTO;
-        storeInfoController.setData(storesDTO);
+        storeInfoController.setData(storesDTO.get());
     }
 
     public ShopTabLayoutController() {
