@@ -11,6 +11,7 @@ import gui.productsInMarketTableView.ProductsInMarketTableViewController;
 import gui.shopTabLayout.ShopTabLayoutController;
 import gui.showSelectionOfNewOrderHBox.ShowSelectionOfNewOrderHBoxController;
 import gui.showSelectionOfOrderHBox.ShowSelectionOfOrderHBoxController;
+import gui.storeInfo.layoutDiscounts.BuyDiscountInStoreBoarderPaneController;
 import gui.updateProductHBox.UpdateProductHBoxController;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -36,24 +37,15 @@ import java.util.function.Supplier;
 
 public class MainMenuTabPaneController {
 
-    @FXML
-    private TextField DirDirectoryTextField;
-    @FXML
-    private ProgressBar AdvanceLoadProgressBar;
-    @FXML
-    private Button BrowseButton;
-    @FXML
-    private Tab MarketTab;
-    @FXML
-    private Tab CustomersTab;
-    @FXML
-    private Tab StoreInfoTab;
-    @FXML
-    private Tab MapTab;
-    @FXML
-    private GridPane MarketTabGrid;
-    @FXML
-    private Text loadingStatus;
+    @FXML private TextField DirDirectoryTextField;
+    @FXML private ProgressBar AdvanceLoadProgressBar;
+    @FXML private Button BrowseButton;
+    @FXML private Tab MarketTab;
+    @FXML private Tab CustomersTab;
+    @FXML private Tab StoreInfoTab;
+    @FXML private Tab MapTab;
+    @FXML private GridPane MarketTabGrid;
+    @FXML private Text loadingStatus;
 
 
     private final XmlSystemFactory factory;
@@ -67,6 +59,7 @@ public class MainMenuTabPaneController {
     private ShowSelectionOfNewOrderHBoxController newOrderSelectionController;
     private ShopTabLayoutController storeLayoutController;
     private MapTabPaneViewController mapTabPaneViewController;
+    private BuyDiscountInStoreBoarderPaneController discountLayoutController;
 
     private final IUpdateProduct updateProductInterface = new IUpdateProduct() {
 
@@ -131,7 +124,7 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public OrderDTO findMinCostOrder(OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProductsDTO) {
+        public OrderDTO findMinCostOrder(OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProductsDTO){
             return market.findMinCostOrder(orderDTO, OrderProductsDTO);
         }
 
@@ -141,8 +134,8 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public OrderDTO getStoreOrderByStoreId(Integer storeId, OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProducts) {
-            return market.getStoreOrderByStoreId(storeId, orderDTO, OrderProducts);
+        public OrderDTO getStoreOrderByStoreId(Integer storeId,OrderDTO orderDTO ,List<StoreProductOrderDTO> OrderProducts){
+            return market.getStoreOrderByStoreId(storeId, orderDTO,OrderProducts);
         }
 
         @Override
@@ -152,7 +145,7 @@ public class MainMenuTabPaneController {
 
         @Override
         public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected) {
-            return market.getOffersDiscount(id, discountSelected);
+            return market.getOffersDiscount(id,discountSelected);
         }
 
         @Override
@@ -242,7 +235,6 @@ public class MainMenuTabPaneController {
 
         loadTask.exceptionProperty().addListener((task, oldValue, newValue) -> {
             // When file failed to load
-            // TODO: Aviad, show error here
             newValue.printStackTrace();
         });
         executor.execute(loadTask);
@@ -345,6 +337,7 @@ public class MainMenuTabPaneController {
         newOrderSelectionController.setEngine(newOrderInterface);
         OrderSelectionController.setData(market.getOrdersDTO());
         mapTabPaneViewController.setEngine(mapEngine);
+        storeLayoutController.setEngine(StoresInfo);
     }
 
 
@@ -385,7 +378,7 @@ public class MainMenuTabPaneController {
 
         Double getDistance(Integer x1, Integer y1, Integer x2, Integer y2);
 
-        OrderDTO getStoreOrderByStoreId(Integer storeId, OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProducts);
+        OrderDTO getStoreOrderByStoreId(Integer storeId,OrderDTO orderDTO ,List<StoreProductOrderDTO> OrderProducts);
 
         List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId);
 
@@ -402,6 +395,7 @@ public class MainMenuTabPaneController {
 
     public interface IMap {
         List<CustomerDTO> getCustomersDTO();
+
         List<StoreDTO> getStoresDTO();
         void showStore(StoreDTO store);
         void showCustomer(CustomerDTO customer);

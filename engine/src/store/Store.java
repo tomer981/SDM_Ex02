@@ -33,6 +33,14 @@ public class Store {
         this.orders = orders;
     }
 
+    public Double getDeliveryEarn() {
+        return deliveryEarn;
+    }
+
+    public void setDeliveryEarn(Double deliveryEarn) {
+        this.deliveryEarn = deliveryEarn;
+    }
+
     private Map<Integer, SubOrder>  orders = new HashMap<>();
     private Set<Discount> discounts;
 
@@ -95,7 +103,9 @@ public class Store {
                 deliveryEarn,
                 location.getCordX(),
                 location.getCordY(),
-                storeProducts.size());
+                storeProducts.size(),
+                deliveryEarn,
+                orders.size());
     }
     private MarketProductDTO getStoreProductDTO(StoreProduct storeProduct){
         Product product = storeProduct.getProduct();
