@@ -169,6 +169,12 @@ public class MainMenuTabPaneController {
         public List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId) {
             return market.getDiscountsByStoreId(storeId);
         }
+
+        @Override
+        public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected) {
+            return market.getOffersDiscount(id,discountSelected);
+        }
+
     };
 
     private final IMap mapEngine = new IMap() {
@@ -191,6 +197,8 @@ public class MainMenuTabPaneController {
         public void showCustomer(CustomerDTO customer) {
             System.out.printf("Showing %s", customer.getName()); // TODO: Tomer, implement me
         }
+
+
     };
 
     private final Supplier<List<CustomerDTO>> customersData = () -> market.getCustomersDTO();
@@ -398,6 +406,8 @@ public class MainMenuTabPaneController {
         List<MarketProductDTO> getStoreProductsDTO(Integer storeId);
 
         List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId);
+
+        OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected);
 
     }
 
