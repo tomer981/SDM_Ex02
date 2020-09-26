@@ -7,6 +7,7 @@ import gui.mainMenuTabPane.MainMenuTabPaneController;
 import gui.mainMenuTabPane.MainMenuTabPaneController.IStoreInfo;
 import gui.newOrder.finalOrderLayout.FinalOrderLayoutBoarderPaneController;
 import gui.newOrder.newOrderLayoutGrid.NewOrderLayoutGridController;
+import gui.showOrderInfo.ShowOrderInfoBorderPaneController;
 import gui.updateProductHBox.UpdateProductHBoxController;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;
@@ -24,9 +25,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static gui.productsInMarketTableView.ProductsInMarketTableViewController.RoundDouble;
 
@@ -60,16 +59,22 @@ public class ShowStoreOrderBorderPaneController {
 
     @FXML
     void onShowFullOrderButton(ActionEvent event) throws IOException {
-        OrderDTO order = ordersDTO.stream().filter(orderDTO -> orderDTO.getId().equals(orderTableView.getSelectionModel().getSelectedItem())).findFirst().orElse(null);
+        OrderDTO order = ordersDTO.stream().filter(orderDTO -> !orderDTO.getId().equals(orderTableView.getSelectionModel().getSelectedItem())).findFirst().orElse(null);
+
+        showOrders(order);
+
+    }
+
+    private void showOrders(OrderDTO order) throws IOException {
 
         Stage fullOrderStage = new Stage();//TODO: maybe Primary Stage
         fullOrderStage.setTitle("Full Order");
 
-        FXMLLoader loader = new FXMLLoader(FinalOrderLayoutBoarderPaneController.class.getResource("FinalOrderLayoutBoarderPaneGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(ShowOrderInfoBorderPaneController.class.getResource("ShowOrderInfoBorderPaneGui.fxml"));
         BorderPane load = loader.load();
 
-        FinalOrderLayoutBoarderPaneController controller = loader.getController();
-
+        ShowOrderInfoBorderPaneController controller = loader.getController();
+        controller.setData(order);
 
 
         Scene scene = new Scene(load, 600, 400);
@@ -78,9 +83,12 @@ public class ShowStoreOrderBorderPaneController {
     }
 
     @FXML
-    void onShowOrderButton(ActionEvent event) {
-        //OrderDTO orderDTO = new OrderDTO()
-
+    void onShowOrderButton(ActionEvent event) throws IOException {
+        OrderDTO order = ordersDTO.stream().filter(orderDTO -> !orderDTO.getId().equals(orderTableView.getSelectionModel().getSelectedItem())).findFirst().orElse(null);
+        Map<StoreDTO, SubOrderDTO> newOrderInfo = new HashMap<>();
+        newOrderInfo.put(selectionStoreProperty.get(),order.getKStoresVSubOrders().get(selectionStoreProperty.get()));
+        order.setKStoresVSubOrders(newOrderInfo);
+        showOrders(order);
     }
 
     public void setData(IStoreInfo engine, ReadOnlyObjectProperty<StoreDTO> selectionStoreProperty) {
