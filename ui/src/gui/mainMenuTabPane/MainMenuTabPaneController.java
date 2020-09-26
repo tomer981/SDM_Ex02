@@ -256,7 +256,7 @@ public class MainMenuTabPaneController {
     }
 
     private void initializeUpdateProductHBox() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/updateProductHBox/UpdateProductHBoxGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(UpdateProductHBoxController.class.getResource("UpdateProductHBoxGui.fxml"));
         HBox updateProductHBox = loader.load();
 
         MarketTabGrid.add(updateProductHBox, 0, 1);
@@ -266,7 +266,7 @@ public class MainMenuTabPaneController {
     }
 
     private void initializeShowProductsInMarketTableView() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/productsInMarketTableView/ProductsInMarketTableViewGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(ProductsInMarketTableViewController.class.getResource("ProductsInMarketTableViewGui.fxml"));
         ScrollPane productsInMarketTableView = loader.load();
 
         MarketTabGrid.add(productsInMarketTableView, 0, 4);
@@ -276,7 +276,7 @@ public class MainMenuTabPaneController {
     }
 
     private void initializeShowSelectionOfOrderHBox() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/showSelectionOfOrderHBox/ShowSelectionOfOrderHBoxGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(ShowSelectionOfOrderHBoxController.class.getResource("ShowSelectionOfOrderHBoxGui.fxml"));
         HBox showSelectionOfOrderHBox = loader.load();
 
         MarketTabGrid.add(showSelectionOfOrderHBox, 0, 3);
@@ -286,7 +286,7 @@ public class MainMenuTabPaneController {
     }
 
     private void initializeShowNewOrderHBox() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/showSelectionOfNewOrderHBox/ShowSelectionOfNewOrderHBoxGui.fxml"));//TODO load Static class for name
+        FXMLLoader loader = new FXMLLoader(ShowSelectionOfNewOrderHBoxController.class.getResource("ShowSelectionOfNewOrderHBoxGui.fxml"));//TODO load Static class for name
         HBox showNewOrderHBox = loader.load();
 
         MarketTabGrid.add(showNewOrderHBox, 0, 2);
@@ -296,7 +296,7 @@ public class MainMenuTabPaneController {
 
     //store
     private void initializeStoreInfoTab() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/shopTabLayout/ShopTabLayoutGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(ShopTabLayoutController.class.getResource("ShopTabLayoutGui.fxml"));
         SplitPane storeInfo = loader.load();
 
         StoreInfoTab.setContent(storeInfo);
@@ -307,7 +307,7 @@ public class MainMenuTabPaneController {
 
     //Customer
     private void initializeCustomersTab() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/customerInfoTableView/CustomerInfoTableViewGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(CustomerInfoTableViewController.class.getResource("CustomerInfoTableViewGui.fxml"));
         ScrollPane customerTableView = loader.load();
 
         //rest tab
@@ -321,7 +321,7 @@ public class MainMenuTabPaneController {
 
     //map
     private void initializeMapTab() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/mapTabPane/MapTabPaneViewGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(MapTabPaneViewController.class.getResource("MapTabPaneViewGui.fxml"));
         ScrollPane mapTabPaneView = loader.load();
 
         //reset tab

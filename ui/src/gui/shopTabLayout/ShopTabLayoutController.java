@@ -66,7 +66,7 @@ public class ShopTabLayoutController {
         ScrollPane storeInfoTableView = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\storeInfo\\layoutDiscounts\\BuyDiscountInStoreBoarderPaneGui.fxml"));
+            loader = new FXMLLoader(BuyDiscountInStoreBoarderPaneController.class.getResource("BuyDiscountInStoreBoarderPaneGui.fxml"));
             storeInfoTableView = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class ShopTabLayoutController {
         ScrollPane storeInfoTableView = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\storeInfoTableView\\StoreInfoTableViewGui.fxml"));
+            loader = new FXMLLoader(StoreInfoTableViewController.class.getResource("StoreInfoTableViewGui.fxml"));
             storeInfoTableView = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,7 +93,7 @@ public class ShopTabLayoutController {
         ScrollPane storeProductTableView = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\productsInStoreTableView\\ProductsInStoreTableViewGui.fxml"));
+            loader = new FXMLLoader(ProductsInStoreTableViewController.class.getResource("ProductsInStoreTableViewGui.fxml"));
             storeProductTableView = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
