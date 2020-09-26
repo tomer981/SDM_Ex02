@@ -1,7 +1,5 @@
 package dto.orderDTO;
 
-import javafx.scene.layout.BorderPane;
-
 import java.util.Objects;
 
 public class StoreProductOrderDTO {
