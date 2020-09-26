@@ -194,6 +194,11 @@ public class MainMenuTabPaneController {
             return market.getOrdersDTO();
         }
 
+        @Override
+        public INewOrder getINewOrderInterfaceEngine() {
+            return newOrderInterface;
+        }
+
     };
 
     private final IMap mapEngine = new IMap() {
@@ -471,6 +476,8 @@ public class MainMenuTabPaneController {
         OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected);
 
         Set<OrderDTO> getOrdersDTO();
+
+        INewOrder getINewOrderInterfaceEngine();
 
     }
 
