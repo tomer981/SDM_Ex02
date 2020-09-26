@@ -27,8 +27,8 @@ public class CustomerInfoTableViewController {
 
     List<CustomerDTO> customers;
 
-    public void setCustomersData(Supplier<List<CustomerDTO>> CustomersData){
-        customers = CustomersData.get();
+    public void setCustomersData(List<CustomerDTO> CustomersData){
+        customers = CustomersData;
         customers.forEach(customerDTO -> customerDTO.setAvgPricePerDelivery(RoundDouble(customerDTO.getAvgPricePerDelivery())));
         customers.forEach(customerDTO -> customerDTO.setAvgPricePerOrder(RoundDouble(customerDTO.getAvgPricePerOrder())));
 

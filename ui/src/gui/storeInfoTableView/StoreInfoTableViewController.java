@@ -24,8 +24,8 @@ public class StoreInfoTableViewController {
 
     private List<StoreDTO> stores;
 
-    public void setData(Supplier<List<StoreDTO>> storesDTO) {
-        stores = storesDTO.get();
+    public void setData(List<StoreDTO> storesDTO) {
+        stores = storesDTO;
         stores.forEach(storeDTO -> storeDTO.setDeliveryEarned(RoundDouble(storeDTO.getDeliveryEarned())));
         storesTableView.setItems(FXCollections.observableArrayList(stores));
         storesTableView.refresh();
