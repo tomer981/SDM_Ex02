@@ -10,6 +10,9 @@ public class StoreDTO {
     private Integer cordY;
     private Double deliveryEarned;
     private Integer numberOfProductsSelling;
+
+
+
     private Integer numberOfOrders = 0;
 
 
@@ -25,7 +28,9 @@ public class StoreDTO {
         this.numberOfOrders = numberOfOrders;
     }
 
-
+    public Integer getNumberOfOrders() {
+        return numberOfOrders;
+    }
 
     public Integer getCordX() {
         return cordX;
