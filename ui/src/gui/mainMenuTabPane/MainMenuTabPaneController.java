@@ -315,15 +315,15 @@ public class MainMenuTabPaneController {
     //map
     private void initializeMapTab() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/mapTabPane/MapTabPaneViewGui.fxml"));
-        ScrollPane customerTableView = loader.load();
+        ScrollPane mapTabPaneView = loader.load();
 
-        //rest tab
-        CustomersTab.setContent(null);
-        CustomersTab.setContent(customerTableView);
+        //reset tab
+        MapTab.setContent(null);
+        MapTab.setContent(mapTabPaneView);
         //controller
-        customerController = loader.getController();
+        mapTabPaneViewController = loader.getController();
         //set Data
-        customerController.setCustomersData(customersData);
+        mapTabPaneViewController.setEngine(mapEngine);
     }
 
     //data
