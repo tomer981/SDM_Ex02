@@ -181,7 +181,7 @@ public class Market {
             orders.add(order);
             customer.addOrder(order);
             customer.setTotalPriceOfDeliveryOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalDeliverOrderCost());
-            customer.setTotalPriceOfProductsOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalCostProducts());
+            customer.setTotalPriceOfProductsOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalCostProducts());//TODO: fix
         }
     }
 
