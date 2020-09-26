@@ -1,6 +1,7 @@
 package gui.mainMenuTabPane;
 
 
+import customer.Customer;
 import dto.CustomerDTO;
 import dto.MarketProductDTO;
 import dto.StoreDTO;
@@ -12,11 +13,13 @@ import gui.shopTabLayout.ShopTabLayoutController;
 import gui.showSelectionOfNewOrderHBox.ShowSelectionOfNewOrderHBoxController;
 import gui.showSelectionOfOrderHBox.ShowSelectionOfOrderHBoxController;
 import gui.storeInfo.layoutDiscounts.BuyDiscountInStoreBoarderPaneController;
+import gui.storeInfoTableView.StoreInfoTableViewController;
 import gui.updateProductHBox.UpdateProductHBoxController;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -28,7 +31,6 @@ import xml.XmlSystemFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -38,15 +40,24 @@ import java.util.function.Supplier;
 
 public class MainMenuTabPaneController {
 
-    @FXML private TextField DirDirectoryTextField;
-    @FXML private ProgressBar AdvanceLoadProgressBar;
-    @FXML private Button BrowseButton;
-    @FXML private Tab MarketTab;
-    @FXML private Tab CustomersTab;
-    @FXML private Tab StoreInfoTab;
-    @FXML private Tab MapTab;
-    @FXML private GridPane MarketTabGrid;
-    @FXML private Text loadingStatus;
+    @FXML
+    private TextField DirDirectoryTextField;
+    @FXML
+    private ProgressBar AdvanceLoadProgressBar;
+    @FXML
+    private Button BrowseButton;
+    @FXML
+    private Tab MarketTab;
+    @FXML
+    private Tab CustomersTab;
+    @FXML
+    private Tab StoreInfoTab;
+    @FXML
+    private Tab MapTab;
+    @FXML
+    private GridPane MarketTabGrid;
+    @FXML
+    private Text loadingStatus;
 
 
     private final XmlSystemFactory factory;
@@ -125,7 +136,7 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public OrderDTO findMinCostOrder(OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProductsDTO){
+        public OrderDTO findMinCostOrder(OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProductsDTO) {
             return market.findMinCostOrder(orderDTO, OrderProductsDTO);
         }
 
@@ -135,8 +146,8 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public OrderDTO getStoreOrderByStoreId(Integer storeId,OrderDTO orderDTO ,List<StoreProductOrderDTO> OrderProducts){
-            return market.getStoreOrderByStoreId(storeId, orderDTO,OrderProducts);
+        public OrderDTO getStoreOrderByStoreId(Integer storeId, OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProducts) {
+            return market.getStoreOrderByStoreId(storeId, orderDTO, OrderProducts);
         }
 
         @Override
@@ -146,7 +157,7 @@ public class MainMenuTabPaneController {
 
         @Override
         public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected) {
-            return market.getOffersDiscount(id,discountSelected);
+            return market.getOffersDiscount(id, discountSelected);
         }
 
         @Override
@@ -173,7 +184,7 @@ public class MainMenuTabPaneController {
 
         @Override
         public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected) {
-            return market.getOffersDiscount(id,discountSelected);
+            return market.getOffersDiscount(id, discountSelected);
         }
 
         @Override
@@ -201,15 +212,39 @@ public class MainMenuTabPaneController {
 
         @Override
         public void showStore(StoreDTO store) {
-            System.out.printf("Showing %s", store.getName()); // TODO: Tomer, implement me
+            String title = String.format("Store information for %s", store.getName());
+            try {
+                FXMLLoader loader = new FXMLLoader(StoreInfoTableViewController.class.getResource("StoreInfoTableViewGui.fxml"));
+                Node storeInfoShow = loader.load();
+                StoreInfoTableViewController controller = loader.getController();
+                controller.setData(this::getStoresDTO);
+
+                Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+                dialog.setHeaderText(title);
+                dialog.getDialogPane().setContent(storeInfoShow);
+                dialog.showAndWait();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public void showCustomer(CustomerDTO customer) {
-            System.out.printf("Showing %s", customer.getName()); // TODO: Tomer, implement me
+            String title = String.format("Customer information for %s", customer.getName());
+            try {
+                FXMLLoader loader = new FXMLLoader(CustomerInfoTableViewController.class.getResource("CustomerInfoTableViewGui.fxml"));
+                Node storeInfoShow = loader.load();
+                CustomerInfoTableViewController controller = loader.getController();
+                controller.setCustomersData(this::getCustomersDTO);
+
+                Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+                dialog.setHeaderText(title);
+                dialog.getDialogPane().setContent(storeInfoShow);
+                dialog.showAndWait();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-
     };
 
     private final Supplier<List<CustomerDTO>> customersData = () -> market.getCustomersDTO();
@@ -414,7 +449,7 @@ public class MainMenuTabPaneController {
 
         Double getDistance(Integer x1, Integer y1, Integer x2, Integer y2);
 
-        OrderDTO getStoreOrderByStoreId(Integer storeId,OrderDTO orderDTO ,List<StoreProductOrderDTO> OrderProducts);
+        OrderDTO getStoreOrderByStoreId(Integer storeId, OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProducts);
 
         List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId);
 
@@ -442,7 +477,9 @@ public class MainMenuTabPaneController {
         List<CustomerDTO> getCustomersDTO();
 
         List<StoreDTO> getStoresDTO();
+
         void showStore(StoreDTO store);
+
         void showCustomer(CustomerDTO customer);
     }
 
