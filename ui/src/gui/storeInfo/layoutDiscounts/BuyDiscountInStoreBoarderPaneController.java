@@ -42,7 +42,7 @@ public class BuyDiscountInStoreBoarderPaneController {
     }
 
     private void initializeDiscountDisplay() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\storeInfo\\buyDiscountInStore\\BuyDiscountInStoreTableViewGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(BuyDiscountInStoreTableViewController.class.getResource("BuyDiscountInStoreTableViewGui.fxml"));
         ScrollPane discountTable = loader.load();
         discountTableViewController = loader.getController();
         borderPaneDiscount.setCenter(discountTable);
@@ -55,7 +55,7 @@ public class BuyDiscountInStoreBoarderPaneController {
         Stage discountOfferStage = new Stage();//TODO: maybe Primary Stage
         discountOfferStage.setTitle("Offer of Discount");
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\storeInfo\\getDiscountInStore\\GetDiscountInStoreTableViewGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(GetDiscountInStoreTableViewController.class.getResource("GetDiscountInStoreTableViewGui.fxml"));
         ScrollPane offerDiscountTableView = loader.load();
 
         offerDiscountController = loader.getController();

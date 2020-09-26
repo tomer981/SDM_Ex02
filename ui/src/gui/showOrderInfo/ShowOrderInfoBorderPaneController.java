@@ -62,7 +62,7 @@ public class ShowOrderInfoBorderPaneController {
         FXMLLoader loader = null;
         ScrollPane load = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\newOrder\\storeSummery\\StoreSummeryTableViewGui.fxml"));
+            loader = new FXMLLoader(StoreSummeryTableViewController.class.getResource("StoreSummeryTableViewGui.fxml"));
             load = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class ShowOrderInfoBorderPaneController {
         FXMLLoader loader = null;
         ScrollPane load = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\newOrder\\productsSummery\\ProductsSummeryTableViewGui.fxml"));
+            loader = new FXMLLoader(ProductsSummeryTableViewController.class.getResource("ProductsSummeryTableViewGui.fxml"));
             load = loader.load();
         } catch (IOException e) {
             e.printStackTrace();

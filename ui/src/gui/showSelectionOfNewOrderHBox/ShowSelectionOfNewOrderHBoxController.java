@@ -83,7 +83,7 @@ public class ShowSelectionOfNewOrderHBoxController {
         FXMLLoader loader = null;
         GridPane load = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\newOrder\\newOrderLayoutGrid\\NewOrderLayoutGridGui.fxml"));
+            loader = new FXMLLoader(NewOrderLayoutGridController.class.getResource("NewOrderLayoutGridGui.fxml"));
             load = loader.load();
         } catch (IOException e) {
             e.printStackTrace();

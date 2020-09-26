@@ -41,7 +41,7 @@ public class ShowSelectionOfOrderHBoxController {
         FXMLLoader loader = null;
         BorderPane load = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\showOrderInfo\\ShowOrderInfoBorderPaneGui.fxml"));
+            loader = new FXMLLoader(ShowOrderInfoBorderPaneController.class.getResource("ShowOrderInfoBorderPaneGui.fxml"));
             load = loader.load();
         } catch (IOException e) {
             e.printStackTrace();

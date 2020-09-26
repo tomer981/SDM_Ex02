@@ -95,7 +95,7 @@ public class NewOrderLayoutGridController {
         ScrollPane productsInSystem = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\newOrder\\productsTableView\\ProductsTableViewGui.fxml"));
+            loader = new FXMLLoader(ProductsTableViewController.class.getResource("ProductsTableViewGui.fxml"));
             productsInSystem = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -109,7 +109,7 @@ public class NewOrderLayoutGridController {
         ScrollPane productsInOrder = null;
         FXMLLoader loader = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\newOrder\\productsTableView\\ProductsTableViewGui.fxml"));
+            loader = new FXMLLoader(ProductsTableViewController.class.getResource("ProductsTableViewGui.fxml"));
             productsInOrder = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -210,7 +210,7 @@ public class NewOrderLayoutGridController {
         FXMLLoader loader = null;
         BorderPane load = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\newOrder\\discountsLayout\\DiscountLayoutBorderPaneGui.fxml"));
+            loader = new FXMLLoader(DiscountLayoutBorderPaneController.class.getResource("DiscountLayoutBorderPaneGui.fxml"));
             load = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -225,7 +225,7 @@ public class NewOrderLayoutGridController {
         FXMLLoader loader = null;
         BorderPane load = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\newOrder\\dynamicLayoutBoarderPane\\DynamicLayoutBoarderPaneGui.fxml"));
+            loader = new FXMLLoader(DynamicLayoutBoarderPaneController.class.getResource("DynamicLayoutBoarderPaneGui.fxml"));
             load = loader.load();
         } catch (IOException e) {
             e.printStackTrace();

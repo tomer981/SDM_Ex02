@@ -67,7 +67,7 @@ public class DiscountLayoutBorderPaneController {
         ScrollPane load = null;
 
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\storeInfo\\buyDiscountInStore\\BuyDiscountInStoreTableViewGui.fxml"));
+            loader = new FXMLLoader(BuyDiscountInStoreTableViewController.class.getResource("BuyDiscountInStoreTableViewGui.fxml"));
             load = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,7 +83,7 @@ public class DiscountLayoutBorderPaneController {
         ScrollPane load = null;
 
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\storeInfo\\getDiscountInStore\\GetDiscountInStoreTableViewGui.fxml"));
+            loader = new FXMLLoader(GetDiscountInStoreTableViewController.class.getResource("GetDiscountInStoreTableViewGui.fxml"));
             load = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
@@ -182,7 +182,7 @@ public class DiscountLayoutBorderPaneController {
         FXMLLoader loader = null;
         BorderPane load = null;
         try {
-            loader = new FXMLLoader(getClass().getResource("..\\..\\..\\gui\\newOrder\\finalOrderLayout\\FinalOrderLayoutBoarderPaneGui.fxml"));
+            loader = new FXMLLoader(FinalOrderLayoutBoarderPaneController.class.getResource("FinalOrderLayoutBoarderPaneGui.fxml"));
             load = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
