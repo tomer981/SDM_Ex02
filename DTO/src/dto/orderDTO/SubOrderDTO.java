@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class SubOrderDTO {
+
+
     private Integer id;
     private LocalDate date;
     private StoreDTO store;
@@ -124,6 +126,13 @@ public class SubOrderDTO {
         this.storeProductsDTO = storeProductsDTO;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

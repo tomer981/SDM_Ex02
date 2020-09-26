@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
+
 <SplitPane dividerPositions="0.5821917808219178" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.shopTabLayout.ShopTabLayoutController">
    <items>
       <SplitPane fx:id="LStoreRDiscountSplitPane" dividerPositions="0.5" prefHeight="283.0" prefWidth="648.0">
          <items>
-            <AnchorPane fx:id="storeInfoLocationAnchorPane" />
-            <AnchorPane fx:id="DiscountLocationAnchorPane" />
+            <AnchorPane />
+            <AnchorPane />
          </items>
       </SplitPane>
       <SplitPane fx:id="LProductROrder" dividerPositions="0.5" prefHeight="282.0" prefWidth="648.0">
          <items>
-            <AnchorPane fx:id="productLocationAnchorPane" />
-            <AnchorPane fx:id="orderLocationAnchorPane" />
+            <AnchorPane />
+            <AnchorPane />
          </items>
       </SplitPane>
    </items>

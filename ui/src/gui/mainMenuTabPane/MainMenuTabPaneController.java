@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
@@ -173,6 +174,11 @@ public class MainMenuTabPaneController {
         @Override
         public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected) {
             return market.getOffersDiscount(id,discountSelected);
+        }
+
+        @Override
+        public Set<OrderDTO> getOrdersDTO() {
+            return market.getOrdersDTO();
         }
 
     };
@@ -408,6 +414,8 @@ public class MainMenuTabPaneController {
         List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId);
 
         OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected);
+
+        Set<OrderDTO> getOrdersDTO();
 
     }
 

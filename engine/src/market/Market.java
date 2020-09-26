@@ -392,7 +392,4 @@ public class Market {
         Store store = getStoreById(id);
         return getOffersDiscount(store, discount);
     }
-
-
-
 }

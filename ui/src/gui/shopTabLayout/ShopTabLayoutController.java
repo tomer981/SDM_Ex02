@@ -2,6 +2,7 @@ package gui.shopTabLayout;
 
 import dto.StoreDTO;
 import gui.productsInStoreTableView.ProductsInStoreTableViewController;
+import gui.showStoreOrder.ShowStoreOrderBorderPaneController;
 import gui.storeInfo.layoutDiscounts.BuyDiscountInStoreBoarderPaneController;
 import gui.storeInfoTableView.StoreInfoTableViewController;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -21,16 +22,14 @@ import static gui.mainMenuTabPane.MainMenuTabPaneController.IStoreInfo;
 public class ShopTabLayoutController {
 
     @FXML private SplitPane LStoreRDiscountSplitPane;
-    @FXML private AnchorPane storeInfoLocationAnchorPane;
-    @FXML private AnchorPane DiscountLocationAnchorPane;
     @FXML private SplitPane LProductROrder;
-    @FXML private AnchorPane productLocationAnchorPane;
-    @FXML private AnchorPane orderLocationAnchorPane;
+
 
     private IStoreInfo engine;
     private StoreInfoTableViewController storeInfoController;
     private ProductsInStoreTableViewController storeProductsController;
     private BuyDiscountInStoreBoarderPaneController discountLayoutController;
+    private ShowStoreOrderBorderPaneController orderInfoController;
 
 
     private ReadOnlyObjectProperty<StoreDTO> selectionStoreProperty;
@@ -47,10 +46,10 @@ public class ShopTabLayoutController {
     }
 
     @FXML
-    private void initialize() {
+    private void initialize() throws IOException {
         initializeStoreInfoTabView();
         initializeStoreProductTableView();
-        initializeOrderInfoTableView();
+        initializeOrderInfo();
         initializeDiscountView();
 
         selectionStoreProperty = storeInfoController.getSelectionStore();
@@ -58,6 +57,7 @@ public class ShopTabLayoutController {
             if (newValue != null) {
                 storeProductsController.setData(engine.getStoreProductsDTO(selectionStoreProperty.get().getId()));
                 discountLayoutController.setEngine(engine,selectionStoreProperty);
+                orderInfoController.setData(engine,selectionStoreProperty);
             }
         }));
     }
@@ -102,8 +102,11 @@ public class ShopTabLayoutController {
         LProductROrder.getItems().set(0, storeProductTableView);
     }
 
-
-    private void initializeOrderInfoTableView() {
+    private void initializeOrderInfo() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\showStoreOrder\\ShowStoreOrderBorderPaneGui.fxml"));
+        BorderPane discountTable = loader.load();
+        orderInfoController = loader.getController();
+        LProductROrder.getItems().set(1, discountTable);
 
     }
 }
