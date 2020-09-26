@@ -8,15 +8,20 @@ import java.util.Objects;
 public class StoreProduct implements Cloneable{
     private Double price;
     private Integer timeSold;
-
-    public void setTimeSold(Integer timeSold) {
-        this.timeSold = timeSold;
-    }
-
     private Double amountSold;
     private Product product;
 
 
+
+
+
+    public StoreProductOrderDTO getStoreProductOrderDTO(Boolean isProductDiscount) {
+        if (isProductDiscount){
+            return new StoreProductOrderDTO(product.getId(),product.getName(),product.getPurchaseCategory().name(),price,amountSold,-1.0);
+        }
+        return new StoreProductOrderDTO(product.getId(),product.getName(),product.getPurchaseCategory().name(),price,amountSold,0.0);
+
+    }
     public StoreProduct(Product product, Double price) {
 //        this.price = new SimpleDoubleProperty(price);
         this.price = price;
@@ -29,6 +34,10 @@ public class StoreProduct implements Cloneable{
         this.price = price;
         this.amountSold = amountSold;
         this.product = product;
+    }
+
+    public void setTimeSold(Integer timeSold) {
+        this.timeSold = timeSold;
     }
 
     @Override
@@ -78,4 +87,6 @@ public class StoreProduct implements Cloneable{
     public void setPrice(double price) {
         this.price = price;
     }
+
+
 }

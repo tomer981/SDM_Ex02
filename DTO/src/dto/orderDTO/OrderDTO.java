@@ -4,6 +4,7 @@ import dto.CustomerDTO;
 import dto.StoreDTO;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
 public class OrderDTO {
@@ -16,7 +17,7 @@ public class OrderDTO {
     private Double totalDeliverOrderCost;
     private Double totalOrderCost = 0.0;
 
-    private Map<StoreDTO, SubOrderDTO> KStoresVSubOrders;
+    private Map<StoreDTO, SubOrderDTO> KStoresVSubOrders = new HashMap<>();
 
     public OrderDTO(Integer id, LocalDate date, CustomerDTO customer) {
         this.id = id;

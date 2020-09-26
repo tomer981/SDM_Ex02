@@ -339,7 +339,7 @@ public class MainMenuTabPaneController {
         storeLayoutController.setEngine(StoresInfo);
         MarketProductsController.setMarketProductData(products);
         newOrderSelectionController.setEngine(newOrderInterface);
-//        OrderSelectionController.setData();
+        OrderSelectionController.setData(market.getOrdersDTO());
     }
 
 

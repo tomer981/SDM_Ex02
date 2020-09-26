@@ -24,9 +24,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DiscountLayoutBorderPaneController {
@@ -190,11 +188,49 @@ public class DiscountLayoutBorderPaneController {
             e.printStackTrace();
         }
         FinalOrderLayoutBoarderPaneController controller  = loader.getController();
-
+        setDataForNext();
         controller.setData(engine,orderStage,orderDTO);
 
         Scene scene = new Scene(load, 600, 400);
         orderStage.setScene(scene);
         orderStage.show();
+    }
+
+    private void setDataForNext() {
+        Set<Integer> orderProduct = new HashSet<>();
+
+        for (SubOrderDTO subOrder : orderDTO.getKStoresVSubOrders().values()) {
+            List<StoreProductOrderDTO> allTypeOfStoreProductInSubOrder = subOrder.getTotalProductsToDisplay();
+            allTypeOfStoreProductInSubOrder.addAll(subOrder.getStoreProductsDTO());
+
+            for (OffersDiscountDTO singleDiscountOffer : subOrder.getKOffersDiscountVTimeUse().keySet()){
+                for (OfferDiscountDTO offerProduct : singleDiscountOffer.getOffersDiscount()){
+                    StoreProductOrderDTO discountProduct = new StoreProductOrderDTO
+                            (offerProduct.getId(),offerProduct.getName(),offerProduct.getCategory(),offerProduct.getPrice()/offerProduct.getAmount(),offerProduct.getAmount() * subOrder.getKOffersDiscountVTimeUse().get(singleDiscountOffer),-1.0);
+
+                    allTypeOfStoreProductInSubOrder.add(discountProduct);
+
+                    Double totalAmountNewProduct = discountProduct.getAmountBought();
+                    Double totalCostNewProduct = discountProduct.getPricePerUnit() * totalAmountNewProduct;
+
+                    subOrder.setAmountsOfProducts(totalAmountNewProduct);
+                    subOrder.setTotalCostProducts(subOrder.getTotalCostProducts() + totalCostNewProduct);
+
+                    orderDTO.setAmountsOfProducts(orderDTO.getAmountsOfProducts() + totalAmountNewProduct);
+                    orderDTO.setTotalCostProducts(orderDTO.getTotalCostProducts() + totalCostNewProduct);
+                }
+            }
+
+            subOrder.setTotalOrderCost(subOrder.getDeliverCost() + subOrder.getTotalCostProducts());
+
+            Set<Integer> subOrderProducts = subOrder.getTotalProductsToDisplay().stream().map(StoreProductOrderDTO::getId).collect(Collectors.toSet());
+            subOrder.setNumberOfDifferentProducts(subOrderProducts.size());
+
+            orderProduct.addAll(subOrderProducts);
+        }
+
+        orderDTO.setNumberOfDifferentProducts(orderProduct.size());
+        orderDTO.setTotalOrderCost(orderDTO.getTotalDeliverOrderCost() + orderDTO.getTotalCostProducts());
+
     }
 }
