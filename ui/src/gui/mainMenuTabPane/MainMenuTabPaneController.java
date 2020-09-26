@@ -395,6 +395,7 @@ public class MainMenuTabPaneController {
 
     public interface IMap {
         List<CustomerDTO> getCustomersDTO();
+
         List<StoreDTO> getStoresDTO();
         void showStore(StoreDTO store);
         void showCustomer(CustomerDTO customer);
