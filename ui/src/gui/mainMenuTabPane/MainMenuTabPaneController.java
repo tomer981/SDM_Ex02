@@ -183,6 +183,16 @@ public class MainMenuTabPaneController {
         public List<StoreDTO> getStoresDTO() {
             return market.getStoresDTO();
         }
+
+        @Override
+        public void showStore(StoreDTO store) {
+            System.out.printf("Showing %s", store.getName()); // TODO: Tomer, implement me
+        }
+
+        @Override
+        public void showCustomer(CustomerDTO customer) {
+            System.out.printf("Showing %s", customer.getName()); // TODO: Tomer, implement me
+        }
     };
 
     private final Supplier<List<CustomerDTO>> customersData = () -> market.getCustomersDTO();
@@ -222,8 +232,8 @@ public class MainMenuTabPaneController {
             this.market = newValue;
             try {
                 initializeMarketTab();
-                initializeStoreInfoTab();
                 initializeMapTab();
+                initializeStoreInfoTab();
                 initializeCustomersTab();
             } catch (IOException e) {
                 throw new IllegalStateException("Could not load UI information from disk", e);
@@ -391,10 +401,10 @@ public class MainMenuTabPaneController {
     }
 
     public interface IMap {
-        public List<CustomerDTO> getCustomersDTO();
-
-        public List<StoreDTO> getStoresDTO();
-        //TODO: Aviad - tell me if you need additional method
+        List<CustomerDTO> getCustomersDTO();
+        List<StoreDTO> getStoresDTO();
+        void showStore(StoreDTO store);
+        void showCustomer(CustomerDTO customer);
     }
 
 
