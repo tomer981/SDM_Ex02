@@ -243,17 +243,29 @@ public class MainMenuTabPaneController {
                 initializeCustomersTab();
             } catch (IOException e) {
                 throw new IllegalStateException("Could not load UI information from disk", e);
+            } catch (Exception e) {
+                showLoadingAlert(e);
             }
         });
 
         loadTask.exceptionProperty().addListener((task, oldValue, newValue) -> {
             // When file failed to load
-            newValue.printStackTrace();
+            showLoadingAlert(newValue);
         });
+
         executor.execute(loadTask);
 
     }
 
+    private void showLoadingAlert(Throwable throwable) {
+        Throwable root = throwable;
+        while (root.getCause() != null) {
+            root = root.getCause();
+        }
+
+        Alert alert = new Alert(Alert.AlertType.ERROR, root.getMessage());
+        alert.showAndWait();
+    }
 
     //main
     private void initializeMarketTab() throws IOException {

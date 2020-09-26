@@ -23,8 +23,7 @@ public class SchemaBaseJaxbObjects {
     private List<SDMCustomer> xmlCustomers;
 
 
-
-    public SchemaBaseJaxbObjects(File file) throws JAXBException ,IllegalArgumentException{
+    public SchemaBaseJaxbObjects(File file) throws JAXBException, IllegalArgumentException {
         JAXBContext jaxbContext = JAXBContext.newInstance(JAXB_XML_SDM_PACKAGE_NAME);
         Unmarshaller SDM = jaxbContext.createUnmarshaller();
         xmlMarket = (SuperDuperMarketDescriptor) SDM.unmarshal(file);
@@ -32,73 +31,69 @@ public class SchemaBaseJaxbObjects {
         initializeSchema();
     }
 
-    private void initializeSchema() throws IllegalArgumentException
-    {
-        try{
+    private void initializeSchema() {
+        try {
             validate = new ValidateSchema(this);
             initXmlProducts();
             initXmlStores();
             initXmlCustomers();
             initXmlLocation();
             initXmlDiscounts();
-        }
-
-        catch (Exception e){
-            System.out.println(e.getMessage());
-
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
     }
 
-    public void initXmlProducts() throws IllegalArgumentException{
+    public void initXmlProducts() throws IllegalArgumentException {
         xmlProducts = xmlMarket.getSDMItems().getSDMItem();
         validate.noIdenticalProductsIds(xmlProducts);
     }
 
-    public void initXmlStores() throws IllegalArgumentException{
-        if(xmlMarket.getSDMStores() !=null){
+    public void initXmlStores() throws IllegalArgumentException {
+        if (xmlMarket.getSDMStores() != null) {
             xmlStores = xmlMarket.getSDMStores().getSDMStore();
             Set<Integer> productsSoldInStores = new HashSet<>();
             validate.noIdenticalStoresIds(xmlStores);
-            for (SDMStore xmlStore : xmlStores){
+            for (SDMStore xmlStore : xmlStores) {
                 List<Integer> xmlProductsInStore = xmlStore.getSDMPrices().getSDMSell().stream().map(SDMSell::getItemId).collect(Collectors.toList());
                 productsSoldInStores.addAll(xmlProductsInStore);
                 validate.noIdenticalStoreProductsIds(xmlProductsInStore);
-                validate.StoreProductInMarketProduct(xmlProductsInStore,xmlProducts);
+                validate.StoreProductInMarketProduct(xmlProductsInStore, xmlProducts);
             }
             validate.eachProductSoldByAtLeastOneStore(productsSoldInStores, xmlProducts);
         }
     }
 
-    public void initXmlDiscounts()throws IllegalArgumentException{
-        if(xmlStores != null){
-            for (SDMStore xmlStore : xmlStores){
-                if(xmlStore.getSDMDiscounts() != null){
+    public void initXmlDiscounts() throws IllegalArgumentException {
+        if (xmlStores != null) {
+            for (SDMStore xmlStore : xmlStores) {
+                if (xmlStore.getSDMDiscounts() != null) {
                     List<Integer> xmlProductsInStore = xmlStore.getSDMPrices().getSDMSell().stream().map(SDMSell::getItemId).collect(Collectors.toList());
                     List<IfYouBuy> conditions = xmlStore.getSDMDiscounts().getSDMDiscount().stream().map(SDMDiscount::getIfYouBuy).collect(Collectors.toList());
                     List<Integer> xmlDiscountProductsId = conditions.stream().map(IfYouBuy::getItemId).collect(Collectors.toList());
                     List<ThenYouGet> discountsOffers = xmlStore.getSDMDiscounts().getSDMDiscount().stream().map(SDMDiscount::getThenYouGet).collect(Collectors.toList());
-                    for (ThenYouGet discountOffer : discountsOffers){
+                    for (ThenYouGet discountOffer : discountsOffers) {
                         xmlDiscountProductsId.addAll(discountOffer.getSDMOffer().stream().map(SDMOffer::getItemId).collect(Collectors.toList()));
                     }
-                    validate.IsDiscountProductSoldInStore(xmlProductsInStore,xmlDiscountProductsId);
+                    validate.IsDiscountProductSoldInStore(xmlProductsInStore, xmlDiscountProductsId);
                 }
             }
         }
     }
 
-    public void initXmlCustomers() throws IllegalArgumentException{
-        if (xmlMarket.getSDMCustomers() != null){
+    public void initXmlCustomers() throws IllegalArgumentException {
+        if (xmlMarket.getSDMCustomers() != null) {
             xmlCustomers = xmlMarket.getSDMCustomers().getSDMCustomer();
             validate.noIdenticalCustomersIds(xmlCustomers);
         }
     }
 
-    public void initXmlLocation(){
+    public void initXmlLocation() {
         List<Location> xmlLocation = new ArrayList<>();
-        if (xmlStores != null){
+        if (xmlStores != null) {
             xmlLocation.addAll(xmlStores.stream().map(SDMStore::getLocation).collect(Collectors.toList()));
         }
-        if (xmlCustomers !=null){
+        if (xmlCustomers != null) {
             xmlLocation.addAll(xmlCustomers.stream().map(SDMCustomer::getLocation).collect(Collectors.toList()));
         }
         validate.noIdenticalLocation(xmlLocation);
@@ -116,8 +111,6 @@ public class SchemaBaseJaxbObjects {
     public List<SDMCustomer> getXmlCustomers() {
         return xmlCustomers;
     }
-
-
 
 
 }
