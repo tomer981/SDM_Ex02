@@ -67,9 +67,6 @@ public class MapTabPaneViewController {
                         .map(customerDTO -> createCustomerButton(customerDTO, minX, maxX, minY, maxY))
                         .collect(Collectors.toList())
         );
-
-        mapArea.getChildren().forEach(node ->
-                System.out.println(node.getBoundsInParent()));
     }
 
     private Button createStoreButton(StoreDTO store, int minX, int maxX, int minY, int maxY) {
