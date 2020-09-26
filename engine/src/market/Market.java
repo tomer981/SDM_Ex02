@@ -198,13 +198,12 @@ public class Market {
             SubOrder subOrder = new SubOrder(orderId,localDate,store,customer,distance,deliverCost,numberOfDifferentProducts,amountsOfProducts,totalCostProducts,totalOrderCost,storeProducts,KOfferDiscountVTimeUse);
             order.addSubOrder(subOrder);
             store.getOrders().put(subOrder.getOrderId(),subOrder);
-
+            store.setDeliveryEarn(store.getDeliveryEarn() + subOrder.getDeliverCost());
             orders.add(order);
         }
         customer.addOrder(order);
         customer.setTotalPriceOfDeliveryOrders(customer.getTotalPriceOfDeliveryOrders() + order.getTotalDeliverOrderCost());
         customer.setTotalPriceOfProductsOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalCostProducts());
-
 
     }
 

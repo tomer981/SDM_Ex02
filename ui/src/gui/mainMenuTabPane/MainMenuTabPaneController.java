@@ -10,6 +10,7 @@ import gui.productsInMarketTableView.ProductsInMarketTableViewController;
 import gui.shopTabLayout.ShopTabLayoutController;
 import gui.showSelectionOfNewOrderHBox.ShowSelectionOfNewOrderHBoxController;
 import gui.showSelectionOfOrderHBox.ShowSelectionOfOrderHBoxController;
+import gui.storeInfo.layoutDiscounts.BuyDiscountInStoreBoarderPaneController;
 import gui.updateProductHBox.UpdateProductHBoxController;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -56,6 +57,7 @@ public class MainMenuTabPaneController {
     private ShowSelectionOfOrderHBoxController OrderSelectionController;
     private ShowSelectionOfNewOrderHBoxController newOrderSelectionController;
     private ShopTabLayoutController storeLayoutController;
+    private BuyDiscountInStoreBoarderPaneController discountLayoutController;
 
     private final IUpdateProduct updateProductInterface = new IUpdateProduct() {
 
@@ -294,6 +296,7 @@ public class MainMenuTabPaneController {
         StoreInfoTab.setContent(storeInfo);
         storeLayoutController = loader.getController();
         storeLayoutController.setEngine(StoresInfo);
+
     }
 
 
@@ -340,6 +343,7 @@ public class MainMenuTabPaneController {
         MarketProductsController.setMarketProductData(products);
         newOrderSelectionController.setEngine(newOrderInterface);
         OrderSelectionController.setData(market.getOrdersDTO());
+        storeLayoutController.setEngine(StoresInfo);
     }
 
 
@@ -348,6 +352,7 @@ public class MainMenuTabPaneController {
         CustomersTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
         StoreInfoTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
         MapTab.disableProperty().bind(DirDirectoryTextField.textProperty().isEmpty());
+
     }
 
 

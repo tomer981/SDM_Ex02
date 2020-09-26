@@ -10,9 +10,10 @@ public class StoreDTO {
     private Integer cordY;
     private Double deliveryEarned;
     private Integer numberOfProductsSelling;
+    private Integer numberOfOrders = 0;
 
 
-    public StoreDTO(Integer id, String name, Integer ppk, Double deliveryEarned, Integer cordX, Integer cordY, Integer numberOfProductsSelling) {
+    public StoreDTO(Integer id, String name, Integer ppk, Double deliveryEarned, Integer cordX, Integer cordY, Integer numberOfProductsSelling, Double deliveryEarn,Integer numberOfOrders) {
         this.id = id;
         this.name = name;
         this.ppk = ppk;
@@ -20,6 +21,8 @@ public class StoreDTO {
         this.cordX = cordX;
         this.cordY = cordY;
         this.numberOfProductsSelling = numberOfProductsSelling;
+        this.deliveryEarned = deliveryEarn;
+        this.numberOfOrders = numberOfOrders;
     }
 
 
@@ -68,5 +71,9 @@ public class StoreDTO {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void setDeliveryEarned(Double deliveryEarned) {
+        this.deliveryEarned = deliveryEarned;
     }
 }
