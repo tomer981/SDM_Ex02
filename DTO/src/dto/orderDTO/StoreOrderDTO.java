@@ -1,20 +1,27 @@
 package dto.orderDTO;
 
-import javafx.beans.property.SimpleDoubleProperty;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class StoreOrderDTO {
     private Integer id;
     private String name;
     private Integer ppk;
-    private Double deliveryEarned;
     private Integer cordX;
     private Integer cordY;
+    private Double deliveryEarned;
 
-    List<ProductOrderDTO> products = new ArrayList<>();
+    private List<StoreProductOrderDTO> products = new ArrayList<>();
+    private Map<OfferDiscountDTO,Integer> KOfferDiscountsVTimeUse;
+
+
+    public Map<OfferDiscountDTO, Integer> getKOfferDiscountsVTimeUse() {
+        return KOfferDiscountsVTimeUse;
+    }
+
+    public void setKOfferDiscountsVTimeUse(Map<OfferDiscountDTO, Integer> KOfferDiscountsVTimeUse) {
+        this.KOfferDiscountsVTimeUse = KOfferDiscountsVTimeUse;
+    }
+
 
 
     public StoreOrderDTO(Integer id, String name, Integer ppk, Double deliveryEarned, Integer cordX, Integer cordY) {
@@ -24,10 +31,11 @@ public class StoreOrderDTO {
         this.deliveryEarned = deliveryEarned;
         this.cordX = cordX;
         this.cordY = cordY;
+        KOfferDiscountsVTimeUse = new HashMap<>();
     }
 
 
-    public void setProducts(List<ProductOrderDTO> products) {
+    public void setProducts(List<StoreProductOrderDTO> products) {
         this.products = products;
     }
 
@@ -55,7 +63,7 @@ public class StoreOrderDTO {
         return cordY;
     }
 
-    public List<ProductOrderDTO> getProducts() {
+    public List<StoreProductOrderDTO> getProducts() {
         return products;
     }
 

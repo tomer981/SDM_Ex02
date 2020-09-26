@@ -1,8 +1,8 @@
 package gui.newOrder.dynamicLayoutBoarderPane;
 
-import dto.CustomerDTO;
+import dto.StoreDTO;
+import dto.orderDTO.OrderDTO;
 import dto.orderDTO.StoreOrderDTO;
-import gui.mainMenuTabPane.MainMenuTabPaneController;
 import gui.newOrder.discountsLayout.DiscountLayoutBorderPaneController;
 import gui.newOrder.dynamicStoreOrderInfo.DynamicStoreOrderInfoController;
 import javafx.collections.FXCollections;
@@ -17,31 +17,28 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
+
 
 import static gui.mainMenuTabPane.MainMenuTabPaneController.*;
 
 public class DynamicLayoutBoarderPaneController {
 
     @FXML private BorderPane boarderPaneLayout;
-    @FXML private Button nextButton;
-    @FXML private ComboBox<StoreOrderDTO> storeComboBox;
+    @FXML private Button nextButton;//TODO: delete
+    @FXML private ComboBox<StoreDTO> storeComboBox;
 
-    private List<StoreOrderDTO> storesOrder;
-    private CustomerDTO customer;
     private DynamicStoreOrderInfoController StoreInfoController;
-    private DiscountLayoutBorderPaneController discountLayoutController;
+
     private INewOrder engine;
     private Stage orderStage;
+    private OrderDTO order;
 
     @FXML
     void OnStoreSelectionComboBox(ActionEvent event) {
-        ScrollPane storeOrder = setDynamicLayoutBoarderPaneScene();
-        StoreOrderDTO store = storeComboBox.getSelectionModel().getSelectedItem();
-        Double distance = engine.getDistance(customer.getCordX(),customer.getCordY(),store.getCordX(),store.getCordY());
-        StoreInfoController.setStoreData(store,distance);
-        boarderPaneLayout.setCenter(storeOrder);
+        ScrollPane storeOrderLayout = setDynamicLayoutBoarderPaneScene();
+        StoreDTO store = storeComboBox.getSelectionModel().getSelectedItem();
+        StoreInfoController.setStoreData(order.getKStoresVSubOrders().get(store));
+        boarderPaneLayout.setCenter(storeOrderLayout);
     }
 
 
@@ -50,6 +47,14 @@ public class DynamicLayoutBoarderPaneController {
         Scene scene = new Scene(setDiscountLayoutBoarderPane(), 600, 400);
         orderStage.setScene(scene);
         orderStage.show();
+    }
+
+
+    public void setData(INewOrder engine, Stage orderStage, OrderDTO order) {
+        this.engine = engine;
+        this.orderStage = orderStage;
+        this.order = order;
+        storeComboBox.setItems(FXCollections.observableArrayList(this.order.getKStoresVSubOrders().keySet()));
     }
 
     private ScrollPane setDynamicLayoutBoarderPaneScene() {
@@ -66,13 +71,6 @@ public class DynamicLayoutBoarderPaneController {
         return load;
     }
 
-    public void setData(List<StoreOrderDTO> storesOrder, CustomerDTO customer, INewOrder engine, Stage orderStage, LocalDate date){
-        this.storesOrder = storesOrder;
-        this.customer = customer;
-        this.engine = engine;
-        this.orderStage = orderStage;
-        storeComboBox.setItems(FXCollections.observableArrayList(this.storesOrder));
-    }
 
     private BorderPane setDiscountLayoutBoarderPane() {
         FXMLLoader loader = null;
@@ -83,9 +81,10 @@ public class DynamicLayoutBoarderPaneController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        discountLayoutController  = loader.getController();
-        discountLayoutController.setData(storesOrder,customer,engine,orderStage);
+        DiscountLayoutBorderPaneController discountLayoutController = loader.getController();
+        discountLayoutController.setData(engine, orderStage, order);
         return load;
     }
+
 
 }

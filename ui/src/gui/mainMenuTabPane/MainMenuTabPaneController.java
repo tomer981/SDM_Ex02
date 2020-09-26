@@ -2,12 +2,9 @@ package gui.mainMenuTabPane;
 
 
 import dto.CustomerDTO;
-import dto.ProductDTO;
+import dto.MarketProductDTO;
 import dto.StoreDTO;
-import dto.orderDTO.DiscountProductsDTO;
-import dto.orderDTO.OffersDiscountDTO;
-import dto.orderDTO.ProductOrderDTO;
-import dto.orderDTO.StoreOrderDTO;
+import dto.orderDTO.*;
 import gui.customerInfoTableView.CustomerInfoTableViewController;
 import gui.productsInMarketTableView.ProductsInMarketTableViewController;
 import gui.shopTabLayout.ShopTabLayoutController;
@@ -29,6 +26,7 @@ import xml.XmlSystemFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -37,25 +35,15 @@ import java.util.function.Supplier;
 
 public class MainMenuTabPaneController {
 
-    @FXML
-    private TextField DirDirectoryTextField;
-    @FXML
-    private ProgressBar AdvanceLoadProgressBar;
-    @FXML
-    private Button BrowseButton;
-    @FXML
-    private Tab MarketTab;
-    @FXML
-    private Tab CustomersTab;
-    @FXML
-    private Tab StoreInfoTab;
-    @FXML
-    private Tab MapTab;
-    @FXML
-    private GridPane MarketTabGrid;
-
-    @FXML
-    private Text loadingStatus;
+    @FXML private TextField DirDirectoryTextField;
+    @FXML private ProgressBar AdvanceLoadProgressBar;
+    @FXML private Button BrowseButton;
+    @FXML private Tab MarketTab;
+    @FXML private Tab CustomersTab;
+    @FXML private Tab StoreInfoTab;
+    @FXML private Tab MapTab;
+    @FXML private GridPane MarketTabGrid;
+    @FXML private Text loadingStatus;
 
 
     private final XmlSystemFactory factory;
@@ -77,12 +65,12 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public List<ProductDTO> getProductsDTO() {
+        public List<MarketProductDTO> getProductsDTO() {
             return market.getMarketProductsDTO();
         }
 
         @Override
-        public List<ProductDTO> getStoreProductDTO(Integer StoreId) {
+        public List<MarketProductDTO> getStoreProductDTO(Integer StoreId) {
             return market.getStoreProductDTOByStoreId(StoreId);
         }
 
@@ -109,7 +97,7 @@ public class MainMenuTabPaneController {
             reinitializeData();
         }
     };
-    private final Supplier<List<ProductDTO>> products = () -> market.getMarketProductsDTO();
+    private final Supplier<List<MarketProductDTO>> products = () -> market.getMarketProductsDTO();
     private final INewOrder newOrderInterface = new INewOrder() {
         @Override
         public List<CustomerDTO> getCustomersDTO() {
@@ -117,7 +105,7 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public List<ProductDTO> getProductsDTO() {
+        public List<MarketProductDTO> getProductsDTO() {
             return market.getMarketProductsDTO();
         }
 
@@ -127,13 +115,13 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public List<ProductDTO> getStoreProductsDTO(Integer storeId) {
+        public List<MarketProductDTO> getStoreProductsDTO(Integer storeId) {
             return market.getStoreProductDTOByStoreId(storeId);
         }
 
         @Override
-        public List<StoreOrderDTO> findMinCostOrder(List<ProductOrderDTO> OrderProductsDTO) {
-            return market.findMinCostOrder(OrderProductsDTO);
+        public OrderDTO findMinCostOrder(OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProductsDTO){
+            return market.findMinCostOrder(orderDTO, OrderProductsDTO);
         }
 
         @Override
@@ -142,8 +130,8 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public List<StoreOrderDTO> getStoreOrderByStoreId(Integer storeId, List<ProductOrderDTO> OrderProducts) {
-            return market.getStoreOrderByStoreId(storeId, OrderProducts);
+        public OrderDTO getStoreOrderByStoreId(Integer storeId,OrderDTO orderDTO ,List<StoreProductOrderDTO> OrderProducts){
+            return market.getStoreOrderByStoreId(storeId, orderDTO,OrderProducts);
         }
 
         @Override
@@ -155,6 +143,12 @@ public class MainMenuTabPaneController {
         public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected) {
             return market.getOffersDiscount(id,discountSelected);
         }
+
+        @Override
+        public void addOrder(OrderDTO orderDTO) {
+            market.addOrder(orderDTO);
+            reinitializeData();
+        }
     };
     private IStoreInfo StoresInfo = new IStoreInfo() {
         @Override
@@ -163,7 +157,7 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public List<ProductDTO> getStoreProductsDTO(Integer storeId) {
+        public List<MarketProductDTO> getStoreProductsDTO(Integer storeId) {
             return market.getStoreProductDTOByStoreId(storeId);
         }
     };
@@ -358,9 +352,9 @@ public class MainMenuTabPaneController {
     public interface IUpdateProduct {
         List<StoreDTO> getStoresDTO();
 
-        List<ProductDTO> getProductsDTO();
+        List<MarketProductDTO> getProductsDTO();
 
-        List<ProductDTO> getStoreProductDTO(Integer storeId);
+        List<MarketProductDTO> getStoreProductDTO(Integer storeId);
 
         boolean isProductInDiscountInStoreByStoreId(Integer storeId, Integer productId);
 
@@ -374,27 +368,29 @@ public class MainMenuTabPaneController {
     public interface INewOrder {
         List<CustomerDTO> getCustomersDTO();
 
-        List<ProductDTO> getProductsDTO();
+        List<MarketProductDTO> getProductsDTO();
 
         List<StoreDTO> getStoresDTO();
 
-        List<ProductDTO> getStoreProductsDTO(Integer storeId);
+        List<MarketProductDTO> getStoreProductsDTO(Integer storeId);
 
-        List<StoreOrderDTO> findMinCostOrder(List<ProductOrderDTO> OrderProductsDTO);
+        OrderDTO findMinCostOrder(OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProductsDTO);
 
         Double getDistance(Integer x1, Integer y1, Integer x2, Integer y2);
 
-        List<StoreOrderDTO> getStoreOrderByStoreId(Integer storeId, List<ProductOrderDTO> OrderProducts);
+        OrderDTO getStoreOrderByStoreId(Integer storeId,OrderDTO orderDTO ,List<StoreProductOrderDTO> OrderProducts);
 
         List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId);
 
         OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected);
+
+        void addOrder(OrderDTO orderDTO);
     }
 
     public interface IStoreInfo {
         List<StoreDTO> getStoresDTO();
 
-        List<ProductDTO> getStoreProductsDTO(Integer storeId);
+        List<MarketProductDTO> getStoreProductsDTO(Integer storeId);
     }
 
     public interface IMap {

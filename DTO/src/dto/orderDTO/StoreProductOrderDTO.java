@@ -1,34 +1,34 @@
 package dto.orderDTO;
 
+import javafx.scene.layout.BorderPane;
+
 import java.util.Objects;
 
-public class ProductOrderDTO {
+public class StoreProductOrderDTO {
     private Integer id;
     private String name;
     private String category;
-    private Double price;
+    private Double pricePerUnit;
+
     private Double amountBought;
-    private boolean boughtInDiscount;
     private Double amountUseDiscount;
 
 
-    public ProductOrderDTO(Integer id, String name, String category, Double price, Double amountBought, boolean boughtInDiscount) {
+    public StoreProductOrderDTO(Integer id, String name, String category, Double pricePerUnit, Double amountBought) {
         this.id = id;
         this.name = name;
         this.category = category;
-        this.price = price;
+        this.pricePerUnit = pricePerUnit;
         this.amountBought = amountBought;
-        this.boughtInDiscount = boughtInDiscount;
         this.amountUseDiscount = 0.0;
     }
 
-    public ProductOrderDTO(Integer id, String name, String category, Double price, Double amountBought, boolean boughtInDiscount, Double amountUseDiscount) {
+    public StoreProductOrderDTO(Integer id, String name, String category, Double pricePerUnit, Double amountBought, Double amountUseDiscount) {
         this.id = id;
         this.name = name;
         this.category = category;
-        this.price = price;
+        this.pricePerUnit = pricePerUnit;
         this.amountBought = amountBought;
-        this.boughtInDiscount = boughtInDiscount;
         this.amountUseDiscount = amountUseDiscount;
     }
 
@@ -44,8 +44,8 @@ public class ProductOrderDTO {
         return category;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getPricePerUnit() {
+        return pricePerUnit;
     }
 
     public Double getAmountBought() {
@@ -56,37 +56,33 @@ public class ProductOrderDTO {
         return amountUseDiscount;
     }
 
-    public boolean isBoughtInDiscount() {
-        return boughtInDiscount;
-    }
 
     public void setAmountBought(Double amountBought) {
         this.amountBought = amountBought;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setPricePerUnit(Double pricePerUnit) {
+        this.pricePerUnit = pricePerUnit;
     }
 
-    public void setBoughtInDiscount(boolean boughtInDiscount) {
-        this.boughtInDiscount = boughtInDiscount;
-    }
 
     public void setAmountUseDiscount(Double amountUseDiscount) {
         this.amountUseDiscount = amountUseDiscount;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ProductOrderDTO)) return false;
-        ProductOrderDTO that = (ProductOrderDTO) o;
-        return boughtInDiscount == that.boughtInDiscount &&
-                Objects.equals(id, that.id);
+        if (!(o instanceof StoreProductOrderDTO)) return false;
+        StoreProductOrderDTO that = (StoreProductOrderDTO) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(category, that.category) &&
+                Objects.equals(pricePerUnit, that.pricePerUnit);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, boughtInDiscount);
+        return Objects.hash(id, category, pricePerUnit);
     }
 }

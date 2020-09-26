@@ -6,22 +6,20 @@ public class StoreDTO {
     private Integer id;
     private String name;
     private Integer ppk;
-    private Double deliveryEarned;
     private Integer cordX;
     private Integer cordY;
+    private Double deliveryEarned;
+    private Integer numberOfProductsSelling;
 
 
-    private Integer numberOfProductsSell;
-
-
-    public StoreDTO(Integer id, String name, Integer ppk, Double deliveryEarned, Integer cordX, Integer cordY, Integer numberOfProductsSell) {
+    public StoreDTO(Integer id, String name, Integer ppk, Double deliveryEarned, Integer cordX, Integer cordY, Integer numberOfProductsSelling) {
         this.id = id;
         this.name = name;
         this.ppk = ppk;
         this.deliveryEarned = deliveryEarned;
         this.cordX = cordX;
         this.cordY = cordY;
-        this.numberOfProductsSell = numberOfProductsSell;
+        this.numberOfProductsSelling = numberOfProductsSelling;
     }
 
 
@@ -50,8 +48,8 @@ public class StoreDTO {
         return deliveryEarned;
     }
 
-    public Integer getNumberOfProductsSell() {
-        return numberOfProductsSell;
+    public Integer getNumberOfProductsSelling() {
+        return numberOfProductsSelling;
     }
 
     @Override

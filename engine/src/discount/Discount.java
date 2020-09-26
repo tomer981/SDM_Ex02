@@ -16,7 +16,6 @@ public class Discount {
     private ConditionDiscount condition;
     private List<OfferDiscount> receiveOfferDiscount;//Todo: Property to bind the time of each one to amountDiscount/offerDiscontAmont
 
-
     public Discount(String name, Product buyProduct, Double buyProductQuantity, ConditionDiscount condition) {
         this.name = name;
         this.buyProduct = buyProduct;
@@ -24,7 +23,6 @@ public class Discount {
         this.condition = condition;
         receiveOfferDiscount = new ArrayList<>();
     }
-
 
     public void addOfferDiscount(OfferDiscount offerDiscount) {
         receiveOfferDiscount.add(offerDiscount);

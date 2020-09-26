@@ -22,4 +22,10 @@ public class Location {
         Double Y = Math.pow(cordY - location.getCordY(),2);
         return Math.pow(X+Y,0.5);
     }
+
+    public static Double getDistance(Integer x1,Integer y1,Integer x2,Integer y2){
+        Double X =  Math.pow(x1 - x2,2);
+        Double Y = Math.pow(y1 - y2,2);
+        return Math.pow(X+Y,0.5);
+    }
 }

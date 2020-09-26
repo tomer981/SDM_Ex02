@@ -2,15 +2,15 @@ package market;
 
 import customer.Customer;
 
-import dto.orderDTO.DiscountProductsDTO;
-import dto.orderDTO.OffersDiscountDTO;
-import dto.orderDTO.ProductOrderDTO;
-import dto.orderDTO.StoreOrderDTO;
+import dto.orderDTO.*;
 import location.Location;
 import order.Order;
+import order.SubOrder;
 import store.Store;
 
+import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import dto.*;
 import discount.*;
@@ -41,6 +41,10 @@ public class Market {
     private Product getProductById(Integer ProductId) {
         MarketProduct marketProduct = getMarketProductById(ProductId);
         return marketProduct.getProduct();
+    }
+
+    private Customer getCustomerByCustomerId(Integer customerId) {
+        return customers.stream().filter(customer -> customer.getId().equals(customerId)).findFirst().orElse(null);
     }
 
 
@@ -125,10 +129,61 @@ public class Market {
     }
 
 
-    public void addOrder() {
+    public void addOrder(OrderDTO orderDTO) {
+        LocalDate localDate = orderDTO.getDate();
+        Customer customer = getCustomerByCustomerId(orderDTO.getCustomer().getId());
+        Integer numberOfDifferentProducts = orderDTO.getNumberOfDifferentProducts();
+        Double amountsOfProducts = orderDTO.getAmountsOfProducts();
+        Double totalCostProducts = orderDTO.getTotalCostProducts();
+        Double totalDeliverOrderCost = orderDTO.getTotalDeliverOrderCost();
+        Double totalOrderCost = orderDTO.getTotalDeliverOrderCost();
 
+        Order order = new Order(localDate,customer,numberOfDifferentProducts,amountsOfProducts,totalCostProducts,totalDeliverOrderCost,totalOrderCost);
+
+        for (StoreDTO storeDTO : orderDTO.getKStoresVSubOrders().keySet()){
+            orderDTO.getKStoresVSubOrders().get(storeDTO).getDistance();
+            Store store = getStoreById(storeDTO.getId());
+            Integer orderId = order.getId();
+            Double distance = orderDTO.getKStoresVSubOrders().get(storeDTO).getDistance();
+            Double deliverCost = orderDTO.getKStoresVSubOrders().get(storeDTO).getDeliverCost();
+            numberOfDifferentProducts = orderDTO.getKStoresVSubOrders().get(storeDTO).getNumberOfDifferentProducts();
+            amountsOfProducts = orderDTO.getKStoresVSubOrders().get(storeDTO).getAmountsOfProducts();
+            totalCostProducts = orderDTO.getKStoresVSubOrders().get(storeDTO).getTotalCostProducts();
+            totalOrderCost = orderDTO.getKStoresVSubOrders().get(storeDTO).getTotalOrderCost();
+            List<StoreProduct> storeProducts = new ArrayList<>();
+            List<StoreProductOrderDTO> storeProductsDTO  = orderDTO.getKStoresVSubOrders().get(storeDTO).getStoreProductsDTO();
+            for (StoreProductOrderDTO storeProductOrderDTO : storeProductsDTO){
+                Product product = getProductById(storeProductOrderDTO.getId());
+                Double price = storeProductOrderDTO.getPricePerUnit();
+                Double amountSold = storeProductOrderDTO.getAmountBought();
+                StoreProduct storeProduct = new StoreProduct(price,amountSold,product);
+                storeProducts.add(storeProduct);
+                StoreProduct StoreProductInStore = getMarketProductById(product.getId()).getStoreProductByStore(store);
+                StoreProductInStore.setTimeSold(StoreProductInStore.getTimeSold() + 1);
+
+            }
+            Map<OfferDiscount,Integer> KOfferDiscountVTimeUse = new HashMap<>();
+            Map<OffersDiscountDTO,Integer> KOfferDiscountVTimeUseDTO = orderDTO.getKStoresVSubOrders().get(storeDTO).getKOffersDiscountVTimeUse();
+            for (OffersDiscountDTO offerDiscountsDTO : KOfferDiscountVTimeUseDTO.keySet()){
+                for (OfferDiscountDTO singleOfferDiscountDTO : offerDiscountsDTO.getOffersDiscount()){
+                    Product offerDiscountProduct =  getProductById(singleOfferDiscountDTO.getId());
+                    Double receiveQuantity = singleOfferDiscountDTO.getAmount();
+                    Double forPrice = singleOfferDiscountDTO.getPrice();
+                    OfferDiscount offerDiscount = new OfferDiscount(offerDiscountProduct,receiveQuantity,forPrice);
+                    KOfferDiscountVTimeUse.put(offerDiscount,KOfferDiscountVTimeUseDTO.get(offerDiscountsDTO));
+                    StoreProduct StoreProductInStore = getMarketProductById(offerDiscountProduct.getId()).getStoreProductByStore(store);
+                    StoreProductInStore.setTimeSold(StoreProductInStore.getTimeSold() + 1);
+                }
+            }
+            SubOrder subOrder = new SubOrder(orderId,localDate,store,customer,distance,deliverCost,numberOfDifferentProducts,amountsOfProducts,totalCostProducts,totalOrderCost,storeProducts,KOfferDiscountVTimeUse);
+            order.addSubOrder(subOrder);
+            store.getOrders().put(subOrder.getOrderId(),subOrder);
+            orders.add(order);
+            customer.addOrder(order);
+            customer.setTotalPriceOfDeliveryOrders(customer.getTotalPriceOfProductsOrders() + order.getTotalDeliverOrderCost());
+            customer.setTotalPriceOfProductsOrders(customer.getTotalPriceOfProductsOrders());
+        }
     }
-
 
     public List<CustomerDTO> getCustomersDTO() {
         List<CustomerDTO> customersData = new ArrayList();
@@ -142,13 +197,13 @@ public class Market {
         return StoresData;
     }
 
-    public List<ProductDTO> getMarketProductsDTO() {
-        List<ProductDTO> marketProductsDTO = new ArrayList<>();
+    public List<MarketProductDTO> getMarketProductsDTO() {
+        List<MarketProductDTO> marketProductsDTO = new ArrayList<>();
         marketProducts.forEach(marketProduct -> marketProductsDTO.add(marketProduct.getMarketProductDTO()));
         return marketProductsDTO;
     }
 
-    public List<ProductDTO> getStoreProductDTOByStoreId(Integer storeId) {
+    public List<MarketProductDTO> getStoreProductDTOByStoreId(Integer storeId) {
         Store store = getStoreById(storeId);
         return store.getStoreProductsDTO();
     }
@@ -179,44 +234,105 @@ public class Market {
 
 
     //new Order
-    public List<StoreOrderDTO> findMinCostOrder(List<ProductOrderDTO> orderProductsDTO) {
+    public OrderDTO findMinCostOrder(OrderDTO orderDTO, List<StoreProductOrderDTO> orderProductsDTO){
 
-        //TODO: shit code fix if have the time
-        Map<ProductOrderDTO, Store> KStoreProductVCheapestStore = new HashMap<>();
+        Map<StoreDTO, SubOrderDTO> KStoresVSubOrders = new HashMap<>();
+        Integer numberOfDifferentProducts = orderProductsDTO.size();
+        Double amountsOfProducts = 0.0;
+        Double totalCostProducts = 0.0;
+        Double totalDeliverOrderCost = 0.0;
+        Double totalOrderCost = 0.0;
 
-        for (ProductOrderDTO product : orderProductsDTO) {
+        for (StoreProductOrderDTO product : orderProductsDTO){
             MarketProduct marketProduct = getMarketProductById(product.getId());
             Store cheapestStore = marketProduct.getMinCostStoreForProduct();
+            StoreDTO storeDTO = cheapestStore.getStoreData();
             StoreProduct storeProduct = marketProduct.getStoreProductByStore(cheapestStore);
-            product.setPrice(storeProduct.getPrice());
-            KStoreProductVCheapestStore.put(product, cheapestStore);
-        }
+            product.setPricePerUnit(storeProduct.getPrice());
 
-        Set<StoreOrderDTO> storesOrder = new HashSet();
-        KStoreProductVCheapestStore.values().forEach(store -> storesOrder.add(createStoreOrderDTO(store)));
+            amountsOfProducts += product.getAmountBought();
+            totalCostProducts += product.getAmountBought() * product.getPricePerUnit();
 
-        for (StoreOrderDTO storeOrder : storesOrder) {
-            List<ProductOrderDTO> orderStoreProductsDTO = new ArrayList<>();
-            for (ProductOrderDTO product : orderProductsDTO) {
-                if (KStoreProductVCheapestStore.get(product).getStoreId().equals(storeOrder.getId())) {
-                    orderStoreProductsDTO.add(product);
-                }
+
+            SubOrderDTO subOrderDTO = null;
+            if (KStoresVSubOrders.containsKey(storeDTO)){
+                subOrderDTO = KStoresVSubOrders.get(storeDTO);
+                List <StoreProductOrderDTO> storeProductsDTO = subOrderDTO.getStoreProductsDTO();
+                storeProductsDTO.add(product);
+                setSubOrderDTOData(subOrderDTO);
+
             }
-            storeOrder.setProducts(orderStoreProductsDTO);
-        }
+            else {
+                subOrderDTO = new SubOrderDTO(orderDTO.getId(),orderDTO.getDate(),storeDTO,orderDTO.getCustomer());
+                List <StoreProductOrderDTO> storeProductsDTO = new ArrayList<>();
+                storeProductsDTO.add(product);
+                subOrderDTO.setStoreProductsDTO(storeProductsDTO);
+                KStoresVSubOrders.put(storeDTO,subOrderDTO);
+                setSubOrderDTOData(subOrderDTO);
+                totalDeliverOrderCost += subOrderDTO.getDeliverCost();
 
-        return new ArrayList<>(storesOrder);
+            }
+        }
+        totalOrderCost = totalDeliverOrderCost + totalCostProducts;
+
+        return new OrderDTO(
+                -1,
+                orderDTO.getDate(),
+                orderDTO.getCustomer(),
+                numberOfDifferentProducts,
+                amountsOfProducts,
+                totalCostProducts,
+                totalDeliverOrderCost,
+                totalOrderCost,
+                KStoresVSubOrders);
     }
 
-    private StoreOrderDTO createStoreOrderDTO(Store store) {//TODO: put in store
+    private OrderDTO getStoreOrderByStore(Store store,OrderDTO orderDTO ,List<StoreProductOrderDTO> orderProducts) {
+
         StoreDTO storeDTO = store.getStoreData();
-        return new StoreOrderDTO(
-                storeDTO.getId(),
-                storeDTO.getName(),
-                storeDTO.getPpk(),
-                0.0,
-                storeDTO.getCordX(),
-                storeDTO.getCordY());
+        SubOrderDTO subOrderDTO =  new SubOrderDTO(orderDTO.getId(),orderDTO.getDate(),storeDTO,orderDTO.getCustomer());
+
+        Map<StoreDTO, SubOrderDTO> KStoresVSubOrders = new HashMap<>();
+        List <StoreProductOrderDTO> storeProductsDTO = new ArrayList<>();
+
+        for (StoreProductOrderDTO product : orderProducts) {
+            MarketProduct marketProduct = getMarketProductById(product.getId());
+            product.setPricePerUnit(marketProduct.getStoreProductByStore(store).getPrice());
+            storeProductsDTO.add(product);
+            subOrderDTO.setStoreProductsDTO(storeProductsDTO);
+        }
+        setSubOrderDTOData(subOrderDTO);
+        KStoresVSubOrders.put(storeDTO,subOrderDTO);
+        return new OrderDTO(
+                -1,
+                orderDTO.getDate(),
+                orderDTO.getCustomer(),
+                subOrderDTO.getNumberOfDifferentProducts(),
+                subOrderDTO.getAmountsOfProducts(),
+                subOrderDTO.getTotalCostProducts(),
+                subOrderDTO.getDeliverCost(),
+                subOrderDTO.getTotalOrderCost(),
+                KStoresVSubOrders);
+    }
+
+    private void setSubOrderDTOData(SubOrderDTO subOrder) {
+        Double distance = Location.getDistance(subOrder.getCustomer().getCordX(),subOrder.getStore().getCordX(),
+                subOrder.getCustomer().getCordY(),subOrder.getStore().getCordY());
+        Double deliverCost = subOrder.getStore().getPpk() * distance;
+        Double amountsOfProducts = 0.0;
+        Double totalCostProducts = 0.0;
+        for (StoreProductOrderDTO productOrderDTO : subOrder.getStoreProductsDTO())
+        {
+            amountsOfProducts += productOrderDTO.getAmountBought();
+            totalCostProducts += productOrderDTO.getPricePerUnit() * productOrderDTO.getAmountBought();
+        }
+
+        subOrder.setDistance(distance);
+        subOrder.setDeliverCost(deliverCost);
+        subOrder.setAmountsOfProducts(amountsOfProducts);
+        subOrder.setTotalCostProducts(totalCostProducts);
+        subOrder.setTotalOrderCost(amountsOfProducts + totalCostProducts);
+        subOrder.setNumberOfDifferentProducts(subOrder.getStoreProductsDTO().size());
     }
 
 
@@ -231,25 +347,10 @@ public class Market {
     }
 
 
-    private List<StoreOrderDTO> getStoreOrderByStore(Store store, List<ProductOrderDTO> orderProducts) {
-        for (ProductOrderDTO product : orderProducts) {
-            MarketProduct marketProduct = getMarketProductById(product.getId());
-            product.setPrice(marketProduct.getStoreProductByStore(store).getPrice());
-        }
-        StoreOrderDTO storeOrderDTO = createStoreOrderDTO(store);
-        storeOrderDTO.setProducts(orderProducts);
-        List<StoreOrderDTO> storeOrderDataList = new ArrayList();
-        storeOrderDataList.add(storeOrderDTO);
-        return storeOrderDataList;
-    }
-
-    public List<StoreOrderDTO> getStoreOrderByStoreId(Integer storeId, List<ProductOrderDTO> OrderProducts) {
+    public OrderDTO getStoreOrderByStoreId(Integer storeId, OrderDTO orderDTO, List<StoreProductOrderDTO> orderProducts) {
         Store store = getStoreById(storeId);
-        return getStoreOrderByStore(store, OrderProducts);
+        return getStoreOrderByStore(store,orderDTO,orderProducts);//;getStoreOrderByStore(store,orderDTO ,orderProducts);
     }
-
-
-
 
     private List<DiscountProductsDTO> getDiscountsByStore(Store store) {
         return store.getDiscounts();
@@ -262,20 +363,14 @@ public class Market {
 
 
     private OffersDiscountDTO getOffersDiscount(Store store, DiscountProductsDTO discount) {
-        return store.getOffersDiscount(discount,getProductById(discount.getProductId()));
+        return store.getOffersDiscount(discount, getProductById(discount.getProductId()));
     }
+
     public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discount) {
         Store store = getStoreById(id);
-        return getOffersDiscount(store,discount);
+        return getOffersDiscount(store, discount);
     }
 
 
-//    private List<DiscountProductsDTO> getDiscountsByProducts(Store store, List<ProductOrderDTO> products) {
-//        return store.getDiscountsByProducts(products);
-//    }
-//
-//    public List<DiscountProductsDTO> getDiscountsByProducts(Integer storeId, List<ProductOrderDTO> products) {
-//        Store store = getStoreById(storeId);
-//        return getDiscountsByProducts(store, products);
-//    }
+
 }

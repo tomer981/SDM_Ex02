@@ -1,7 +1,7 @@
 package gui.updateProductHBox;
 
 
-import dto.ProductDTO;
+import dto.MarketProductDTO;
 import dto.StoreDTO;
 import gui.mainMenuTabPane.MainMenuTabPaneController.IUpdateProduct;
 import javafx.beans.binding.Bindings;
@@ -24,7 +24,7 @@ public class UpdateProductHBoxController {
     @FXML private HBox updateProductHBox;
     @FXML private ComboBox<StoreDTO> storeComboBox;
     @FXML private ComboBox<String> operationComboBox;
-    @FXML private ComboBox<ProductDTO> productsComboBox;
+    @FXML private ComboBox<MarketProductDTO> productsComboBox;
     @FXML private TextField updatePriceTextField;
     @FXML private Button activateButton;
 
@@ -75,12 +75,12 @@ public class UpdateProductHBoxController {
         isDeleteSelected.set(selection.equals("Delete"));
         productsComboBox.getSelectionModel().clearSelection();
         updatePriceTextField.textProperty().setValue("");
-        List<ProductDTO> products = engine.getProductsDTO();
-        List<ProductDTO> storeProducts = engine.getStoreProductDTO(storeComboBox.getSelectionModel().getSelectedItem().getId());
+        List<MarketProductDTO> products = engine.getProductsDTO();
+        List<MarketProductDTO> storeProducts = engine.getStoreProductDTO(storeComboBox.getSelectionModel().getSelectedItem().getId());
 
         if (selection.equals("Delete")){
             products.removeIf(product->product.getNumberOfStoreSell().equals(1) ||
-                    storeComboBox.getSelectionModel().getSelectedItem().getNumberOfProductsSell().equals(1)||
+                    storeComboBox.getSelectionModel().getSelectedItem().getNumberOfProductsSelling().equals(1)||
                     !storeProducts.contains(product));
         }
         if (selection.equals("Add Product")){

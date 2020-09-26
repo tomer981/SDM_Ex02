@@ -1,6 +1,8 @@
 package gui.newOrder.dynamicStoreOrderInfo;
 
+import dto.StoreDTO;
 import dto.orderDTO.StoreOrderDTO;
+import dto.orderDTO.SubOrderDTO;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
@@ -18,25 +20,20 @@ public class DynamicStoreOrderInfoController {
     @FXML private Text numberOfProducts;
     @FXML private Text totalCost;
 
-
-    public void setStoreData(StoreOrderDTO storeOrder, Double distance) {
-
-        id.textProperty().setValue("Store Id: " + storeOrder.getId());
-        name.textProperty().setValue("Store Name: " + storeOrder.getName());
-        locationXY.textProperty().setValue("Location(x,y): " + storeOrder.getCordX() + ", " + storeOrder.getCordY());
-        this.distance.textProperty().setValue("Distance: " + RoundDouble(distance));//TODO: Distance
-        ppk.textProperty().setValue("PPK: " + storeOrder.getPpk());
-        deliveryCost.textProperty().setValue("Delivery Cost: " + RoundDouble(storeOrder.getPpk()*distance));//TODO: delivery cost
-        numberOfProducts.textProperty().setValue("Number Of Products: " + storeOrder.getProducts().size());
-
-        AtomicReference<Double> costProduct = new AtomicReference<>(0.0);
-        storeOrder.getProducts().forEach(productOrderDTO -> {
-            costProduct.set(costProduct.get() + productOrderDTO.getPrice());});
-        Double totalCostOrder = RoundDouble(costProduct.get() + storeOrder.getPpk()*distance);
-        totalCost.textProperty().setValue("Total Cost: " + totalCostOrder);//TODO: Total cost
+    public void setStoreData(SubOrderDTO subOrderDTO) {
+        id.textProperty().setValue("Store Id: " + subOrderDTO.getStore().getId());
+        name.textProperty().setValue("Store Name: " + subOrderDTO.getStore().getName());
+        locationXY.textProperty().setValue("Location(x,y): " + subOrderDTO.getStore().getCordX() + ", " + subOrderDTO.getStore().getCordY());
+        distance.textProperty().setValue("Distance: " + RoundDouble(subOrderDTO.getDistance()));
+        ppk.textProperty().setValue("PPK: " + subOrderDTO.getStore().getPpk());
+        deliveryCost.textProperty().setValue("Delivery Cost: " + RoundDouble(subOrderDTO.getDeliverCost()));
+        numberOfProducts.textProperty().setValue("Number Of Products: " + subOrderDTO.getNumberOfDifferentProducts());
+        totalCost.textProperty().setValue("Total Cost Products: " + RoundDouble(subOrderDTO.getTotalCostProducts()));//TODO: Total cost
     }
 
-    public static Double RoundDouble(Double number) {
+    public static Double RoundDouble(Double number) {//TODO: delete 2 show place
         return Double.parseDouble(new DecimalFormat(".##").format(number));
     }
+
+
 }

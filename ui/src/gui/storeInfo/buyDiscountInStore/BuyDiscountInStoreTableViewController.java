@@ -1,6 +1,5 @@
 package gui.storeInfo.buyDiscountInStore;
 
-import dto.ProductDTO;
 import dto.orderDTO.DiscountProductsDTO;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;

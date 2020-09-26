@@ -1,7 +1,7 @@
 package gui.newOrder.discountsLayout;
 
 import dto.CustomerDTO;
-import dto.ProductDTO;
+import dto.StoreDTO;
 import dto.orderDTO.*;
 import gui.mainMenuTabPane.MainMenuTabPaneController.INewOrder;
 import gui.newOrder.finalOrderLayout.FinalOrderLayoutBoarderPaneController;
@@ -26,18 +26,19 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DiscountLayoutBorderPaneController {
 
-    @FXML private ComboBox<StoreOrderDTO> storesComboBox;
+    @FXML private ComboBox<StoreDTO> storesComboBox;
     @FXML private Button activeDiscountButton;
     @FXML private SplitPane splitPanel;
 
     private INewOrder engine;
     private Stage orderStage;
-    private List<StoreOrderDTO> storesOrder;
-    private CustomerDTO customer;
+    private OrderDTO orderDTO;
+
 
     private BuyDiscountInStoreTableViewController discountViewController;
     private GetDiscountInStoreTableViewController getDiscountsController;
@@ -47,7 +48,6 @@ public class DiscountLayoutBorderPaneController {
 
     private SimpleBooleanProperty isOneOfSelection;
     private List<OfferDiscountDTO> offersDiscountDTO;
-    private LocalDate date;
 
     @FXML
     private void initialize() {
@@ -80,7 +80,6 @@ public class DiscountLayoutBorderPaneController {
 
         return load;
     }
-
     private ScrollPane initializeGetTableView() {
         FXMLLoader loader = null;
         ScrollPane load = null;
@@ -98,7 +97,6 @@ public class DiscountLayoutBorderPaneController {
         return load;
     }
 
-
     @FXML
     void onSelectionStoreComboBox(ActionEvent event) {
         setDisplayDataForGetDiscount();
@@ -111,9 +109,17 @@ public class DiscountLayoutBorderPaneController {
     }
 
     private boolean isShowDiscount(DiscountProductsDTO discount){
-        ProductOrderDTO product = getOrderProduct(discount);
-        if(product == null){return false;}
+        StoreProductOrderDTO product = getOrderProduct(discount);
+        if (product == null){return false;}
         return (product.getAmountBought() - product.getAmountUseDiscount() >= discount.getQuantityNeeded());
+    }
+
+    private StoreProductOrderDTO getOrderProduct(DiscountProductsDTO discount){
+        StoreDTO storeSelected = storesComboBox.getSelectionModel().getSelectedItem();
+        List<StoreProductOrderDTO> products = orderDTO.getKStoresVSubOrders().get(storeSelected).getStoreProductsDTO();
+        return products.stream().filter(productOrderDTO ->
+                productOrderDTO.getId().equals(discount.getProductId())).
+                findFirst().orElse(null);
     }
 
     private void showOfferDiscount(DiscountProductsDTO discountSelected){
@@ -122,43 +128,40 @@ public class DiscountLayoutBorderPaneController {
         getDiscountsController.setOffersDiscount(offersDiscount);
     }
 
-
     @FXML
     void onActiveDiscountButton(ActionEvent event) {
-        StoreOrderDTO storeSelection = storesComboBox.getSelectionModel().getSelectedItem();
-        List<OfferDiscountDTO> addToOrderOffers = new ArrayList<>();
-        if (isOneOfSelection.getValue()){
-            addToOrderOffers.add(getProductPropertySelection.getValue());
+        StoreDTO storeSelection = storesComboBox.getSelectionModel().getSelectedItem();
+        SubOrderDTO subOrder = orderDTO.getKStoresVSubOrders().get(storeSelection);
+        StoreProductOrderDTO selectedProduct = subOrder.getStoreProductsDTO().
+                stream().filter(product ->
+                product.getId().equals(buyProductPropertySelection.get().getProductId())).
+                findFirst().orElse(null);
+
+        OffersDiscountDTO selectedOfferDiscount = getDiscountsController.getOffersDiscount();
+
+        Map<OffersDiscountDTO,Integer> KOffersDiscountVTimeUse = subOrder.getKOffersDiscountVTimeUse();
+
+        if(!isOneOfSelection.getValue()){
+            addOfferDiscountToOrder(KOffersDiscountVTimeUse,selectedOfferDiscount);
         }
         else {
-            addToOrderOffers = offersDiscountDTO;
+            List<OfferDiscountDTO> singleDiscount = new ArrayList();
+            singleDiscount.add(getProductPropertySelection.getValue());
+            OffersDiscountDTO modifyDiscount = new OffersDiscountDTO(selectedOfferDiscount.getCondition(), singleDiscount);
+            addOfferDiscountToOrder(KOffersDiscountVTimeUse,modifyDiscount);
         }
-        addProductsToOrder(addToOrderOffers);
 
+        selectedProduct.setAmountUseDiscount(selectedProduct.getAmountUseDiscount() + buyProductPropertySelection.get().getQuantityNeeded());
         clearSelection();
     }
 
-    private void addProductToOrder(OfferDiscountDTO offer) {
-        DiscountProductsDTO discountProduct =  buyProductPropertySelection.get();
-        ProductOrderDTO storeOrderProduct = getOrderProduct(buyProductPropertySelection.get());
-        StoreOrderDTO storeOrder = storesComboBox.getSelectionModel().getSelectedItem();
-        List<ProductOrderDTO> products = storeOrder.getProducts();
-
-        ProductOrderDTO discountOrderProduct = getDiscountOrderProduct(offer, products);
-        if (discountOrderProduct == null){
-            discountOrderProduct = new ProductOrderDTO(offer.getId(),offer.getName(),offer.getCategory(),offer.getPrice() / offer.getAmount(),offer.getAmount(),true);
-            products.add(discountOrderProduct);
+    private void addOfferDiscountToOrder(Map<OffersDiscountDTO,Integer> KOffersDiscountVTimeUse ,OffersDiscountDTO selectedOfferDiscount){
+        if (KOffersDiscountVTimeUse.containsKey(selectedOfferDiscount)){
+            KOffersDiscountVTimeUse.put(selectedOfferDiscount,KOffersDiscountVTimeUse.get(selectedOfferDiscount) + 1);
         }
         else {
-            discountOrderProduct.setAmountBought(discountOrderProduct.getAmountBought() + offer.getAmount());
+            KOffersDiscountVTimeUse.put(selectedOfferDiscount,1);
         }
-
-        storeOrderProduct.setAmountUseDiscount(storeOrderProduct.getAmountUseDiscount() +  discountProduct.getQuantityNeeded());
-
-    }
-
-    private void addProductsToOrder(List<OfferDiscountDTO> addToOrderOffers) {
-        addToOrderOffers.forEach(this::addProductToOrder);
     }
 
 
@@ -169,30 +172,12 @@ public class DiscountLayoutBorderPaneController {
     }
 
 
-    private ProductOrderDTO getDiscountOrderProduct(OfferDiscountDTO offerProduct, List<ProductOrderDTO> products){
-        return products.stream().filter(productOrderDTO ->
-                productOrderDTO.getId().equals(offerProduct.getId()) &&
-                        productOrderDTO.isBoughtInDiscount()).
-                findFirst().orElse(null);
-    }
-
-    private ProductOrderDTO getOrderProduct(DiscountProductsDTO discount){
-        List<ProductOrderDTO> products = storesComboBox.getSelectionModel().getSelectedItem().getProducts();
-        return products.stream().filter(productOrderDTO ->
-                productOrderDTO.getId().equals(discount.getProductId()) &&
-                        !productOrderDTO.isBoughtInDiscount()).
-                findFirst().orElse(null);
-    }
-
-    public void setData(List<StoreOrderDTO> storesOrder, CustomerDTO customer, INewOrder engine, Stage orderStage, LocalDate date) {
+    public void setData(INewOrder engine, Stage orderStage, OrderDTO order) {
         this.engine = engine;
         this.orderStage = orderStage;
-        this.storesOrder = storesOrder;
-        this.customer = customer;
-        this.date = date;
-        storesComboBox.setItems(FXCollections.observableArrayList(this.storesOrder));
+        this.orderDTO = order;
+        storesComboBox.setItems(FXCollections.observableArrayList(this.orderDTO.getKStoresVSubOrders().keySet()));
     }
-
 
     @FXML
     void onNextButton(ActionEvent event) {
@@ -205,9 +190,9 @@ public class DiscountLayoutBorderPaneController {
             e.printStackTrace();
         }
         FinalOrderLayoutBoarderPaneController controller  = loader.getController();
-        controller.setData(engine,orderStage,storesOrder,customer,date);
 
-//        controller.setData(storeOrder,customer,engine,orderStage);
+        controller.setData(engine,orderStage,orderDTO);
+
         Scene scene = new Scene(load, 600, 400);
         orderStage.setScene(scene);
         orderStage.show();

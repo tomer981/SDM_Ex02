@@ -3,11 +3,10 @@ package store;
 import discount.ConditionDiscount;
 import discount.Discount;
 import discount.OfferDiscount;
-import dto.ProductDTO;
+import dto.MarketProductDTO;
 import dto.StoreDTO;
 import dto.orderDTO.DiscountProductsDTO;
 import dto.orderDTO.OffersDiscountDTO;
-import dto.orderDTO.ProductOrderDTO;
 import location.Location;
 import order.SubOrder;
 import product.Product;
@@ -25,7 +24,16 @@ public class Store {
     private Double deliveryEarn;
 
     private List<StoreProduct> storeProducts;
-    private Map<Integer, SubOrder>  KOrderIdVStoreOrder = new HashMap<>();
+
+    public Map<Integer, SubOrder> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Map<Integer, SubOrder> orders) {
+        this.orders = orders;
+    }
+
+    private Map<Integer, SubOrder>  orders = new HashMap<>();
     private Set<Discount> discounts;
 
 
@@ -39,6 +47,13 @@ public class Store {
         discounts = new HashSet();
     }
 
+    public Integer getPpk() {
+        return ppk;
+    }
+
+    public StoreProduct getStoreProductById(Integer productId){
+        return storeProducts.stream().filter(storeProduct -> productId.equals(storeProduct.getProduct().getId())).findFirst().orElse(null);
+    }
     public OffersDiscountDTO getOffersDiscount(DiscountProductsDTO discountDTO, Product productById) {
         Discount discount = new Discount(discountDTO.getNameDiscount(),productById, discountDTO.getQuantityNeeded(),
                 ConditionDiscount.getConditionDiscount(discountDTO.getCondition()));
@@ -82,17 +97,17 @@ public class Store {
                 location.getCordY(),
                 storeProducts.size());
     }
-    private ProductDTO getStoreProductDTO(StoreProduct storeProduct){
+    private MarketProductDTO getStoreProductDTO(StoreProduct storeProduct){
         Product product = storeProduct.getProduct();
-        return new ProductDTO(product.getId(),
+        return new MarketProductDTO(product.getId(),
                 product.getName(),
                 product.getPurchaseCategory().name(),
                 1,
                 storeProduct.getPrice(),
                 storeProduct.getTimeSold());
     }
-    public List<ProductDTO> getStoreProductsDTO() {
-        List<ProductDTO> storeProductsDTO = new ArrayList<>();
+    public List<MarketProductDTO> getStoreProductsDTO() {
+        List<MarketProductDTO> storeProductsDTO = new ArrayList<>();
         storeProducts.forEach(storeProduct -> storeProductsDTO.add(getStoreProductDTO(storeProduct)));
         return storeProductsDTO;
     }
@@ -103,14 +118,6 @@ public class Store {
         List<DiscountProductsDTO> discountsDTO = new ArrayList<>();
         discounts.forEach(discount -> discountsDTO.add(discount.getDiscountDTO()));
         return discountsDTO;
-    }
-
-
-    public Integer getStoreId() {
-        return id;
-    }
-    public String getName() {
-        return name;
     }
 
 
@@ -150,6 +157,12 @@ public class Store {
     }
 
 
+    public Integer getStoreId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -162,5 +175,9 @@ public class Store {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

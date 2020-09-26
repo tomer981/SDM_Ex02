@@ -13,16 +13,40 @@ public class Customer {
     private String name;
     private Location location;
     private List<Order> orders = new ArrayList<>();
-//    private SimpleDoubleProperty avgPricePerProductsOrder = new SimpleDoubleProperty();
-//    private SimpleDoubleProperty avgPricePerDeliveryOrder = new SimpleDoubleProperty();
-    private Double avgPricePerProductsOrder;
-    private Double avgPricePerDeliveryOrder;
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public Double getTotalPriceOfProductsOrders() {
+        return TotalPriceOfProductsOrders;
+    }
+
+    public void setTotalPriceOfProductsOrders(Double totalPriceOfProductsOrders) {
+        TotalPriceOfProductsOrders = totalPriceOfProductsOrders;
+    }
+
+    public Double getTotalPriceOfDeliveryOrders() {
+        return TotalPriceOfDeliveryOrders;
+    }
+
+    public void setTotalPriceOfDeliveryOrders(Double totalPriceOfDeliveryOrders) {
+        TotalPriceOfDeliveryOrders = totalPriceOfDeliveryOrders;
+    }
+
+
+    private Double TotalPriceOfProductsOrders;
+    private Double TotalPriceOfDeliveryOrders;
 
     public Customer(Integer id, String name, Location location) {
         this.id = id;
         this.name = name;
         this.location = location;
+        TotalPriceOfDeliveryOrders = 0.0;
+        TotalPriceOfProductsOrders= 0.0;
+
     }
+
 
     public CustomerDTO getCustomerData(){
         return new CustomerDTO(
@@ -31,9 +55,36 @@ public class Customer {
                 location.getCordX(),
                 location.getCordY(),
                 orders.size(),
-                avgPricePerDeliveryOrder,
-                avgPricePerProductsOrder);
+                getAvgPricePerDeliveryOrder(),
+                getAvgPricePerOrder());
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public Double getAvgPricePerOrder() {
+        if (orders.size() == 0){return  0.0;}
+        return TotalPriceOfProductsOrders / orders.size();
+    }
+
+    public Double getAvgPricePerDeliveryOrder() {
+        if (orders.size() == 0){return  0.0;}
+        return TotalPriceOfDeliveryOrders / orders.size();
+    }
+
 
     @Override
     public String toString() {
@@ -51,5 +102,9 @@ public class Customer {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void addOrder(Order order) {
+        orders.add(order);
     }
 }

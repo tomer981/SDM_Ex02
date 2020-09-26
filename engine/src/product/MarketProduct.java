@@ -1,6 +1,6 @@
 package product;
 
-import dto.ProductDTO;
+import dto.MarketProductDTO;
 import store.Store;
 
 import java.util.HashMap;
@@ -38,8 +38,8 @@ public class MarketProduct {
         return product;
     }
 
-    public ProductDTO getMarketProductDTO() {
-        return new ProductDTO(
+    public MarketProductDTO getMarketProductDTO() {
+        return new MarketProductDTO(
                 product.getId(),
                 product.getName(),
                 product.getPurchaseCategory().name(),

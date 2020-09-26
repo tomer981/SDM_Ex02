@@ -2,7 +2,7 @@ package dto;
 
 import java.util.Objects;
 
-public class ProductDTO {
+public class MarketProductDTO {
     private Integer id;
     private String name;
     private String category;
@@ -21,7 +21,7 @@ public class ProductDTO {
         this.avgPrice = avgPrice;
     }
 
-    public ProductDTO(Integer id, String name, String category, Integer numberOfStoreSell, Double avgPrice, Integer timeSold) {
+    public MarketProductDTO(Integer id, String name, String category, Integer numberOfStoreSell, Double avgPrice, Integer timeSold) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -58,8 +58,8 @@ public class ProductDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ProductDTO)) return false;
-        ProductDTO that = (ProductDTO) o;
+        if (!(o instanceof MarketProductDTO)) return false;
+        MarketProductDTO that = (MarketProductDTO) o;
         return Objects.equals(id, that.id);
     }
 

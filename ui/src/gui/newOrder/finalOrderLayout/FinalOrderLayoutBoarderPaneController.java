@@ -1,19 +1,15 @@
 package gui.newOrder.finalOrderLayout;
 
 import dto.CustomerDTO;
-import dto.orderDTO.DiscountProductsDTO;
-import dto.orderDTO.ProductOrderDTO;
-import dto.orderDTO.StoreOrderDTO;
+import dto.StoreDTO;
+import dto.orderDTO.*;
 import gui.mainMenuTabPane.MainMenuTabPaneController.INewOrder;
 import gui.newOrder.productsSummery.ProductsSummeryTableViewController;
 import gui.newOrder.storeSummery.StoreSummeryTableViewController;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.text.Text;
@@ -22,7 +18,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FinalOrderLayoutBoarderPaneController {
 
@@ -34,22 +34,20 @@ public class FinalOrderLayoutBoarderPaneController {
 
     private INewOrder engine;
     private Stage orderStage;
-    private List<StoreOrderDTO> storesOrder;
-    private CustomerDTO customer;
+    private OrderDTO orderDTO;
 
     private StoreSummeryTableViewController storeController;
     private ProductsSummeryTableViewController productController;
 
-    private ReadOnlyObjectProperty<StoreOrderDTO> selectionStoreProperty;
-    private LocalDate date;
+    private ReadOnlyObjectProperty<StoreDTO> selectionStoreProperty;
 
-    public void setData(INewOrder engine, Stage orderStage, List<StoreOrderDTO> storesOrder, CustomerDTO customer, LocalDate date) {
+    public void setData(INewOrder engine, Stage orderStage, OrderDTO orderDTO) {
         this.engine = engine;
         this.orderStage = orderStage;
-        this.storesOrder = storesOrder;
-        this.customer = customer;
-        this.date = date;
-        storeController.setData(storesOrder, customer);
+        this.orderDTO = orderDTO;
+        List<StoreDTO> storesDTO = new ArrayList(orderDTO.getKStoresVSubOrders().keySet());
+        CustomerDTO customer = orderDTO.getCustomer();
+        storeController.setData(storesDTO,customer);
         setTotalValues();
     }
 
@@ -60,11 +58,9 @@ public class FinalOrderLayoutBoarderPaneController {
         initializeProductsLayout();
         selectionStoreProperty.addListener(((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                productController.setData(selectionStoreProperty.get().getProducts());
+                productController.setData(orderDTO.getKStoresVSubOrders().get(selectionStoreProperty.get()).getTotalProductsToDisplay());
             }
         }));
-
-
     }
 
     private void initializeStoreLayout() {
@@ -95,21 +91,43 @@ public class FinalOrderLayoutBoarderPaneController {
     }
 
     private void setTotalValues() {
-        Double totalDeliveriesCost = 0.0;
-        Double totalProductsValue = 0.0;
-        for (StoreOrderDTO store : storesOrder) {
-            Double X =  Math.pow(store.getCordX() - customer.getCordX(),2);
-            Double Y = Math.pow(store.getCordY() - customer.getCordY(),2);
-            totalDeliveriesCost = totalDeliveriesCost + Math.pow(X+Y,0.5) * store.getPpk();
+        Set<Integer> orderProduct = new HashSet<>();
 
-            List<ProductOrderDTO> products = store.getProducts();
-            for (ProductOrderDTO product : products){
-                totalProductsValue = totalProductsValue+ product.getPrice() * product.getPrice();
+        for (SubOrderDTO subOrder : orderDTO.getKStoresVSubOrders().values()) {
+            List<StoreProductOrderDTO> allTypeOfStoreProductInSubOrder = subOrder.getTotalProductsToDisplay();
+            allTypeOfStoreProductInSubOrder.addAll(subOrder.getStoreProductsDTO());
+
+            for (OffersDiscountDTO singleDiscountOffer : subOrder.getKOffersDiscountVTimeUse().keySet()){
+                for (OfferDiscountDTO offerProduct : singleDiscountOffer.getOffersDiscount()){
+                    StoreProductOrderDTO discountProduct = new StoreProductOrderDTO
+                            (offerProduct.getId(),offerProduct.getName(),offerProduct.getCategory(),offerProduct.getPrice()/offerProduct.getAmount(),offerProduct.getAmount() * subOrder.getKOffersDiscountVTimeUse().get(singleDiscountOffer),-1.0);
+
+                    allTypeOfStoreProductInSubOrder.add(discountProduct);
+
+                    Double totalAmountNewProduct = discountProduct.getAmountBought();
+                    Double totalCostNewProduct = discountProduct.getPricePerUnit() * totalAmountNewProduct;
+
+                    subOrder.setAmountsOfProducts(totalAmountNewProduct);
+                    subOrder.setTotalCostProducts(subOrder.getTotalCostProducts() + totalCostNewProduct);
+
+                    orderDTO.setAmountsOfProducts(orderDTO.getAmountsOfProducts() + totalAmountNewProduct);
+                    orderDTO.setTotalCostProducts(orderDTO.getTotalCostProducts() + totalCostNewProduct);
+                }
             }
+
+            subOrder.setTotalOrderCost(subOrder.getDeliverCost() + subOrder.getTotalCostProducts());
+
+            Set<Integer> subOrderProducts = subOrder.getTotalProductsToDisplay().stream().map(StoreProductOrderDTO::getId).collect(Collectors.toSet());
+            subOrder.setNumberOfDifferentProducts(subOrderProducts.size());
+
+            orderProduct.addAll(subOrderProducts);
         }
-        totalProductsCost.setText("Total Products Cost: " + RoundDouble(totalProductsValue).toString());
-        totalDeliveryCost.setText("Total Delivery Cost: " + RoundDouble(totalDeliveriesCost).toString());
-        totalCost.setText("Total Cost: " + RoundDouble(totalProductsValue + totalDeliveriesCost).toString());
+
+        orderDTO.setNumberOfDifferentProducts(orderProduct.size());
+        orderDTO.setTotalOrderCost(orderDTO.getTotalDeliverOrderCost() + orderDTO.getTotalCostProducts());
+        totalProductsCost.setText("Total Products Cost: " + RoundDouble(orderDTO.getTotalCostProducts()));
+        totalDeliveryCost.setText("Total Delivery Cost: " + RoundDouble(orderDTO.getTotalDeliverOrderCost()));
+        totalCost.setText("Total Cost: " + RoundDouble(orderDTO.getTotalOrderCost()));
     }
     public static Double RoundDouble(Double number) {
         return Double.parseDouble(new DecimalFormat(".##").format(number));
@@ -122,8 +140,7 @@ public class FinalOrderLayoutBoarderPaneController {
 
     @FXML
     void onConfirmButton(ActionEvent event) {
-
+        engine.addOrder(orderDTO);
+        orderStage.close();
     }
-
-
 }

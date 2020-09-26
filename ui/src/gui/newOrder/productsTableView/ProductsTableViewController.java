@@ -1,6 +1,6 @@
 package gui.newOrder.productsTableView;
 
-import dto.ProductDTO;
+import dto.MarketProductDTO;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class ProductsTableViewController {
 
-    @FXML private TableView<ProductDTO> productsTableView;
+    @FXML private TableView<MarketProductDTO> productsTableView;
     @FXML private TableColumn<?, ?> id;
     @FXML private TableColumn<?, ?> name;
     @FXML private TableColumn<?, ?> category;
@@ -25,7 +25,7 @@ public class ProductsTableViewController {
     private final SimpleBooleanProperty isDynamic;
 
 
-    private List<ProductDTO> products;
+    private List<MarketProductDTO> products;
 
     public ProductsTableViewController(){
         isDynamic = new SimpleBooleanProperty(false);
@@ -38,34 +38,33 @@ public class ProductsTableViewController {
         category.setCellValueFactory(new PropertyValueFactory("category"));
         price.setCellValueFactory(new PropertyValueFactory("avgPrice"));
         amount.setCellValueFactory(new PropertyValueFactory("amount"));
-
-
     }
 
     public void setDynamicTableView(){
         isDynamic.setValue(true);
         productsTableView.getColumns().remove(price);
     }
+
     public void setSystemProductTableView(){
         productsTableView.getColumns().remove(amount);
     }
 
 
 
-    public void setProducts(Supplier<List<ProductDTO>> products) {
+    public void setProducts(Supplier<List<MarketProductDTO>> products) {
         this.products = products.get();
         productsTableView.setItems(FXCollections.observableArrayList(this.products));
         clearSelection();
         productsTableView.refresh();
     }
 
-    public Supplier<TableView<ProductDTO>> getProductsTableView(){
-        Supplier<TableView<ProductDTO>> products = ()->productsTableView;
+    public Supplier<TableView<MarketProductDTO>> getProductsTableView(){
+        Supplier<TableView<MarketProductDTO>> products = ()->productsTableView;
         return products;
     }
 
 
-    public ReadOnlyObjectProperty<ProductDTO> getPropertySelection(){
+    public ReadOnlyObjectProperty<MarketProductDTO> getPropertySelection(){
         return productsTableView.getSelectionModel().selectedItemProperty();
     }
 
@@ -73,7 +72,7 @@ public class ProductsTableViewController {
         productsTableView.getSelectionModel().clearSelection();
     }
 
-    public List<ProductDTO> getProducts() {
+    public List<MarketProductDTO> getProducts() {
         return products;
     }
 

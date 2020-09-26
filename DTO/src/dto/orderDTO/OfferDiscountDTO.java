@@ -1,5 +1,7 @@
 package dto.orderDTO;
 
+import java.util.Objects;
+
 public class OfferDiscountDTO {
     private Integer id;
     private String name;
@@ -37,4 +39,20 @@ public class OfferDiscountDTO {
         return category;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OfferDiscountDTO)) return false;
+        OfferDiscountDTO that = (OfferDiscountDTO) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(amount, that.amount) &&
+                Objects.equals(price, that.price) &&
+                Objects.equals(category, that.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, amount, price, category);
+    }
 }

@@ -1,6 +1,6 @@
 package gui.productsInMarketTableView;
 
-import dto.ProductDTO;
+import dto.MarketProductDTO;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class ProductsInMarketTableViewController {
 
-    @FXML private TableView<ProductDTO> MarketProductsTableView;
+    @FXML private TableView<MarketProductDTO> MarketProductsTableView;
     @FXML private TableColumn<?, ?> idTableColumn;
     @FXML private TableColumn<?, ?> nameTableColumn;
     @FXML private TableColumn<?, ?> categoryTableColumn;
@@ -21,9 +21,9 @@ public class ProductsInMarketTableViewController {
     @FXML private TableColumn<?, ?> avgPriceTableColumn;
     @FXML private TableColumn<?, ?> timeSoldTableColumn;
 
-    List<ProductDTO> marketProducts;
+    List<MarketProductDTO> marketProducts;
 
-    public void setMarketProductData(Supplier<List<ProductDTO>> marketProductsDTO) {
+    public void setMarketProductData(Supplier<List<MarketProductDTO>> marketProductsDTO) {
         marketProducts = marketProductsDTO.get();
         marketProducts.forEach(marketProduct->marketProduct.setAvgPrice(RoundDouble(marketProduct.getAvgPrice())));
         MarketProductsTableView.setItems(FXCollections.observableArrayList(marketProducts));

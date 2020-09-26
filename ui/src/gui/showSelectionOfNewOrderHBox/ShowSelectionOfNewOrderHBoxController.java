@@ -3,6 +3,7 @@ package gui.showSelectionOfNewOrderHBox;
 
 import dto.CustomerDTO;
 import dto.StoreDTO;
+import dto.orderDTO.OrderDTO;
 import gui.newOrder.newOrderLayoutGrid.NewOrderLayoutGridController;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -74,24 +75,28 @@ public class ShowSelectionOfNewOrderHBoxController {
     }
 
     @FXML
-    void newOrderButtonAction(ActionEvent event) throws IOException {
+    void newOrderButtonAction(ActionEvent event)  {
 
-        Stage orderStage = new Stage();
+        Stage orderStage = new Stage();//TODO: maybe Primary Stage
         orderStage.setTitle("New Order - Static Order");
 
-
-        FXMLLoader loader = new FXMLLoader();
-        URL newOrderFXML = getClass().getResource("..\\..\\gui\\newOrder\\newOrderLayoutGrid\\NewOrderLayoutGridGui.fxml");
-        loader.setLocation(newOrderFXML);
-        GridPane load = loader.load();
+        FXMLLoader loader = null;
+        GridPane load = null;
+        try {
+            loader = new FXMLLoader(getClass().getResource("..\\..\\gui\\newOrder\\newOrderLayoutGrid\\NewOrderLayoutGridGui.fxml"));
+            load = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         NewOrderLayoutGridController controller = loader.getController();
+        OrderDTO orderDTO = new OrderDTO(-1,dateDatePicker.valueProperty().getValue(),customerComboBox.getValue());
 
         if (dynOrStaticOrderComboBox.getSelectionModel().getSelectedItem().equals("Dynamic")){
             orderStage.setTitle("New Order - Dynamic Order");
-            controller.setEngine(engine,customerComboBox.getValue(),orderStage,dateDatePicker.valueProperty().getValue());
+            controller.setEngine(engine,orderDTO,orderStage);
         }
         else {
-            controller.setEngine(engine, storeSelectionComboBox.getValue().getId(),customerComboBox.getValue(),orderStage,dateDatePicker.valueProperty().getValue());
+            controller.setEngine(engine,orderDTO,orderStage,storeSelectionComboBox.getValue().getId());
         }
 
         Scene scene = new Scene(load, 600, 400);

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.newOrder.dynamicStoreOrderInfo.DynamicStoreOrderInfoController">
+   <content>
+      <VBox alignment="CENTER_LEFT" minHeight="175.0" minWidth="115.0" spacing="5.0">
+         <children>
+            <Text fx:id="id" strokeType="OUTSIDE" strokeWidth="0.0" text="Store Id:" />
+            <Text fx:id="name" strokeType="OUTSIDE" strokeWidth="0.0" text="Store Name:" />
+            <Text fx:id="locationXY" strokeType="OUTSIDE" strokeWidth="0.0" text="Location(x,y):" />
+            <Text fx:id="distance" strokeType="OUTSIDE" strokeWidth="0.0" text="Distance:" />
+            <Text fx:id="ppk" strokeType="OUTSIDE" strokeWidth="0.0" text="PPK:" />
+            <Text fx:id="deliveryCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Delivery Cost:" />
+            <Text fx:id="numberOfProducts" strokeType="OUTSIDE" strokeWidth="0.0" text="Number Of Products:" />
+            <Text fx:id="totalCost" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Cost:" />
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>
