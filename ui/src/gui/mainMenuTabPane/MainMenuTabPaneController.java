@@ -6,6 +6,7 @@ import dto.MarketProductDTO;
 import dto.StoreDTO;
 import dto.orderDTO.*;
 import gui.customerInfoTableView.CustomerInfoTableViewController;
+import gui.mapTabPane.MapTabPaneViewController;
 import gui.productsInMarketTableView.ProductsInMarketTableViewController;
 import gui.shopTabLayout.ShopTabLayoutController;
 import gui.showSelectionOfNewOrderHBox.ShowSelectionOfNewOrderHBoxController;
@@ -35,15 +36,24 @@ import java.util.function.Supplier;
 
 public class MainMenuTabPaneController {
 
-    @FXML private TextField DirDirectoryTextField;
-    @FXML private ProgressBar AdvanceLoadProgressBar;
-    @FXML private Button BrowseButton;
-    @FXML private Tab MarketTab;
-    @FXML private Tab CustomersTab;
-    @FXML private Tab StoreInfoTab;
-    @FXML private Tab MapTab;
-    @FXML private GridPane MarketTabGrid;
-    @FXML private Text loadingStatus;
+    @FXML
+    private TextField DirDirectoryTextField;
+    @FXML
+    private ProgressBar AdvanceLoadProgressBar;
+    @FXML
+    private Button BrowseButton;
+    @FXML
+    private Tab MarketTab;
+    @FXML
+    private Tab CustomersTab;
+    @FXML
+    private Tab StoreInfoTab;
+    @FXML
+    private Tab MapTab;
+    @FXML
+    private GridPane MarketTabGrid;
+    @FXML
+    private Text loadingStatus;
 
 
     private final XmlSystemFactory factory;
@@ -56,6 +66,7 @@ public class MainMenuTabPaneController {
     private ShowSelectionOfOrderHBoxController OrderSelectionController;
     private ShowSelectionOfNewOrderHBoxController newOrderSelectionController;
     private ShopTabLayoutController storeLayoutController;
+    private MapTabPaneViewController mapTabPaneViewController;
 
     private final IUpdateProduct updateProductInterface = new IUpdateProduct() {
 
@@ -120,7 +131,7 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public OrderDTO findMinCostOrder(OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProductsDTO){
+        public OrderDTO findMinCostOrder(OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProductsDTO) {
             return market.findMinCostOrder(orderDTO, OrderProductsDTO);
         }
 
@@ -130,8 +141,8 @@ public class MainMenuTabPaneController {
         }
 
         @Override
-        public OrderDTO getStoreOrderByStoreId(Integer storeId,OrderDTO orderDTO ,List<StoreProductOrderDTO> OrderProducts){
-            return market.getStoreOrderByStoreId(storeId, orderDTO,OrderProducts);
+        public OrderDTO getStoreOrderByStoreId(Integer storeId, OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProducts) {
+            return market.getStoreOrderByStoreId(storeId, orderDTO, OrderProducts);
         }
 
         @Override
@@ -141,7 +152,7 @@ public class MainMenuTabPaneController {
 
         @Override
         public OffersDiscountDTO getOffersDiscount(Integer id, DiscountProductsDTO discountSelected) {
-            return market.getOffersDiscount(id,discountSelected);
+            return market.getOffersDiscount(id, discountSelected);
         }
 
         @Override
@@ -161,6 +172,19 @@ public class MainMenuTabPaneController {
             return market.getStoreProductDTOByStoreId(storeId);
         }
     };
+
+    private final IMap mapEngine = new IMap() {
+        @Override
+        public List<CustomerDTO> getCustomersDTO() {
+            return market.getCustomersDTO();
+        }
+
+        @Override
+        public List<StoreDTO> getStoresDTO() {
+            return market.getStoresDTO();
+        }
+    };
+
     private final Supplier<List<CustomerDTO>> customersData = () -> market.getCustomersDTO();
 
     private final Executor executor = Executors.newCachedThreadPool();
@@ -196,15 +220,19 @@ public class MainMenuTabPaneController {
         loadTask.valueProperty().addListener((task, oldValue, newValue) -> {
             // After file loaded successfully
             this.market = newValue;
-            initializeMarketTab();
-            initializeStoreInfoTab();
-            initializeMapTab();
-            initializeCustomersTab();
-
+            try {
+                initializeMarketTab();
+                initializeStoreInfoTab();
+                initializeMapTab();
+                initializeCustomersTab();
+            } catch (IOException e) {
+                throw new IllegalStateException("Could not load UI information from disk", e);
+            }
         });
 
         loadTask.exceptionProperty().addListener((task, oldValue, newValue) -> {
             // When file failed to load
+            // TODO: Aviad, show error here
             newValue.printStackTrace();
         });
         executor.execute(loadTask);
@@ -213,67 +241,46 @@ public class MainMenuTabPaneController {
 
 
     //main
-    private void initializeMarketTab() {
+    private void initializeMarketTab() throws IOException {
         initializeUpdateProductHBox();
         initializeShowNewOrderHBox();
         initializeShowSelectionOfOrderHBox();
         initializeShowProductsInMarketTableView();
     }
 
-    private void initializeUpdateProductHBox() {
-        HBox updateProductHBox = null;
-        FXMLLoader loader = null;
-        try {
-            loader = new FXMLLoader(getClass().getResource("../../gui/updateProductHBox/UpdateProductHBoxGui.fxml"));
-            updateProductHBox = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void initializeUpdateProductHBox() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/updateProductHBox/UpdateProductHBoxGui.fxml"));
+        HBox updateProductHBox = loader.load();
+
         MarketTabGrid.add(updateProductHBox, 0, 1);
         updateProductController = loader.getController();
 
         updateProductController.setEngine(updateProductInterface);
     }
 
-    private void initializeShowProductsInMarketTableView() {
-        ScrollPane productsInMarketTableView = null;
-        FXMLLoader loader = null;
-        try {
-            loader = new FXMLLoader(getClass().getResource("../../gui/productsInMarketTableView/ProductsInMarketTableViewGui.fxml"));
-            productsInMarketTableView = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void initializeShowProductsInMarketTableView() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/productsInMarketTableView/ProductsInMarketTableViewGui.fxml"));
+        ScrollPane productsInMarketTableView = loader.load();
+
         MarketTabGrid.add(productsInMarketTableView, 0, 4);
         MarketProductsController = loader.getController();
 
         MarketProductsController.setMarketProductData(products);
     }
 
-    private void initializeShowSelectionOfOrderHBox() {
-        HBox showSelectionOfOrderHBox = null;
-        FXMLLoader loader = null;
-        try {
-            loader = new FXMLLoader(getClass().getResource("../../gui/showSelectionOfOrderHBox/ShowSelectionOfOrderHBoxGui.fxml"));
-            showSelectionOfOrderHBox = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void initializeShowSelectionOfOrderHBox() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/showSelectionOfOrderHBox/ShowSelectionOfOrderHBoxGui.fxml"));
+        HBox showSelectionOfOrderHBox = loader.load();
+
         MarketTabGrid.add(showSelectionOfOrderHBox, 0, 3);
         OrderSelectionController = loader.getController();
 
 
     }
 
-    private void initializeShowNewOrderHBox() {
-        HBox showNewOrderHBox = null;
-        FXMLLoader loader = null;
-        try {
-            loader = new FXMLLoader(getClass().getResource("../../gui/showSelectionOfNewOrderHBox/ShowSelectionOfNewOrderHBoxGui.fxml"));//TODO load Static class for name
-            showNewOrderHBox = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void initializeShowNewOrderHBox() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/showSelectionOfNewOrderHBox/ShowSelectionOfNewOrderHBoxGui.fxml"));//TODO load Static class for name
+        HBox showNewOrderHBox = loader.load();
 
         MarketTabGrid.add(showNewOrderHBox, 0, 2);
         newOrderSelectionController = loader.getController();
@@ -281,15 +288,9 @@ public class MainMenuTabPaneController {
     }
 
     //store
-    private void initializeStoreInfoTab() {
-        SplitPane storeInfo = null;
-        FXMLLoader loader = null;
-        try {
-            loader = new FXMLLoader(getClass().getResource("../../gui/shopTabLayout/ShopTabLayoutGui.fxml"));
-            storeInfo = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void initializeStoreInfoTab() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/shopTabLayout/ShopTabLayoutGui.fxml"));
+        SplitPane storeInfo = loader.load();
 
         StoreInfoTab.setContent(storeInfo);
         storeLayoutController = loader.getController();
@@ -298,15 +299,10 @@ public class MainMenuTabPaneController {
 
 
     //Customer
-    private void initializeCustomersTab() {
-        ScrollPane customerTableView = null;
-        FXMLLoader loader = null;
-        try {
-            loader = new FXMLLoader(getClass().getResource("../../gui/customerInfoTableView/CustomerInfoTableViewGui.fxml"));
-            customerTableView = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void initializeCustomersTab() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/customerInfoTableView/CustomerInfoTableViewGui.fxml"));
+        ScrollPane customerTableView = loader.load();
+
         //rest tab
         CustomersTab.setContent(null);
         CustomersTab.setContent(customerTableView);
@@ -317,19 +313,17 @@ public class MainMenuTabPaneController {
     }
 
     //map
-    private void initializeMapTab() {
-        IMap mapEngine = new IMap() {
-            @Override
-            public List<CustomerDTO> getCustomersDTO() {
-                return market.getCustomersDTO();
-            }
+    private void initializeMapTab() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../gui/mapTabPane/MapTabPaneViewGui.fxml"));
+        ScrollPane customerTableView = loader.load();
 
-            @Override
-            public List<StoreDTO> getStoresDTO() {
-                return market.getStoresDTO();
-            }
-        };
-        //TODO: Aviad in here
+        //rest tab
+        CustomersTab.setContent(null);
+        CustomersTab.setContent(customerTableView);
+        //controller
+        customerController = loader.getController();
+        //set Data
+        customerController.setCustomersData(customersData);
     }
 
     //data
@@ -339,6 +333,7 @@ public class MainMenuTabPaneController {
         storeLayoutController.setEngine(StoresInfo);
         MarketProductsController.setMarketProductData(products);
         newOrderSelectionController.setEngine(newOrderInterface);
+        mapTabPaneViewController.setEngine(mapEngine);
 //        OrderSelectionController.setData();
     }
 
@@ -380,7 +375,7 @@ public class MainMenuTabPaneController {
 
         Double getDistance(Integer x1, Integer y1, Integer x2, Integer y2);
 
-        OrderDTO getStoreOrderByStoreId(Integer storeId,OrderDTO orderDTO ,List<StoreProductOrderDTO> OrderProducts);
+        OrderDTO getStoreOrderByStoreId(Integer storeId, OrderDTO orderDTO, List<StoreProductOrderDTO> OrderProducts);
 
         List<DiscountProductsDTO> getDiscountsByStoreId(Integer storeId);
 
